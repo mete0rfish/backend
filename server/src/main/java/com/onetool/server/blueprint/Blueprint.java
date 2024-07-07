@@ -33,11 +33,11 @@ public class Blueprint extends BaseEntity {
     private String extension;
     @Column(name = "program")
     private String program;
-    @Column(name = "his")
-    private BigInteger his;
+    @Column(name = "hits")
+    private BigInteger hits;
 
     @Builder
-    public Blueprint(Long id, String blueprintName, Long categoryId, Long blueprintPrice, String blueprintImg, String blueprintDetails, String extension, String program, BigInteger his) {
+    public Blueprint(Long id, String blueprintName, Long categoryId, Long blueprintPrice, String blueprintImg, String blueprintDetails, String extension, String program, BigInteger hits) {
         this.id = id;
         this.blueprintName = blueprintName;
         this.categoryId = categoryId;
@@ -46,6 +46,6 @@ public class Blueprint extends BaseEntity {
         this.blueprintDetails = blueprintDetails;
         this.extension = extension;
         this.program = program;
-        this.his = his;
+        this.hits = hits;
     }
 }
