@@ -1,6 +1,8 @@
 package com.onetool.server.member;
 
+import com.onetool.server.cart.Cart;
 import com.onetool.server.global.entity.BaseEntity;
+import com.onetool.server.qna.Qna;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -8,6 +10,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -30,6 +34,12 @@ public class Member extends BaseEntity {
     private boolean isNative;
     @Column(name = "service_accept")
     private boolean serviceAccept;
+
+    @OneToMany(mappedBy = "member")
+    private List<Qna> qnas = new ArrayList<>();
+
+    @OneToOne(mappedBy = "member", fetch = FetchType.LAZY)
+    private Cart cart;
 
     @Builder
     private Member(Long id, String password, String email, String name, LocalDate birthDate, String phoneNum, boolean userType, String field, boolean isNative, boolean serviceAccept) {
