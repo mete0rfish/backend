@@ -20,9 +20,8 @@ public class Blueprint extends BaseEntity {
 
     @Column(name="blueprint_name")
     private String blueprintName;
-    @ManyToOne
-    @JoinColumn(name = "category_id")
-    private FirstCategory category;
+    @Column(name="category_id")
+    private Long categoryId;
 
     @Column(name = "blueprint_price")
     private Long blueprintPrice;
@@ -38,10 +37,10 @@ public class Blueprint extends BaseEntity {
     private BigInteger his;
 
     @Builder
-    public Blueprint(Long id, String blueprintName, FirstCategory category, Long blueprintPrice, String blueprintImg, String blueprintDetails, String extension, String program, BigInteger his) {
+    public Blueprint(Long id, String blueprintName, Long categoryId, Long blueprintPrice, String blueprintImg, String blueprintDetails, String extension, String program, BigInteger his) {
         this.id = id;
         this.blueprintName = blueprintName;
-        this.category = category;
+        this.categoryId = categoryId;
         this.blueprintPrice = blueprintPrice;
         this.blueprintImg = blueprintImg;
         this.blueprintDetails = blueprintDetails;

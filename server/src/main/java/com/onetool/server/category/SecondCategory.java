@@ -25,5 +25,4 @@ public class SecondCategory extends BaseEntity {
         this.firstCategory = firstCategory;
         this.name = name;
     }
-
 }
