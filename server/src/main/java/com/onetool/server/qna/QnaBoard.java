@@ -9,26 +9,24 @@ import lombok.Builder;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "qna_reply")
-@Getter
+@Table(name = "qna_board")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class QnaReply extends BaseEntity {
+public class QnaBoard extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    @Column(name = "reply_content") @NotNull
-    @Size(min = 2, max = 10, message = "내용은 2 ~ 100자 이여야 합니다.")
+    @Column(name = "qna_board_title") @NotNull
+    @Size(min = 2, max = 30, message = "제목은 2 ~ 30자 이여야 합니다.")
+    private String title;
+    @Column(name = "qna_board_content")
+    @Size(min = 2, max = 100, message = "내용은 2 ~ 100자 이여야 합니다.")
     private String content;
-    
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "qna_idx")
-    private Qna qna;
-  
-  
+
     @Builder
-    public QnaReply(String content) {
+    private QnaBoard(String title, String content) {
+        this.title = title;
         this.content = content;
     }
 
-    //TODO builder 패턴 완성하기
+    // TODO builder패턴 완성하기
 }
