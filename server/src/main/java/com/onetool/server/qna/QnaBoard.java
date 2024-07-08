@@ -8,6 +8,8 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Entity
 @Table(name = "qna_board")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -21,6 +23,8 @@ public class QnaBoard extends BaseEntity {
     @Column(name = "qna_board_content")
     @Size(min = 2, max = 100, message = "내용은 2 ~ 100자 이여야 합니다.")
     private String content;
+    @OneToMany(mappedBy = "qna_board")
+    private List<QnaReply> qnaReplies;
 
     @Builder
     private QnaBoard(String title, String content) {

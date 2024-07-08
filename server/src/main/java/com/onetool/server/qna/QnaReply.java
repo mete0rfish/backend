@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
@@ -21,8 +22,8 @@ public class QnaReply extends BaseEntity {
     private String content;
     
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "qna_idx")
-    private Qna qna;
+    @JoinColumn(name = "qna_id")
+    private QnaBoard qnaBoard;
   
   
     @Builder

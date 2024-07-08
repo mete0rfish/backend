@@ -2,7 +2,6 @@ package com.onetool.server.member;
 
 import com.onetool.server.cart.Cart;
 import com.onetool.server.global.entity.BaseEntity;
-import com.onetool.server.qna.Qna;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.AccessLevel;
