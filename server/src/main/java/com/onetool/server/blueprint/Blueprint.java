@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.math.BigInteger;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -22,9 +23,8 @@ public class Blueprint extends BaseEntity {
     private String blueprintName;
     @Column(name="category_id")
     private Long categoryId;
-
-    @Column(name = "blueprint_price")
-    private Long blueprintPrice;
+    @Column(name = "standard_price")
+    private Long standardPrice;
     @Column(name = "blueprint_img")
     private String blueprintImg;
     @Column(name = "blueprint_details")
@@ -35,17 +35,23 @@ public class Blueprint extends BaseEntity {
     private String program;
     @Column(name = "hits")
     private BigInteger hits;
+    @Column(name = "sale_price")
+    private Long salePrice;
+    @Column(name = "sale_expired_date")
+    private LocalDateTime saleExpiredDate;
 
     @Builder
-    public Blueprint(Long id, String blueprintName, Long categoryId, Long blueprintPrice, String blueprintImg, String blueprintDetails, String extension, String program, BigInteger hits) {
-        this.id = id;
+
+    public Blueprint(String blueprintName, Long categoryId, Long standardPrice, String blueprintImg, String blueprintDetails, String extension, String program, BigInteger hits, Long salePrice, LocalDateTime saleExpiredDate) {
         this.blueprintName = blueprintName;
         this.categoryId = categoryId;
-        this.blueprintPrice = blueprintPrice;
+        this.standardPrice = standardPrice;
         this.blueprintImg = blueprintImg;
         this.blueprintDetails = blueprintDetails;
         this.extension = extension;
         this.program = program;
         this.hits = hits;
+        this.salePrice = salePrice;
+        this.saleExpiredDate = saleExpiredDate;
     }
 }
