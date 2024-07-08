@@ -23,10 +23,10 @@ public class Cart extends BaseEntity {
     private Long totalPrice;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_idx")
+    @JoinColumn(name = "member_id")
     private Member member;
 
-    @OneToMany(mappedBy = "cart")
+    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL)
     private List<CartItem> cartItems = new ArrayList<>();
 
 }

@@ -2,6 +2,7 @@ package com.onetool.server.member;
 
 import com.onetool.server.cart.Cart;
 import com.onetool.server.global.entity.BaseEntity;
+import com.onetool.server.qna.QnaBoard;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.AccessLevel;
@@ -51,14 +52,14 @@ public class Member extends BaseEntity {
     @Column(name = "platform_type") @NotNull
     private String platformType;
 
-    @OneToMany(mappedBy = "member")
-    private List<Qna> qnas = new ArrayList<>();
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+    private List<QnaBoard> qnaBoards = new ArrayList<>();
 
-    @OneToOne(mappedBy = "member", fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Cart cart;
 
     @Builder
-    public Member(String password, String email, String name, LocalDate birthDate, String phoneNum, String role, String field, boolean isNative, boolean serviceAccept, String platformType) {
+    private Member(String password, String email, String name, LocalDate birthDate, String phoneNum, String role, String field, boolean isNative, boolean serviceAccept, String platformType, List<QnaBoard> qnaBoards, Cart cart) {
         this.password = password;
         this.email = email;
         this.name = name;
@@ -69,8 +70,9 @@ public class Member extends BaseEntity {
         this.isNative = isNative;
         this.serviceAccept = serviceAccept;
         this.platformType = platformType;
+        this.qnaBoards = qnaBoards;
+        this.cart = cart;
     }
-
     // TODO builder패턴 완성하기
     /*    public static Member createMember(MemberRequest reuqest){
             return Member.builder()

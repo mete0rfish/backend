@@ -21,8 +21,8 @@ public class QnaReply extends BaseEntity {
     @Size(min = 2, max = 10, message = "내용은 2 ~ 100자 이여야 합니다.")
     private String content;
     
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "qna_id")
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "qna_board_id")
     private QnaBoard qnaBoard;
   
   
