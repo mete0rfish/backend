@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "qna_reply")
+@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class QnaReply extends BaseEntity {
     @Id
@@ -18,7 +19,12 @@ public class QnaReply extends BaseEntity {
     @Column(name = "reply_content") @NotNull
     @Size(min = 2, max = 10, message = "내용은 2 ~ 100자 이여야 합니다.")
     private String content;
-
+    
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "qna_idx")
+    private Qna qna;
+  
+  
     @Builder
     public QnaReply(String content) {
         this.content = content;

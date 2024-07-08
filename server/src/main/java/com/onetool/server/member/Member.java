@@ -1,6 +1,8 @@
 package com.onetool.server.member;
 
+import com.onetool.server.cart.Cart;
 import com.onetool.server.global.entity.BaseEntity;
+import com.onetool.server.qna.Qna;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.AccessLevel;
@@ -10,6 +12,8 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -47,6 +51,12 @@ public class Member extends BaseEntity {
 
     @Column(name = "platform_type") @NotNull
     private String platformType;
+
+    @OneToMany(mappedBy = "member")
+    private List<Qna> qnas = new ArrayList<>();
+
+    @OneToOne(mappedBy = "member", fetch = FetchType.LAZY)
+    private Cart cart;
 
     @Builder
     public Member(String password, String email, String name, LocalDate birthDate, String phoneNum, String role, String field, boolean isNative, boolean serviceAccept, String platformType) {
