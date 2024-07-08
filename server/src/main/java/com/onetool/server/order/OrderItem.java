@@ -17,8 +17,8 @@ public class OrderItem extends BaseEntity {
 
     //도면관련 매핑은 좀 이따가
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_idx")
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "order_id")
     private Order order;
 
 
