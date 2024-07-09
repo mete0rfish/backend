@@ -1,7 +1,7 @@
 package com.onetool.server.payments;
 
 import com.onetool.server.global.entity.BaseEntity;
-import com.onetool.server.order.Order;
+import com.onetool.server.order.Orders;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -24,5 +24,5 @@ public class Payments extends BaseEntity {
     private String paymentLastTransactionKey;
 
     @OneToOne
-    private Order order;
+    private Orders order;
 }

@@ -27,6 +27,6 @@ public class Cart extends BaseEntity {
     private Member member;
 
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL)
-    private List<CartItem> cartItems = new ArrayList<>();
+    private List<CartBlueprint> cartItems = new ArrayList<>();
 
 }

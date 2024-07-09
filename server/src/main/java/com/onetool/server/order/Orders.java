@@ -13,7 +13,7 @@ import java.util.List;
 @Entity(name = "orders")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Order extends BaseEntity {
+public class Orders extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -23,7 +23,7 @@ public class Order extends BaseEntity {
     private int totalCount;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
-    private List<OrderItem> orderItems = new ArrayList<>();
+    private List<OrderBlueprint> orderItems = new ArrayList<>();
 
     @OneToOne
     private Payments payments;
