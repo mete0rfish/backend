@@ -38,7 +38,8 @@ public class Member extends BaseEntity {
     private String phoneNum;
 
     @Column(name = "role") @ColumnDefault("'회원'")
-    private  String role;
+    @Enumerated(EnumType.STRING)
+    private UserRole role;
 
     @ColumnDefault("'기타'")
     private String field;
@@ -59,7 +60,7 @@ public class Member extends BaseEntity {
     private Cart cart;
 
     @Builder
-    private Member(String password, String email, String name, LocalDate birthDate, String phoneNum, String role, String field, boolean isNative, boolean serviceAccept, String platformType, List<QnaBoard> qnaBoards, Cart cart) {
+    private Member(String password, String email, String name, LocalDate birthDate, String phoneNum, UserRole role, String field, boolean isNative, boolean serviceAccept, String platformType, List<QnaBoard> qnaBoards, Cart cart) {
         this.password = password;
         this.email = email;
         this.name = name;
