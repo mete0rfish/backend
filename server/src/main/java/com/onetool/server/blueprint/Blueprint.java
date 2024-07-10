@@ -1,7 +1,8 @@
 package com.onetool.server.blueprint;
 
-import com.onetool.server.category.FirstCategory;
+import com.onetool.server.cart.CartBlueprint;
 import com.onetool.server.global.entity.BaseEntity;
+import com.onetool.server.order.OrderBlueprint;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -10,6 +11,9 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigInteger;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
 
 @Entity
 @Getter
@@ -39,6 +43,18 @@ public class Blueprint extends BaseEntity {
     private Long salePrice;
     @Column(name = "sale_expired_date")
     private LocalDateTime saleExpiredDate;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "order_blueprint_id")
+    private OrderBlueprint orderBlueprint;
+
+    @OneToMany(mappedBy = "blueprint")
+    private List<CartBlueprint> cartBlueprints = new ArrayList<>();
+
+    @OneToMany(mappedBy = "blueprint")
+    private List<OrderBlueprint> orderBlueprints = new ArrayList<>();
+
+
 
     @Builder
 
