@@ -39,10 +39,13 @@ public class Blueprint extends BaseEntity {
     private Long salePrice;
     @Column(name = "sale_expired_date")
     private LocalDateTime saleExpiredDate;
+    @Column(name = "creator_name")
+    private String creatorName;
+    @Column(name = "download_link")
+    private String downloadLink;
 
     @Builder
-
-    public Blueprint(String blueprintName, Long categoryId, Long standardPrice, String blueprintImg, String blueprintDetails, String extension, String program, BigInteger hits, Long salePrice, LocalDateTime saleExpiredDate) {
+    public Blueprint(String blueprintName, Long categoryId, Long standardPrice, String blueprintImg, String blueprintDetails, String extension, String program, BigInteger hits, Long salePrice, LocalDateTime saleExpiredDate, String creatorName, String downloadLink) {
         this.blueprintName = blueprintName;
         this.categoryId = categoryId;
         this.standardPrice = standardPrice;
@@ -53,5 +56,7 @@ public class Blueprint extends BaseEntity {
         this.hits = hits;
         this.salePrice = salePrice;
         this.saleExpiredDate = saleExpiredDate;
+        this.creatorName = creatorName;
+        this.downloadLink = downloadLink;
     }
 }
