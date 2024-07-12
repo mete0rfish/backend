@@ -13,7 +13,6 @@ import java.util.Optional;
 
 @RestController
 public class BlueprintController {
-
     @Autowired
     private BlueprintService blueprintService;
 
