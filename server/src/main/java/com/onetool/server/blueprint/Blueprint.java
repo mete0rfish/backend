@@ -14,7 +14,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -57,19 +56,18 @@ public class Blueprint extends BaseEntity {
     private List<OrderBlueprint> orderBlueprints = new ArrayList<>();
 
     @Builder
-    public Blueprint(Long id, String blueprintName, Long categoryId, Long standardPrice, String blueprintImg, String blueprintDetails, String extension, String program, BigInteger hits, Long salePrice, LocalDateTime saleExpiredDate, String creatorName) {
-        this.id = id;
-        this.blueprintName = blueprintName;
-        this.categoryId = categoryId;
-        this.standardPrice = standardPrice;
-        this.blueprintImg = blueprintImg;
-        this.blueprintDetails = blueprintDetails;
-        this.extension = extension;
-        this.program = program;
-        this.hits = hits;
-        this.salePrice = salePrice;
-        this.saleExpiredDate = saleExpiredDate;
+    public Blueprint(String creatorName, LocalDateTime saleExpiredDate, Long salePrice, BigInteger hits, String program, String extension, String blueprintDetails, String blueprintImg, Long standardPrice, Long categoryId, String blueprintName, Long id) {
         this.creatorName = creatorName;
+        this.saleExpiredDate = saleExpiredDate;
+        this.salePrice = salePrice;
+        this.hits = hits;
+        this.program = program;
+        this.extension = extension;
+        this.blueprintDetails = blueprintDetails;
+        this.blueprintImg = blueprintImg;
+        this.standardPrice = standardPrice;
+        this.categoryId = categoryId;
+        this.blueprintName = blueprintName;
+        this.id = id;
     }
-
 }

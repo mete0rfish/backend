@@ -14,9 +14,10 @@ public class BlueprintController {
     @Autowired
     private BlueprintService blueprintService;
 
-    @GetMapping("blueprint/{blueprintId}") //도면 상세조회
-    public ResponseEntity<Blueprint> getBlueprintDetails(@PathVariable Long blueprintId) {
-        Optional<Blueprint> blueprint = blueprintService.blueprintById(blueprintId);
-        return ResponseEntity.ok(blueprint.get());
+    @GetMapping("/blueprint/{id}") // 도면 상세 조회
+    public ResponseEntity<Blueprint> getBlueprintDetails(@PathVariable Long id) {
+        Optional<Blueprint> blueprint = blueprintService.blueprintById(id);
+        return blueprint.map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 }
