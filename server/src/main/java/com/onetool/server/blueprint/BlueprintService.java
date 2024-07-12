@@ -1,10 +1,14 @@
 package com.onetool.server.blueprint;
 
 import com.onetool.server.blueprint.dto.SearchResponse;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class BlueprintService {
@@ -15,10 +19,11 @@ public class BlueprintService {
         this.blueprintRepository = blueprintRepository;
     }
     
-    public SearchResponse searchNameAndCreatorWithKeyword(String keyword) {
-        List<Blueprint> blueprintList = new ArrayList<>();
-        blueprintList.addAll(blueprintRepository.findByBlueprintName(keyword));
-        blueprintList.addAll(blueprintRepository.findByCreatorName(keyword));
-        return new SearchResponse(blueprintList);
+    public Page<SearchResponse> searchNameAndCreatorWithKeyword(String keyword, Pageable pageable) {
+        Page<Blueprint> result = blueprintRepository.findAllNameAndCreatorContaining(keyword, pageable);
+        List<SearchResponse> list = result.getContent().stream()
+                .map(SearchResponse::from)
+                .collect(Collectors.toList());
+        return new PageImpl<>(list, pageable, result.getTotalElements());
     }
 }

@@ -1,7 +1,11 @@
 package com.onetool.server.blueprint;
 
 import com.onetool.server.blueprint.dto.SearchResponse;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.jaxb.SpringDataJaxb.PageDto;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,11 +23,10 @@ public class SearchController {
     @GetMapping("/search")
     public ResponseEntity searchWithKeyword(
             @RequestParam("s")String keyword,
-            PageDto pv,
-            @RequestParam("page") int currentPage
-    ) {
+            @PageableDefault(size = 5, sort = "id", direction = Sort.Direction.DESC)Pageable pageable
+            ) {
 
-        SearchResponse response = blueprintService.searchNameAndCreatorWithKeyword(keyword);
+        Page<SearchResponse> response = blueprintService.searchNameAndCreatorWithKeyword(keyword, pageable);
         return ResponseEntity.ok().body(response);
     }
 
