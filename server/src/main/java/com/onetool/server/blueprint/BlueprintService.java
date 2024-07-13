@@ -8,21 +8,22 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 public class BlueprintService {
-    
+
     private BlueprintRepository blueprintRepository;
 
     public BlueprintService(BlueprintRepository blueprintRepository) {
         this.blueprintRepository = blueprintRepository;
     }
-    
-    public Optional<Blueprint> blueprintById(Long id) {
+
+    public Optional<Blueprint> findBlueprintById(Long id) {
         return blueprintRepository.findById(id);
     }
-  
+
     public Page<SearchResponse> searchNameAndCreatorWithKeyword(String keyword, Pageable pageable) {
         Page<Blueprint> result = blueprintRepository.findAllNameAndCreatorContaining(keyword, pageable);
         List<SearchResponse> list = result.getContent().stream()
