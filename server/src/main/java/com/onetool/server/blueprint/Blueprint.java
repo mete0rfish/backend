@@ -54,22 +54,21 @@ public class Blueprint extends BaseEntity {
     @OneToMany(mappedBy = "blueprint")
     private List<CartBlueprint> cartBlueprints = new ArrayList<>();
 
-    @OneToMany(mappedBy = "blueprint")
-    private List<OrderBlueprint> orderBlueprints = new ArrayList<>();
-
     @Builder
-    public Blueprint(String creatorName, LocalDateTime saleExpiredDate, Long salePrice, BigInteger hits, String program, String extension, String blueprintDetails, String blueprintImg, Long standardPrice, Long categoryId, String blueprintName, String creatorName, String downloadLink) {
-        this.creatorName = creatorName;
-        this.saleExpiredDate = saleExpiredDate;
-        this.salePrice = salePrice;
-        this.hits = hits;
-        this.program = program;
-        this.extension = extension;
-        this.blueprintDetails = blueprintDetails;
-        this.blueprintImg = blueprintImg;
-        this.standardPrice = standardPrice;
-        this.categoryId = categoryId;
+    public Blueprint(String blueprintName, Long categoryId, Long standardPrice, String blueprintImg, String blueprintDetails, String extension, String program, BigInteger hits, Long salePrice, LocalDateTime saleExpiredDate, String creatorName, String downloadLink, OrderBlueprint orderBlueprint, List<CartBlueprint> cartBlueprints) {
         this.blueprintName = blueprintName;
+        this.categoryId = categoryId;
+        this.standardPrice = standardPrice;
+        this.blueprintImg = blueprintImg;
+        this.blueprintDetails = blueprintDetails;
+        this.extension = extension;
+        this.program = program;
+        this.hits = hits;
+        this.salePrice = salePrice;
+        this.saleExpiredDate = saleExpiredDate;
+        this.creatorName = creatorName;
         this.downloadLink = downloadLink;
+        this.orderBlueprint = orderBlueprint;
+        this.cartBlueprints = cartBlueprints;
     }
 }

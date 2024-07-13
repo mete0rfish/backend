@@ -1,6 +1,7 @@
 package com.onetool.server.blueprint;
 
 import com.onetool.server.blueprint.dto.SearchResponse;
+import com.onetool.server.category.FirstCategoryType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -20,7 +21,7 @@ public class SearchController {
         this.blueprintService = blueprintService;
     }
 
-    @GetMapping("/search")
+    @GetMapping("/blueprint")
     public ResponseEntity searchWithKeyword(
             @RequestParam("s")String keyword,
             @PageableDefault(size = 5, sort = "id", direction = Sort.Direction.DESC)Pageable pageable
@@ -30,4 +31,11 @@ public class SearchController {
         return ResponseEntity.ok().body(response);
     }
 
+    @GetMapping("/blueprint/building")
+    public ResponseEntity searchBuildingCategory(
+            @PageableDefault(size = 5, sort = "id", direction = Sort.Direction.DESC)Pageable pageable
+    ) {
+        Page<SearchResponse> responses = blueprintService.findAllByFirstCategory(FirstCategoryType.CATEGORY_BUILDING, pageable);
+        return ResponseEntity.ok().body(responses);
+    }
 }
