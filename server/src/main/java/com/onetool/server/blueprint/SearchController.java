@@ -20,7 +20,7 @@ public class SearchController {
         this.blueprintService = blueprintService;
     }
 
-    @GetMapping("/search")
+    @GetMapping("/blueprint")
     public ResponseEntity searchWithKeyword(
             @RequestParam("s")String keyword,
             @PageableDefault(size = 5, sort = "id", direction = Sort.Direction.DESC)Pageable pageable
