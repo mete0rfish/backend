@@ -1,6 +1,7 @@
 package com.onetool.server.blueprint;
 
 import com.onetool.server.blueprint.dto.SearchResponse;
+import com.onetool.server.category.FirstCategoryType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -13,19 +14,27 @@ import java.util.stream.Collectors;
 
 @Service
 public class BlueprintService {
-
+    
     private BlueprintRepository blueprintRepository;
 
     public BlueprintService(BlueprintRepository blueprintRepository) {
         this.blueprintRepository = blueprintRepository;
     }
-
-    public Optional<Blueprint> findBlueprintById(Long id) {
+    
+    public Optional<Blueprint> blueprintById(Long id) {
         return blueprintRepository.findById(id);
     }
-
+  
     public Page<SearchResponse> searchNameAndCreatorWithKeyword(String keyword, Pageable pageable) {
         Page<Blueprint> result = blueprintRepository.findAllNameAndCreatorContaining(keyword, pageable);
+        List<SearchResponse> list = result.getContent().stream()
+                .map(SearchResponse::from)
+                .collect(Collectors.toList());
+        return new PageImpl<>(list, pageable, result.getTotalElements());
+    }
+
+    public Page<SearchResponse> findAllByFirstCategory(FirstCategoryType category, Pageable pageable) {
+        Page<Blueprint> result = blueprintRepository.findAllByFirstCategory(category.getType(), pageable);
         List<SearchResponse> list = result.getContent().stream()
                 .map(SearchResponse::from)
                 .collect(Collectors.toList());

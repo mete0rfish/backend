@@ -29,6 +29,7 @@ public class TestDataLoader implements CommandLineRunner {
                         .downloadLink("https://onetool.com/download")
                         .extension(".exe")
                         .blueprintImg("https://s3.bucket.image.com/")
+                        .categoryId(1L)
                         .build()
         );
         final Blueprint blueprint2 = blueprintRepository.save(
@@ -42,6 +43,7 @@ public class TestDataLoader implements CommandLineRunner {
                         .downloadLink("https://onetool.com/download")
                         .extension(".exe")
                         .blueprintImg("https://s3.bucket.image.com/")
+                        .categoryId(2L)
                         .build()
         );
     }
