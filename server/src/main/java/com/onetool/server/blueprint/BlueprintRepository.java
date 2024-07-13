@@ -12,7 +12,7 @@ import java.util.List;
 @Repository
 public interface BlueprintRepository extends JpaRepository<Blueprint, Long> {
 
-    @Query(value = "SELECT b FROM Blueprint b WHERE b.blueprintName LIKE %:keyword% AND b.creatorName LIKE %:keyword%")
+    @Query(value = "SELECT b FROM Blueprint b WHERE b.blueprintName LIKE %:keyword% OR b.creatorName LIKE %:keyword%")
     Page<Blueprint> findAllNameAndCreatorContaining(String keyword, Pageable pageable);
 
 }
