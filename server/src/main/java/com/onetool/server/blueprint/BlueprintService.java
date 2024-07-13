@@ -19,6 +19,10 @@ public class BlueprintService {
         this.blueprintRepository = blueprintRepository;
     }
     
+    public Optional<Blueprint> blueprintById(Long id) {
+        return blueprintRepository.findById(id);
+    }
+  
     public Page<SearchResponse> searchNameAndCreatorWithKeyword(String keyword, Pageable pageable) {
         Page<Blueprint> result = blueprintRepository.findAllNameAndCreatorContaining(keyword, pageable);
         List<SearchResponse> list = result.getContent().stream()

@@ -1,7 +1,8 @@
 package com.onetool.server.blueprint;
 
-import com.onetool.server.category.FirstCategory;
+import com.onetool.server.cart.CartBlueprint;
 import com.onetool.server.global.entity.BaseEntity;
+import com.onetool.server.order.OrderBlueprint;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -10,6 +11,8 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigInteger;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -44,19 +47,29 @@ public class Blueprint extends BaseEntity {
     @Column(name = "download_link")
     private String downloadLink;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "order_blueprint_id")
+    private OrderBlueprint orderBlueprint;
+
+    @OneToMany(mappedBy = "blueprint")
+    private List<CartBlueprint> cartBlueprints = new ArrayList<>();
+
+    @OneToMany(mappedBy = "blueprint")
+    private List<OrderBlueprint> orderBlueprints = new ArrayList<>();
+
     @Builder
-    public Blueprint(String blueprintName, Long categoryId, Long standardPrice, String blueprintImg, String blueprintDetails, String extension, String program, BigInteger hits, Long salePrice, LocalDateTime saleExpiredDate, String creatorName, String downloadLink) {
-        this.blueprintName = blueprintName;
-        this.categoryId = categoryId;
-        this.standardPrice = standardPrice;
-        this.blueprintImg = blueprintImg;
-        this.blueprintDetails = blueprintDetails;
-        this.extension = extension;
-        this.program = program;
-        this.hits = hits;
-        this.salePrice = salePrice;
-        this.saleExpiredDate = saleExpiredDate;
+    public Blueprint(String creatorName, LocalDateTime saleExpiredDate, Long salePrice, BigInteger hits, String program, String extension, String blueprintDetails, String blueprintImg, Long standardPrice, Long categoryId, String blueprintName, String creatorName, String downloadLink) {
         this.creatorName = creatorName;
+        this.saleExpiredDate = saleExpiredDate;
+        this.salePrice = salePrice;
+        this.hits = hits;
+        this.program = program;
+        this.extension = extension;
+        this.blueprintDetails = blueprintDetails;
+        this.blueprintImg = blueprintImg;
+        this.standardPrice = standardPrice;
+        this.categoryId = categoryId;
+        this.blueprintName = blueprintName;
         this.downloadLink = downloadLink;
     }
 }
