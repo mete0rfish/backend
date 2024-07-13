@@ -10,12 +10,13 @@ import lombok.NoArgsConstructor;
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity
+@Entity (name = "order_blueprint")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class OrderBlueprint extends BaseEntity {
 
     @Id
+    @Column(name = "order_blueprint_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
@@ -24,7 +25,7 @@ public class OrderBlueprint extends BaseEntity {
     private List<Blueprint> blueprints = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "order_id")
+    @JoinColumn(name = "orders_id")
     private Orders order;
 
 
