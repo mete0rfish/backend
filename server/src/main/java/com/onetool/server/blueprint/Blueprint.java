@@ -58,7 +58,7 @@ public class Blueprint extends BaseEntity {
     private List<OrderBlueprint> orderBlueprints = new ArrayList<>();
 
     @Builder
-    public Blueprint(String creatorName, LocalDateTime saleExpiredDate, Long salePrice, BigInteger hits, String program, String extension, String blueprintDetails, String blueprintImg, Long standardPrice, Long categoryId, String blueprintName,  String downloadLink) {
+    public Blueprint(String creatorName, LocalDateTime saleExpiredDate, Long salePrice, BigInteger hits, String program, String extension, String blueprintDetails, String blueprintImg, Long standardPrice, Long categoryId, String blueprintName, String downloadLink) {
         this.creatorName = creatorName;
         this.saleExpiredDate = saleExpiredDate;
         this.salePrice = salePrice;

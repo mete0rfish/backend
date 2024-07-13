@@ -29,10 +29,4 @@ public class BlueprintServiceTest {
         Page<SearchResponse> response = blueprintService.searchNameAndCreatorWithKeyword(keyword, pageable);
         assertThat(response.getTotalElements()).isEqualTo(2);
     }
-
-    @DisplayName("도면 상세페이지 조회 확인")
-    @Test
-    void get_blueprint_detail(){
-
-    }
 }
