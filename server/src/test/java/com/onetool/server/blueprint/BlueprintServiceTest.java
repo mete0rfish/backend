@@ -9,16 +9,17 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
-
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @ActiveProfiles("test")
 public class BlueprintServiceTest {
-
+    @Autowired
+    private BlueprintController blueprintController;
     @Autowired
     private BlueprintService blueprintService;
 
@@ -39,5 +40,28 @@ public class BlueprintServiceTest {
         Pageable pageable = PageRequest.of(0, 5);
         Page<SearchResponse> response = blueprintService.findAllByFirstCategory(type, pageable);
         assertThat(response.getTotalElements()).isEqualTo(1);
+    }
+
+    @DisplayName("blueprint id를 통해 상세 정보 조회가 되는지 확인")
+    @Test
+    public void testGetBlueprintDetails() {
+        Long blueprintId = 1L;
+
+        ResponseEntity<Blueprint> response = blueprintController.getBlueprintDetails(blueprintId);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody()).isNotNull();
+
+        Blueprint responseBody = response.getBody();
+        assertThat(responseBody.getBlueprintName()).isEqualTo("대한민국 마을");
+        assertThat(responseBody.getBlueprintDetails()).isEqualTo("대한민국의 어느 마을의 청사진입니다.");
+        assertThat(responseBody.getCreatorName()).isEqualTo("윤성원 작가");
+        assertThat(responseBody.getStandardPrice()).isEqualTo(50000L);
+        assertThat(responseBody.getSalePrice()).isEqualTo(40000L);
+        assertThat(responseBody.getProgram()).isEqualTo("CAD");
+        assertThat(responseBody.getDownloadLink()).isEqualTo("https://onetool.com/download");
+        assertThat(responseBody.getExtension()).isEqualTo(".exe");
+        assertThat(responseBody.getBlueprintImg()).isEqualTo("https://s3.bucket.image.com/");
+        assertThat(responseBody.getCategoryId()).isEqualTo(1L);
     }
 }

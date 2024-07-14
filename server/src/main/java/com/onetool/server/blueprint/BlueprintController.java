@@ -16,7 +16,7 @@ public class BlueprintController {
 
     @GetMapping("/blueprint/{id}") // 도면 상세 조회
     public ResponseEntity<Blueprint> getBlueprintDetails(@PathVariable Long id) {
-        Optional<Blueprint> blueprint = blueprintService.blueprintById(id);
+        Optional<Blueprint> blueprint = blueprintService.findBlueprintById(id);
         return blueprint.map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }

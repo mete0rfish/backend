@@ -21,7 +21,7 @@ public class BlueprintService {
         this.blueprintRepository = blueprintRepository;
     }
     
-    public Optional<Blueprint> blueprintById(Long id) {
+    public Optional<Blueprint> findBlueprintById(Long id) {
         return blueprintRepository.findById(id);
     }
   
