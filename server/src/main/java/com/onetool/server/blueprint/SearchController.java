@@ -38,4 +38,44 @@ public class SearchController {
         Page<SearchResponse> responses = blueprintService.findAllByFirstCategory(FirstCategoryType.CATEGORY_BUILDING, pageable);
         return ResponseEntity.ok().body(responses);
     }
+
+    @GetMapping("/blueprint/civil")
+    public ResponseEntity searchCivilCategory(
+            @PageableDefault(size = 5, sort = "id", direction = Sort.Direction.DESC)Pageable pageable
+    ) {
+        Page<SearchResponse> responses = blueprintService.findAllByFirstCategory(FirstCategoryType.CATEGORY_CIVIL, pageable);
+        return ResponseEntity.ok().body(responses);
+    }
+
+    @GetMapping("/blueprint/interior")
+    public ResponseEntity searchInteriorCategory(
+            @PageableDefault(size = 5, sort = "id", direction = Sort.Direction.DESC)Pageable pageable
+    ) {
+        Page<SearchResponse> responses = blueprintService.findAllByFirstCategory(FirstCategoryType.CATEGORY_INTERIOR, pageable);
+        return ResponseEntity.ok().body(responses);
+    }
+    @GetMapping("/blueprint/machine")
+    public ResponseEntity searchMachineCategory(
+            @PageableDefault(size = 5, sort = "id", direction = Sort.Direction.DESC)Pageable pageable
+    ) {
+        Page<SearchResponse> responses = blueprintService.findAllByFirstCategory(FirstCategoryType.CATEGORY_MACHINE, pageable);
+        return ResponseEntity.ok().body(responses);
+    }
+
+    @GetMapping("/blueprint/electric")
+    public ResponseEntity searchElectricCategory(
+            @PageableDefault(size = 5, sort = "id", direction = Sort.Direction.DESC)Pageable pageable
+    ) {
+        Page<SearchResponse> responses = blueprintService.findAllByFirstCategory(FirstCategoryType.CATEGORY_ELECTRIC, pageable);
+        return ResponseEntity.ok().body(responses);
+    }
+
+    @GetMapping("/blueprint/etc")
+    public ResponseEntity searchEtcCategory(
+            @PageableDefault(size = 5, sort = "id", direction = Sort.Direction.DESC)Pageable pageable
+    ) {
+        Page<SearchResponse> responses = blueprintService.findAllByFirstCategory(FirstCategoryType.CATEGORY_ETC, pageable);
+        return ResponseEntity.ok().body(responses);
+    }
+
 }
