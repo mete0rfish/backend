@@ -78,4 +78,13 @@ public class SearchController {
         return ResponseEntity.ok().body(responses);
     }
 
+    @GetMapping("/blueprint/building")
+    public ResponseEntity searchSecondCategoryOfBuilding(
+            @RequestParam String category,
+            @PageableDefault(size = 5, sort = "id", direction = Sort.Direction.DESC)Pageable pageable
+    ) {
+        Page<SearchResponse> responses = blueprintService.findAllBySecondCategory(
+                FirstCategoryType.CATEGORY_BUILDING, category, pageable);
+        return ResponseEntity.ok().body(responses);
+    }
 }
