@@ -1,17 +1,18 @@
 package com.onetool.server.global.auth.jwt;
 
 import com.onetool.server.global.auth.AuthorizationProvider;
-import com.onetool.server.global.auth.UserAuthContext;
-import com.onetool.server.global.auth.UserCredential;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
+import com.onetool.server.global.auth.MemberAuthContext;
+import com.onetool.server.global.auth.MemberCredential;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
 
+@Slf4j
 @Component
 public class JwtUtil implements AuthorizationProvider {
 
@@ -30,7 +31,7 @@ public class JwtUtil implements AuthorizationProvider {
     }
 
     @Override
-    public UserCredential create(UserAuthContext context) {
+    public MemberCredential create(MemberAuthContext context) {
         Date now = new Date();
         Date validity = new Date(now.getTime() + expirationMilliSec);
 
@@ -41,19 +42,36 @@ public class JwtUtil implements AuthorizationProvider {
                 .setExpiration(validity)
                 .signWith(Keys.hmacShaKeyFor(secretKey.getBytes()))
                 .compact();
-        return new UserCredential(tokenValue);
+        return new MemberCredential(tokenValue);
     }
 
     @Override
-    public UserAuthContext parseCredential(UserCredential token) {
+    public MemberAuthContext parseCredential(MemberCredential token) {
         Claims claims = Jwts.parserBuilder()
                 .setSigningKey(Keys.hmacShaKeyFor(Decoders.BASE64URL.decode(secretKey)))
                 .build()
                 .parseClaimsJws(token.authorization())
                 .getBody();
-        return new UserAuthContext(
+        return new MemberAuthContext(
                 claims.get(USER_NAME, String.class),
                 claims.get(USER_ROLE, String.class)
         );
+    }
+
+    @Override
+    public boolean validateToken(String token) {
+        try{
+            Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(token);
+            return true;
+        } catch(io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
+            log.info("Invalid JWT Token", e);
+        } catch (ExpiredJwtException e) {
+            log.info("Expired JWT Token", e);
+        } catch (UnsupportedJwtException e) {
+            log.info("Unsupported JWT Token", e);
+        } catch (IllegalArgumentException e) {
+            log.info("JWT claims string is empty.", e);
+        }
+        return false;
     }
 }

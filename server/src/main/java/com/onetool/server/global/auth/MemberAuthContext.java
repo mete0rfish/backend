@@ -1,6 +1,6 @@
 package com.onetool.server.global.auth;
 
-public record UserAuthContext(
+public record MemberAuthContext(
         String name,
         String role
 ) {

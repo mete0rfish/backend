@@ -1,6 +1,7 @@
 package com.onetool.server.global.auth;
 
 public interface AuthorizationProvider {
-    UserCredential create(UserAuthContext user);
-    UserAuthContext parseCredential(UserCredential token);
+    MemberCredential create(MemberAuthContext user);
+    MemberAuthContext parseCredential(MemberCredential token);
+    boolean validateToken(String token);
 }

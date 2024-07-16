@@ -1,6 +1,6 @@
 package com.onetool.server.global.auth;
 
-public record UserCredential(
+public record MemberCredential(
         String authorization
 ) {
 }
