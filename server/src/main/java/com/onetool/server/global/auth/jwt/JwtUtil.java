@@ -10,6 +10,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.security.Key;
+import java.time.ZonedDateTime;
 import java.util.Date;
 
 @Slf4j
@@ -19,49 +21,50 @@ public class JwtUtil implements AuthorizationProvider {
     private static final String USER_NAME = "name";
     private static final String USER_ROLE = "role";
 
-    private final String secretKey;
+    private final Key key;
     private final Long expirationMilliSec;
 
     public JwtUtil(
             @Value("${onetool.jwt.secrekey}") String secretKey,
             @Value("${onetool.jwt.expiration_time}") Long expirationMilliSec
     ) {
-        this.secretKey = secretKey;
+        byte[] keyBytes = Decoders.BASE64.decode(secretKey);
+        this.key = Keys.hmacShaKeyFor(keyBytes);
         this.expirationMilliSec = expirationMilliSec;
     }
 
     @Override
-    public MemberCredential create(MemberAuthContext context) {
-        Date now = new Date();
-        Date validity = new Date(now.getTime() + expirationMilliSec);
+    public String create(MemberAuthContext context) {
+        Claims claims = Jwts.claims();
+        claims.put("memberId", context.getId());
+        claims.put("email", context.getEmail());
+        claims.put("role", context.getRole());
 
-        String tokenValue = Jwts.builder()
-                .claim(USER_NAME, context.name())
-                .claim(USER_ROLE, context.role())
-                .setIssuedAt(now)
-                .setExpiration(validity)
-                .signWith(Keys.hmacShaKeyFor(secretKey.getBytes()))
+        ZonedDateTime now = ZonedDateTime.now();
+        ZonedDateTime tokenValidity = now.plusSeconds(expirationMilliSec);
+
+
+        return Jwts.builder()
+                .setClaims(claims)
+                .setIssuedAt(Date.from(now.toInstant()))
+                .setExpiration(Date.from(tokenValidity.toInstant()))
+                .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
-        return new MemberCredential(tokenValue);
     }
 
     @Override
-    public MemberAuthContext parseCredential(MemberCredential token) {
-        Claims claims = Jwts.parserBuilder()
-                .setSigningKey(Keys.hmacShaKeyFor(Decoders.BASE64URL.decode(secretKey)))
-                .build()
-                .parseClaimsJws(token.authorization())
-                .getBody();
-        return new MemberAuthContext(
-                claims.get(USER_NAME, String.class),
-                claims.get(USER_ROLE, String.class)
-        );
+    public Claims parseClaims(String token) {
+        try {
+            return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
+        } catch (ExpiredJwtException e) {
+            return e.getClaims();
+        }
     }
 
     @Override
     public boolean validateToken(String token) {
         try{
-            Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(token);
+            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
             return true;
         } catch(io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
             log.info("Invalid JWT Token", e);
@@ -73,5 +76,10 @@ public class JwtUtil implements AuthorizationProvider {
             log.info("JWT claims string is empty.", e);
         }
         return false;
+    }
+
+    @Override
+    public Long getUserId(String token) {
+        return parseClaims(token).get("memberId", Long.class);
     }
 }

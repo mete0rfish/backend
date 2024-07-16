@@ -15,28 +15,28 @@ INSERT INTO second_category (id, first_category_id, name)
 
 # 토목
 INSERT INTO second_category (id, first_category_id, name)
-    VALUE (1, 2, '도로');
+    VALUE (3, 2, '도로');
 INSERT INTO second_category (id, first_category_id, name)
-    VALUE (2, 2, '교량');
+    VALUE (4, 2, '교량');
 INSERT INTO second_category (id, first_category_id, name)
-    VALUE (3, 2, '터널');
+    VALUE (5, 2, '터널');
 INSERT INTO second_category (id, first_category_id, name)
-    VALUE (4, 2, '댐/수자원');
+    VALUE (6, 2, '댐/수자원');
 
 # 인테리어
 INSERT INTO second_category (id, first_category_id, name)
-    VALUE (1, 3, '주거');
+    VALUE (7, 3, '주거');
 INSERT INTO second_category (id, first_category_id, name)
-    VALUE (2, 3, '상업');
+    VALUE (8, 3, '상업');
 INSERT INTO second_category (id, first_category_id, name)
-    VALUE (3, 3, '가구/집기');
+    VALUE (9, 3, '가구/집기');
 
 # 기계
 INSERT INTO second_category (id, first_category_id, name)
-    VALUE (1, 4, '기계부품');
+    VALUE (10, 4, '기계부품');
 INSERT INTO second_category (id, first_category_id, name)
-    VALUE (2, 4, '설비');
+    VALUE (11, 4, '설비');
 
 # 전기
 INSERT INTO second_category (id, first_category_id, name)
-    VALUE (1, 5, '전기');
+    VALUE (12, 5, '전기');

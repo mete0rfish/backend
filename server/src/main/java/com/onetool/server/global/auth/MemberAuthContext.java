@@ -1,7 +1,18 @@
 package com.onetool.server.global.auth;
 
-public record MemberAuthContext(
-        String name,
-        String role
-) {
+import lombok.*;
+
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
+@Builder
+public class MemberAuthContext {
+    private Long id;
+    private String name;
+    private String role;
+    private String email;
+    private String password;
 }

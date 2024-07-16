@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-@RestController("/users")
+@Controller
 public class MemberController {
 
     private final MemberService memberService;
@@ -19,7 +19,7 @@ public class MemberController {
         this.memberService = memberService;
     }
 
-    @PostMapping("login")
+    @PostMapping("/users/login")
     public ResponseEntity<String> login(
             @Valid @RequestBody LoginRequest request
     ) {

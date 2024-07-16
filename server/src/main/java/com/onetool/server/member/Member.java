@@ -17,7 +17,7 @@ import java.util.List;
 
 @Entity
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 public class Member extends BaseEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
@@ -37,7 +37,7 @@ public class Member extends BaseEntity {
     @Column(name = "phone_num") @NotNull @Size(min = 10, max = 11)
     private String phoneNum;
 
-    @Column(name = "role") @ColumnDefault("'회원'")
+    @Column(name = "user_role")
     @Enumerated(EnumType.STRING)
     private UserRole role;
 
@@ -60,7 +60,7 @@ public class Member extends BaseEntity {
     private Cart cart;
 
     @Builder
-    private Member(String password, String email, String name, LocalDate birthDate, String phoneNum, UserRole role, String field, boolean isNative, boolean serviceAccept, String platformType, List<QnaBoard> qnaBoards, Cart cart) {
+    public Member(String password, String email, String name, LocalDate birthDate, String phoneNum, UserRole role, String field, boolean isNative, boolean serviceAccept, String platformType, List<QnaBoard> qnaBoards, Cart cart) {
         this.password = password;
         this.email = email;
         this.name = name;
@@ -74,10 +74,4 @@ public class Member extends BaseEntity {
         this.qnaBoards = qnaBoards;
         this.cart = cart;
     }
-    // TODO builder패턴 완성하기
-    /*    public static Member createMember(MemberRequest reuqest){
-            return Member.builder()
-                    .
-        }
-    */
 }
