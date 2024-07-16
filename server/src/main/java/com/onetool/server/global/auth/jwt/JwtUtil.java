@@ -2,7 +2,6 @@ package com.onetool.server.global.auth.jwt;
 
 import com.onetool.server.global.auth.AuthorizationProvider;
 import com.onetool.server.global.auth.MemberAuthContext;
-import com.onetool.server.global.auth.MemberCredential;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;

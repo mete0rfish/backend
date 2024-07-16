@@ -1,7 +1,6 @@
 package com.onetool.server.member;
 
 import com.onetool.server.global.auth.MemberAuthContext;
-import com.onetool.server.global.auth.MemberCredential;
 import com.onetool.server.global.auth.jwt.JwtUtil;
 import com.onetool.server.global.exception.MemberNotFoundException;
 import com.onetool.server.member.dto.LoginRequest;
