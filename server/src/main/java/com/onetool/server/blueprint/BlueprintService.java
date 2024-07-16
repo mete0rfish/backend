@@ -7,7 +7,6 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -35,6 +34,15 @@ public class BlueprintService {
 
     public Page<SearchResponse> findAllByFirstCategory(FirstCategoryType category, Pageable pageable) {
         Page<Blueprint> result = blueprintRepository.findAllByFirstCategory(category.getType(), pageable);
+        List<SearchResponse> list = result.getContent().stream()
+                .map(SearchResponse::from)
+                .collect(Collectors.toList());
+        return new PageImpl<>(list, pageable, result.getTotalElements());
+    }
+
+    public Page<SearchResponse> findAllBySecondCategory(FirstCategoryType firstCategory, String secondCategory, Pageable pageable) {
+        Page<Blueprint> result = blueprintRepository.findAllBySecondCategory(
+                firstCategory.getType(), secondCategory, pageable);
         List<SearchResponse> list = result.getContent().stream()
                 .map(SearchResponse::from)
                 .collect(Collectors.toList());
