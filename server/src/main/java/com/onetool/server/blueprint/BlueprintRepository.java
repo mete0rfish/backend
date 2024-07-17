@@ -21,4 +21,7 @@ public interface BlueprintRepository extends JpaRepository<Blueprint, Long> {
             "(SELECT f.id FROM FirstCategory f WHERE f.id = " +
             "(SELECT s.id FROM SecondCategory s WHERE s.name  = :secondCategory))")
     Page<Blueprint> findAllBySecondCategory(String firstCategory, String secondCategory, Pageable pageable);
+
+    @Query(value = "SELECT count(*) FROM Blueprint b")
+    Long countAllBlueprint();
 }
