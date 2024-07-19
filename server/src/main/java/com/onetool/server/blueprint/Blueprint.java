@@ -46,6 +46,8 @@ public class Blueprint extends BaseEntity {
     private String creatorName;
     @Column(name = "download_link")
     private String downloadLink;
+    @Column(name = "second_category")
+    private String secondCategory;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_blueprint_id")
@@ -55,7 +57,8 @@ public class Blueprint extends BaseEntity {
     private List<CartBlueprint> cartBlueprints = new ArrayList<>();
 
     @Builder
-    public Blueprint(String blueprintName, Long categoryId, Long standardPrice, String blueprintImg, String blueprintDetails, String extension, String program, BigInteger hits, Long salePrice, LocalDateTime saleExpiredDate, String creatorName, String downloadLink, OrderBlueprint orderBlueprint, List<CartBlueprint> cartBlueprints) {
+    public Blueprint(Long id, String blueprintName, Long categoryId, Long standardPrice, String blueprintImg, String blueprintDetails, String extension, String program, BigInteger hits, Long salePrice, LocalDateTime saleExpiredDate, String creatorName, String downloadLink, String secondCategory, OrderBlueprint orderBlueprint, List<CartBlueprint> cartBlueprints) {
+        this.id = id;
         this.blueprintName = blueprintName;
         this.categoryId = categoryId;
         this.standardPrice = standardPrice;
@@ -68,6 +71,7 @@ public class Blueprint extends BaseEntity {
         this.saleExpiredDate = saleExpiredDate;
         this.creatorName = creatorName;
         this.downloadLink = downloadLink;
+        this.secondCategory = secondCategory;
         this.orderBlueprint = orderBlueprint;
         this.cartBlueprints = cartBlueprints;
     }
