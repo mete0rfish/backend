@@ -47,32 +47,56 @@ public class SearchController {
 
     @GetMapping("/blueprint/civil")
     public ResponseEntity searchCivilCategory(
-            @PageableDefault(size = 5, sort = "id", direction = Sort.Direction.DESC)Pageable pageable
+            @PageableDefault(size = 5, sort = "id", direction = Sort.Direction.DESC)Pageable pageable,
+            @RequestParam(required = false) String category
     ) {
-        Page<SearchResponse> responses = blueprintService.findAllByFirstCategory(FirstCategoryType.CATEGORY_CIVIL, pageable);
+        Page<SearchResponse> responses;
+        if(category.isEmpty()) {
+            responses = blueprintService.findAllByFirstCategory(FirstCategoryType.CATEGORY_CIVIL, pageable);
+        } else {
+            responses = blueprintService.findAllBySecondCategory(FirstCategoryType.CATEGORY_CIVIL, category, pageable);
+        }
         return ResponseEntity.ok().body(responses);
     }
 
     @GetMapping("/blueprint/interior")
     public ResponseEntity searchInteriorCategory(
-            @PageableDefault(size = 5, sort = "id", direction = Sort.Direction.DESC)Pageable pageable
+            @PageableDefault(size = 5, sort = "id", direction = Sort.Direction.DESC)Pageable pageable,
+            @RequestParam(required = false) String category
     ) {
-        Page<SearchResponse> responses = blueprintService.findAllByFirstCategory(FirstCategoryType.CATEGORY_INTERIOR, pageable);
+        Page<SearchResponse> responses;
+        if(category.isEmpty()) {
+            responses = blueprintService.findAllByFirstCategory(FirstCategoryType.CATEGORY_INTERIOR, pageable);
+        } else {
+            responses = blueprintService.findAllBySecondCategory(FirstCategoryType.CATEGORY_INTERIOR, category, pageable);
+        }
         return ResponseEntity.ok().body(responses);
     }
     @GetMapping("/blueprint/machine")
     public ResponseEntity searchMachineCategory(
-            @PageableDefault(size = 5, sort = "id", direction = Sort.Direction.DESC)Pageable pageable
+            @PageableDefault(size = 5, sort = "id", direction = Sort.Direction.DESC)Pageable pageable,
+            @RequestParam(required = false) String category
     ) {
-        Page<SearchResponse> responses = blueprintService.findAllByFirstCategory(FirstCategoryType.CATEGORY_MACHINE, pageable);
+        Page<SearchResponse> responses;
+        if(category.isEmpty()) {
+            responses = blueprintService.findAllByFirstCategory(FirstCategoryType.CATEGORY_INTERIOR, pageable);
+        } else {
+            responses = blueprintService.findAllBySecondCategory(FirstCategoryType.CATEGORY_INTERIOR, category, pageable);
+        }
         return ResponseEntity.ok().body(responses);
     }
 
     @GetMapping("/blueprint/electric")
     public ResponseEntity searchElectricCategory(
-            @PageableDefault(size = 5, sort = "id", direction = Sort.Direction.DESC)Pageable pageable
+            @PageableDefault(size = 5, sort = "id", direction = Sort.Direction.DESC)Pageable pageable,
+            @RequestParam(required = false) String category
     ) {
-        Page<SearchResponse> responses = blueprintService.findAllByFirstCategory(FirstCategoryType.CATEGORY_ELECTRIC, pageable);
+        Page<SearchResponse> responses;
+        if(category.isEmpty()) {
+            responses = blueprintService.findAllByFirstCategory(FirstCategoryType.CATEGORY_INTERIOR, pageable);
+        } else {
+            responses = blueprintService.findAllBySecondCategory(FirstCategoryType.CATEGORY_INTERIOR, category, pageable);
+        }
         return ResponseEntity.ok().body(responses);
     }
 

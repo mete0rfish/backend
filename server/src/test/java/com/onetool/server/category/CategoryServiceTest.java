@@ -29,4 +29,27 @@ public class CategoryServiceTest {
         Page<SearchResponse> response = blueprintService.findAllByFirstCategory(type, pageable);
         assertThat(response.getTotalElements()).isEqualTo(1);
     }
+
+    @DisplayName("building 카테고리의 세부 카테고리의 도면을 검색한다.")
+    @Test
+    void search_second_category_building() {
+        FirstCategoryType type = FirstCategoryType.CATEGORY_BUILDING;
+        String second = "주거";
+
+        Pageable pageable = PageRequest.of(0, 5);
+        Page<SearchResponse> response = blueprintService.findAllBySecondCategory(type, second, pageable);
+        assertThat(response.getTotalElements()).isEqualTo(1);
+    }
+
+    @DisplayName("civil 카테고리의 세부 카테고리의 도면을 검색한다.")
+    @Test
+    void search_second_category_civil() {
+        FirstCategoryType type = FirstCategoryType.CATEGORY_CIVIL;
+        String second = "공공";
+
+        Pageable pageable = PageRequest.of(0, 5);
+        Page<SearchResponse> response = blueprintService.findAllBySecondCategory(type, second, pageable);
+        assertThat(response.getTotalElements()).isEqualTo(1);
+    }
+
 }
