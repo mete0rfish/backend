@@ -33,9 +33,15 @@ public class SearchController {
 
     @GetMapping("/blueprint/building")
     public ResponseEntity searchBuildingCategory(
-            @PageableDefault(size = 5, sort = "id", direction = Sort.Direction.DESC)Pageable pageable
+            @PageableDefault(size = 5, sort = "id", direction = Sort.Direction.DESC)Pageable pageable,
+            @RequestParam(required = false) String category
     ) {
-        Page<SearchResponse> responses = blueprintService.findAllByFirstCategory(FirstCategoryType.CATEGORY_BUILDING, pageable);
+        Page<SearchResponse> responses;
+        if(category.isEmpty()){
+            responses = blueprintService.findAllByFirstCategory(FirstCategoryType.CATEGORY_BUILDING, pageable);
+        } else {
+            responses = blueprintService.findAllBySecondCategory(FirstCategoryType.CATEGORY_BUILDING, category, pageable);
+        }
         return ResponseEntity.ok().body(responses);
     }
 
@@ -77,14 +83,4 @@ public class SearchController {
         Page<SearchResponse> responses = blueprintService.findAllByFirstCategory(FirstCategoryType.CATEGORY_ETC, pageable);
         return ResponseEntity.ok().body(responses);
     }
-
-//    @GetMapping("/blueprint/building")
-//    public ResponseEntity searchSecondCategoryOfBuilding(
-//            @RequestParam String category,
-//            @PageableDefault(size = 5, sort = "id", direction = Sort.Direction.DESC)Pageable pageable
-//    ) {
-//        Page<SearchResponse> responses = blueprintService.findAllBySecondCategory(
-//                FirstCategoryType.CATEGORY_BUILDING, category, pageable);
-//        return ResponseEntity.ok().body(responses);
-//    }
 }
