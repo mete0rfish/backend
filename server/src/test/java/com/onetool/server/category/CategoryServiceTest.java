@@ -52,4 +52,24 @@ public class CategoryServiceTest {
         assertThat(response.getTotalElements()).isEqualTo(1);
     }
 
+    @DisplayName("interior 카테고리의 세부 카테고리의 도면을 검색한다.")
+    @Test
+    void search_second_category_interior() {
+        FirstCategoryType type = FirstCategoryType.CATEGORY_INTERIOR;
+        String second = "도로";
+
+        Pageable pageable = PageRequest.of(0, 5);
+        Page<SearchResponse> response = blueprintService.findAllBySecondCategory(type, second, pageable);
+        assertThat(response.getTotalElements()).isEqualTo(1);
+    }
+    @DisplayName("civil 카테고리의 세부 카테고리의 도면을 검색한다.")
+    @Test
+    void search_first_category_interior() {
+        FirstCategoryType type = FirstCategoryType.CATEGORY_INTERIOR;
+
+        Pageable pageable = PageRequest.of(0, 5);
+        Page<SearchResponse> response = blueprintService.findAllByFirstCategory(type, pageable);
+        assertThat(response.getTotalElements()).isEqualTo(1);
+    }
+
 }
