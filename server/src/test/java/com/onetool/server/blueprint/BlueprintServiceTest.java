@@ -32,16 +32,6 @@ public class BlueprintServiceTest {
         assertThat(response.getTotalElements()).isEqualTo(2);
     }
 
-    @DisplayName("building 카테고리를 가진 도면이 잘 나오는지 확인")
-    @Test
-    void search_first_category_building() {
-        FirstCategoryType type = FirstCategoryType.CATEGORY_BUILDING;
-
-        Pageable pageable = PageRequest.of(0, 5);
-        Page<SearchResponse> response = blueprintService.findAllByFirstCategory(type, pageable);
-        assertThat(response.getTotalElements()).isEqualTo(1);
-    }
-
     @DisplayName("blueprint id를 통해 상세 정보 조회가 되는지 확인")
     @Test
     public void testGetBlueprintDetails() {

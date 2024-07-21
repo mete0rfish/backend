@@ -18,7 +18,7 @@ public class TestDataLoader implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        final Blueprint blueprint1 = blueprintRepository.save(
+        final Blueprint building1 = blueprintRepository.save(
                 Blueprint.builder()
                         .blueprintName("대한민국 마을")
                         .blueprintDetails("대한민국의 어느 마을의 청사진입니다.")
@@ -30,9 +30,70 @@ public class TestDataLoader implements CommandLineRunner {
                         .extension(".exe")
                         .blueprintImg("https://s3.bucket.image.com/")
                         .categoryId(1L)
+                        .secondCategory("주거")
                         .build()
         );
-        final Blueprint blueprint2 = blueprintRepository.save(
+        final Blueprint civil1 = blueprintRepository.save(
+                Blueprint.builder()
+                        .blueprintName("일본 마을")
+                        .blueprintDetails("일본의 어느 마을의 청사진입니다.")
+                        .creatorName("성원 작가")
+                        .standardPrice(20000L)
+                        .salePrice(8000L)
+                        .program("CAD")
+                        .downloadLink("https://onetool.com/download")
+                        .extension(".exe")
+                        .secondCategory("공공")
+                        .blueprintImg("https://s3.bucket.image.com/")
+                        .categoryId(2L)
+                        .build()
+        );
+        final Blueprint interior1 = blueprintRepository.save(
+                Blueprint.builder()
+                        .blueprintName("일본 마을")
+                        .blueprintDetails("일본의 어느 마을의 청사진입니다.")
+                        .creatorName("성원 작가")
+                        .standardPrice(20000L)
+                        .salePrice(8000L)
+                        .program("CAD")
+                        .downloadLink("https://onetool.com/download")
+                        .extension(".exe")
+                        .secondCategory("도로")
+                        .blueprintImg("https://s3.bucket.image.com/")
+                        .categoryId(3L)
+                        .build()
+        );
+        final Blueprint machine1 = blueprintRepository.save(
+                Blueprint.builder()
+                        .blueprintName("일본 마을")
+                        .blueprintDetails("일본의 어느 마을의 청사진입니다.")
+                        .creatorName("성원 작가")
+                        .standardPrice(20000L)
+                        .salePrice(8000L)
+                        .program("CAD")
+                        .downloadLink("https://onetool.com/download")
+                        .extension(".exe")
+                        .secondCategory("기계부품")
+                        .blueprintImg("https://s3.bucket.image.com/")
+                        .categoryId(4L)
+                        .build()
+        );
+        final Blueprint electric1 = blueprintRepository.save(
+                Blueprint.builder()
+                        .blueprintName("일본 마을")
+                        .blueprintDetails("일본의 어느 마을의 청사진입니다.")
+                        .creatorName("성원 작가")
+                        .standardPrice(20000L)
+                        .salePrice(8000L)
+                        .program("CAD")
+                        .downloadLink("https://onetool.com/download")
+                        .extension(".exe")
+                        .secondCategory("전기")
+                        .blueprintImg("https://s3.bucket.image.com/")
+                        .categoryId(5L)
+                        .build()
+        );
+        final Blueprint etc1 = blueprintRepository.save(
                 Blueprint.builder()
                         .blueprintName("일본 마을")
                         .blueprintDetails("일본의 어느 마을의 청사진입니다.")
@@ -43,7 +104,7 @@ public class TestDataLoader implements CommandLineRunner {
                         .downloadLink("https://onetool.com/download")
                         .extension(".exe")
                         .blueprintImg("https://s3.bucket.image.com/")
-                        .categoryId(2L)
+                        .categoryId(6L)
                         .build()
         );
     }
