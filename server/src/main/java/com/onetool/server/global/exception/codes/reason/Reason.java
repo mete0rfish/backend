@@ -1,4 +1,4 @@
-package com.example.exception.common.reason;
+package com.onetool.server.global.exception.codes.reason;
 
 import lombok.*;
 import org.springframework.http.HttpStatus;

@@ -1,6 +1,6 @@
 package com.onetool.server.global.exception.codes;
 
-import com.example.exception.common.reason.Reason;
+import com.onetool.server.global.exception.codes.reason.Reason;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
