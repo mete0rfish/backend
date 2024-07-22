@@ -1,9 +1,9 @@
-package com.example.exception.common;
+package com.onetool.server.global.exception;
 
-import com.example.exception.common.codes.SuccessCode;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.onetool.server.global.exception.codes.SuccessCode;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

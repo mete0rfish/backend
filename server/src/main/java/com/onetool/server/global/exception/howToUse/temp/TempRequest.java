@@ -1,4 +1,4 @@
-package com.example.exception.temp;
+package com.onetool.server.global.exception.howToUse.temp;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

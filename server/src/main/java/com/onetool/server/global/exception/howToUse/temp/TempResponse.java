@@ -1,4 +1,4 @@
-package com.example.exception.temp;
+package com.onetool.server.global.exception.howToUse.temp;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
