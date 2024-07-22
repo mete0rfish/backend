@@ -1,11 +1,11 @@
 package com.onetool.server.global.handler;
 
-import static com.example.exception.common.reason.Reason.*;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.onetool.server.global.exception.BaseException;
 import com.onetool.server.global.exception.BaseResponse;
 import com.onetool.server.global.exception.codes.ErrorCode;
+import com.onetool.server.global.exception.codes.reason.Reason;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -56,7 +56,7 @@ public class ExceptionAdvice {
      */
     @ExceptionHandler(BaseException.class)
     public ResponseEntity<Object> onThrowException(BaseException generalException) {
-        ReasonDto errorReasonHttpStatus = generalException.getErrorReasonHttpStatus();
+        Reason.ReasonDto errorReasonHttpStatus = generalException.getErrorReasonHttpStatus();
         BaseResponse<?> baseResponse = BaseResponse.onFailure(errorReasonHttpStatus.getCode(), errorReasonHttpStatus.getMessage(), null);
         return handleExceptionInternal(baseResponse);
     }

@@ -1,6 +1,6 @@
 package com.onetool.server.global.exception.codes;
 
-import com.example.exception.common.reason.Reason;
+import com.onetool.server.global.exception.codes.reason.Reason;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
@@ -73,6 +73,10 @@ public enum ErrorCode implements BaseCode {
     EMAIL_NOT_FOUND(HttpStatus.NOT_FOUND, "LOGIN-0001", "이메일이 잘못됨"),
     BAD_REQUEST(HttpStatus.BAD_REQUEST, "COMMON-0000", "잘못된 요청입니다."),
     EXIST_EMAIL(HttpStatus.BAD_REQUEST, "COMMON-0002", "이미 존재하는 회원입니다."),
+
+
+    //Qna 에러
+    NO_QNA(HttpStatus.NO_CONTENT, "QNA-0000", "게시된 문의사항이 없습니다."),
     /*
     *
     *

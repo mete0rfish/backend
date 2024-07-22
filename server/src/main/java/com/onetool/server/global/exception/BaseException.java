@@ -1,7 +1,6 @@
 package com.onetool.server.global.exception;
-
-import com.example.exception.common.reason.Reason.*;
 import com.onetool.server.global.exception.codes.BaseCode;
+import com.onetool.server.global.exception.codes.reason.Reason;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -11,7 +10,7 @@ public class BaseException extends RuntimeException {
 
     private BaseCode code;
 
-    public ReasonDto getErrorReasonHttpStatus(){
+    public Reason.ReasonDto getErrorReasonHttpStatus(){
         return this.code.getReasonHttpStatus();
     }
 }
