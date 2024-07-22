@@ -1,16 +1,18 @@
-package com.example.exception.service;
+package com.onetool.server.global.exception.howToUse.service;
 
-import static com.example.exception.common.codes.ErrorCode.*;
-import com.example.exception.handler.MyExceptionHandler;
-import com.example.exception.temp.TempRequest.*;
+import com.onetool.server.global.exception.howToUse.temp.TempRequest;
+import com.onetool.server.global.handler.MyExceptionHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
+import static com.onetool.server.global.exception.codes.ErrorCode.EXIST_EMAIL;
+import static com.onetool.server.global.exception.codes.ErrorCode.SEARCH_KEYWORD_TOO_SHORT;
 
 @Service
 @Slf4j
 public class TempServiceImpl implements TempService {
 
-    public String logic(TempLoginRequest data) {
+    public String logic(TempRequest.TempLoginRequest data) {
         log.info("service in");
         errorCheck(data);
         return "아 시발 하기 싫어";
@@ -28,7 +30,7 @@ public class TempServiceImpl implements TempService {
             throw new MyExceptionHandler(SEARCH_KEYWORD_TOO_SHORT);
     }
 
-    public void errorCheck(TempLoginRequest data) {
+    public void errorCheck(TempRequest.TempLoginRequest data) {
         if(data.getPassword().equals("1234")){
             throw new MyExceptionHandler(EXIST_EMAIL);
         }

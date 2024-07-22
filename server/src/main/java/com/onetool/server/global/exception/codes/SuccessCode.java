@@ -1,4 +1,4 @@
-package com.example.exception.common.codes;
+package com.onetool.server.global.exception.codes;
 
 import com.example.exception.common.reason.Reason;
 import lombok.AllArgsConstructor;

@@ -1,11 +1,11 @@
-package com.example.exception.controller;
+package com.onetool.server.global.exception.howToUse;
 
-import com.example.exception.common.BaseResponse;
-import com.example.exception.service.TempService;
+import com.onetool.server.global.exception.BaseResponse;
+import com.onetool.server.global.exception.howToUse.service.TempService;
+import com.onetool.server.global.exception.howToUse.temp.TempRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import com.example.exception.temp.TempRequest.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -14,7 +14,7 @@ public class TempController {
     private final TempService tempService;
 
     @GetMapping("/binding")
-    public BaseResponse<?> bindingTest(@Validated @RequestBody TempLoginRequest request){
+    public BaseResponse<?> bindingTest(@Validated @RequestBody TempRequest.TempLoginRequest request){
         return BaseResponse.onSuccess(tempService.logic(request));
     }
 

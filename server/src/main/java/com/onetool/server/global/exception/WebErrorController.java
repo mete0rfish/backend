@@ -1,7 +1,6 @@
-package com.example.exception.controller;
+package com.onetool.server.global.exception;
 
-import com.example.exception.common.BaseResponse;
-import com.example.exception.common.codes.ErrorCode;
+import com.onetool.server.global.exception.codes.ErrorCode;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.web.servlet.error.ErrorController;

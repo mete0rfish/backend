@@ -1,10 +1,11 @@
-package com.example.exception.service;
+package com.onetool.server.global.exception.howToUse.service;
 
-import com.example.exception.temp.TempRequest.*;
+
+import com.onetool.server.global.exception.howToUse.temp.TempRequest;
 
 public interface TempService {
-    String logic(TempLoginRequest data);
-    void errorCheck(TempLoginRequest data);
+    String logic(TempRequest.TempLoginRequest data);
+    void errorCheck(TempRequest.TempLoginRequest data);
     String searchEngine(String keyword);
     void errorCheck(String keyword);
 }

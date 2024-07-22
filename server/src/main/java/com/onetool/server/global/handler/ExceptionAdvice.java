@@ -1,11 +1,11 @@
-package com.example.exception.handler;
+package com.onetool.server.global.handler;
 
-import com.example.exception.common.BaseException;
-import com.example.exception.common.BaseResponse;
-import com.example.exception.common.codes.ErrorCode;
 import static com.example.exception.common.reason.Reason.*;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.onetool.server.global.exception.BaseException;
+import com.onetool.server.global.exception.BaseResponse;
+import com.onetool.server.global.exception.codes.ErrorCode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

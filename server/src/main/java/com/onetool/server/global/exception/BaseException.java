@@ -1,7 +1,7 @@
-package com.example.exception.common;
+package com.onetool.server.global.exception;
 
-import com.example.exception.common.codes.BaseCode;
 import com.example.exception.common.reason.Reason.*;
+import com.onetool.server.global.exception.codes.BaseCode;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
