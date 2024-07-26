@@ -1,7 +1,7 @@
 package com.onetool.server;
 
 import com.onetool.server.blueprint.Blueprint;
-import com.onetool.server.blueprint.BlueprintRepository;
+import com.onetool.server.blueprint.repository.BlueprintRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;

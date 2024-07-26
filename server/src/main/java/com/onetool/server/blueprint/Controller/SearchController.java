@@ -1,6 +1,6 @@
 package com.onetool.server.blueprint.Controller;
 
-import com.onetool.server.blueprint.BlueprintService;
+import com.onetool.server.blueprint.Service.BlueprintService;
 import com.onetool.server.blueprint.dto.SearchResponse;
 import com.onetool.server.category.FirstCategoryType;
 import org.springframework.data.domain.Page;
