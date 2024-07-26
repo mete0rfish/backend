@@ -1,4 +1,4 @@
-package com.onetool.server.blueprint.Service;
+package com.onetool.server.blueprint.service;
 
 import com.onetool.server.blueprint.Blueprint;
 import com.onetool.server.blueprint.repository.BlueprintRepository;

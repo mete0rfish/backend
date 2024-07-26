@@ -1,6 +1,6 @@
-package com.onetool.server.blueprint.Controller;
+package com.onetool.server.blueprint.controller;
 
-import com.onetool.server.blueprint.Service.BlueprintService;
+import com.onetool.server.blueprint.service.BlueprintService;
 import com.onetool.server.blueprint.dto.BlueprintRequest;
 import com.onetool.server.blueprint.dto.BlueprintResponse;
 import org.springframework.beans.factory.annotation.Autowired;

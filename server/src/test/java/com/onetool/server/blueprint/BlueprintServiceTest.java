@@ -1,7 +1,7 @@
 package com.onetool.server.blueprint;
 
-import com.onetool.server.blueprint.Controller.BlueprintController;
-import com.onetool.server.blueprint.Service.BlueprintService;
+import com.onetool.server.blueprint.controller.BlueprintController;
+import com.onetool.server.blueprint.service.BlueprintService;
 import com.onetool.server.blueprint.dto.BlueprintRequest;
 import com.onetool.server.blueprint.dto.BlueprintResponse;
 import com.onetool.server.blueprint.dto.SearchResponse;
