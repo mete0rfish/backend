@@ -3,7 +3,7 @@ package com.onetool.server.member.service;
 import com.onetool.server.global.auth.MemberAuthContext;
 import com.onetool.server.member.Member;
 import com.onetool.server.member.MemberRepository;
-import com.onetool.server.member.domain.CustomUserDetails;
+import com.onetool.server.member.domain.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -30,6 +30,6 @@ public class CustomUserDetailsService implements UserDetailsService {
                 .name(member.getName())
                 .build();
 
-        return new CustomUserDetails(context);
+        return new PrincipalDetails(context);
     }
 }

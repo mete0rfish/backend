@@ -36,7 +36,7 @@ public class SecurityConfig {
 
     private static final String[] AUTH_WHITELIST = {
         "/users/login/**", "/login/**",
-            "/users/signup/**"
+            "/users/signup/**", "/blueprint/**"
     };
 
     @Bean

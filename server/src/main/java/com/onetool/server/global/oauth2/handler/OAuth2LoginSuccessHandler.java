@@ -2,9 +2,9 @@ package com.onetool.server.global.oauth2.handler;
 
 import com.onetool.server.global.auth.MemberAuthContext;
 import com.onetool.server.global.auth.jwt.JwtUtil;
-import com.onetool.server.global.oauth2.CustomOAuth2User;
 import com.onetool.server.member.MemberRepository;
 import com.onetool.server.member.UserRole;
+import com.onetool.server.member.domain.PrincipalDetails;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -15,6 +15,7 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.util.Objects;
 
 @Slf4j
 @Component
@@ -28,29 +29,30 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         log.info("OAuth2 Login 성공");
         try {
-            CustomOAuth2User oAuth2User = (CustomOAuth2User) authentication.getPrincipal();
+            PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+            MemberAuthContext member = principalDetails.getContext();
 
-            if(oAuth2User.getRole() == UserRole.ROLE_GUEST) {
+            if(Objects.equals(member.getRole(), UserRole.ROLE_GUEST.name())) {
                 MemberAuthContext memberAuthContext = MemberAuthContext.builder()
-                        .email(oAuth2User.getEmail())
-                        .role(oAuth2User.getRole().name())
+                        .email(member.getEmail())
+                        .role(member.getRole())
                         .build();
                 String accessToken = jwtUtil.create(memberAuthContext);
                 response.addHeader("Authorization", "Bearer " + accessToken);
                 response.sendRedirect("oauth2/sign-up");
                 response.setStatus(HttpServletResponse.SC_OK);
             } else {
-                loginSuccess(response, oAuth2User);
+                loginSuccess(response, member);
             }
         } catch (Exception e) {
             throw e;
         }
     }
 
-    private void loginSuccess(HttpServletResponse response, CustomOAuth2User oAuth2User) throws  IOException {
+    private void loginSuccess(HttpServletResponse response, MemberAuthContext context) throws  IOException {
         MemberAuthContext memberAuthContext = MemberAuthContext.builder()
-                .email(oAuth2User.getEmail())
-                .role(oAuth2User.getRole().name())
+                .email(context.getEmail())
+                .role(context.getRole())
                 .build();
         String accessToken = jwtUtil.create(memberAuthContext);
         response.addHeader("Authorization", "Bearer " + accessToken);

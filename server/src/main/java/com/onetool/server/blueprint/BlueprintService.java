@@ -48,4 +48,12 @@ public class BlueprintService {
                 .collect(Collectors.toList());
         return new PageImpl<>(list, pageable, result.getTotalElements());
     }
+
+    public Page<SearchResponse> findAll(Pageable pageable) {
+        Page<Blueprint> result = blueprintRepository.findAll(pageable);
+        List<SearchResponse> list = result.getContent().stream()
+                .map(SearchResponse::from)
+                .collect(Collectors.toList());
+        return new PageImpl<>(list, pageable, result.getTotalElements());
+    }
 }

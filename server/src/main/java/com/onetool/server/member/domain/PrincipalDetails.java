@@ -1,22 +1,36 @@
 package com.onetool.server.member.domain;
 
 import com.onetool.server.global.auth.MemberAuthContext;
+import com.onetool.server.member.Member;
+import com.onetool.server.member.UserRole;
+import lombok.Data;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
+@Data
 @Getter
-@RequiredArgsConstructor
-public class CustomUserDetails implements UserDetails {
+public class PrincipalDetails implements UserDetails, OAuth2User {
 
     private final MemberAuthContext context;
+    private Map<String, Object> attributes;
+
+    public PrincipalDetails(MemberAuthContext context) {
+        this.context = context;
+    }
+
+    public PrincipalDetails(MemberAuthContext context, Map<String, Object> attributes) {
+        this.context = context;
+        this.attributes = attributes;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -35,30 +49,36 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public String getUsername() {
-        return null;
+        return context.getEmail();
     }
 
     @Override
     public boolean isAccountNonExpired() {
-        return UserDetails.super.isAccountNonExpired();
+        return true;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return UserDetails.super.isAccountNonLocked();
+        return true;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return UserDetails.super.isCredentialsNonExpired();
+        return true;
     }
 
     @Override
     public boolean isEnabled() {
-        return UserDetails.super.isEnabled();
+        return true;
     }
 
+    @Override
+    public Map<String, Object> getAttributes() {
+        return attributes;
+    }
 
-
-
+    @Override
+    public String getName() {
+        return context.getEmail();
+    }
 }

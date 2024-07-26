@@ -15,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 @Slf4j
 public class MemberService {
 
@@ -25,6 +24,7 @@ public class MemberService {
 
     public MemberCreateResponse createMember(MemberCreateRequest request) {
         Member member = memberRepository.save(request.toEntity());
+        log.info("회원가입됨:" + member.getEmail());
         return MemberCreateResponse.of(member);
     }
 
