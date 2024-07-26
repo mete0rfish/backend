@@ -19,8 +19,8 @@ bin/
 !**/src/test/**/bin/
 
 ### IntelliJ IDEA ###
-.idea
-*.iws
+.idea/
+*.iwsgit add .gitignore
 *.iml
 *.ipr
 out/
