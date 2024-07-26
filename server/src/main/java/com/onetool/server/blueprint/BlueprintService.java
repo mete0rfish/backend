@@ -1,5 +1,7 @@
 package com.onetool.server.blueprint;
 
+import com.onetool.server.blueprint.dto.BlueprintRequest;
+import com.onetool.server.blueprint.dto.BlueprintResponse;
 import com.onetool.server.blueprint.dto.SearchResponse;
 import com.onetool.server.category.FirstCategoryType;
 import org.springframework.data.domain.Page;
@@ -8,22 +10,92 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 public class BlueprintService {
-    
+
     private BlueprintRepository blueprintRepository;
 
     public BlueprintService(BlueprintRepository blueprintRepository) {
         this.blueprintRepository = blueprintRepository;
     }
-    
-    public Optional<Blueprint> findBlueprintById(Long id) {
-        return blueprintRepository.findById(id);
+
+    public List<BlueprintResponse> findAllBlueprints(){
+        List<Blueprint> blueprints = blueprintRepository.findAll();
+
+        return blueprints.stream()
+                .map(BlueprintResponse::fromEntity)
+                .collect(Collectors.toList());
     }
-  
+
+    public BlueprintResponse findBlueprintById(Long id) {
+        Blueprint blueprint = blueprintRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Blueprint not found with id: " + id));
+
+        return BlueprintResponse.fromEntity(blueprint);
+    }
+
+    public boolean createBlueprint(BlueprintRequest blueprintRequest) {
+        try {
+            Blueprint blueprint = Blueprint.builder() //TODO 불필요한 부분 수정하기
+                    .id(blueprintRequest.id())
+                    .blueprintName(blueprintRequest.blueprintName())
+                    .categoryId(blueprintRequest.categoryId())
+                    .standardPrice(blueprintRequest.standardPrice())
+                    .blueprintImg(blueprintRequest.blueprintImg())
+                    .blueprintDetails(blueprintRequest.blueprintDetails())
+                    .extension(blueprintRequest.extension())
+                    .program(blueprintRequest.program())
+                    .hits(blueprintRequest.hits())
+                    .salePrice(blueprintRequest.salePrice())
+                    .saleExpiredDate(blueprintRequest.saleExpiredDate())
+                    .creatorName(blueprintRequest.creatorName())
+                    .downloadLink(blueprintRequest.downloadLink())
+                    .build();
+
+            saveBlueprint(blueprint);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public Blueprint saveBlueprint(Blueprint blueprint) {
+        return blueprintRepository.save(blueprint);
+    }
+
+    public boolean updateBlueprint(BlueprintResponse blueprintResponse) {
+        Blueprint existingBlueprint = blueprintRepository.findById(blueprintResponse.id())
+                .orElseThrow(() -> new RuntimeException("Blueprint not found with id: " + blueprintResponse.id()));
+
+        Blueprint updatedBlueprint = Blueprint.builder()
+                .id(existingBlueprint.getId())
+                .blueprintName(blueprintResponse.blueprintName())
+                .categoryId(blueprintResponse.categoryId())
+                .standardPrice(blueprintResponse.standardPrice())
+                .blueprintImg(blueprintResponse.blueprintImg())
+                .blueprintDetails(blueprintResponse.blueprintDetails())
+                .extension(blueprintResponse.extension())
+                .program(blueprintResponse.program())
+                .hits(blueprintResponse.hits())
+                .salePrice(blueprintResponse.salePrice())
+                .saleExpiredDate(blueprintResponse.saleExpiredDate())
+                .creatorName(blueprintResponse.creatorName())
+                .downloadLink(blueprintResponse.downloadLink())
+                .orderBlueprint(existingBlueprint.getOrderBlueprint())
+                .cartBlueprints(existingBlueprint.getCartBlueprints())
+                .build();
+
+        blueprintRepository.save(updatedBlueprint);
+        return true;
+    }
+
+    public boolean deleteBlueprint(Long id){
+        blueprintRepository.deleteById(id);
+        return true;
+    };
+
     public Page<SearchResponse> searchNameAndCreatorWithKeyword(String keyword, Pageable pageable) {
         Page<Blueprint> result = blueprintRepository.findAllNameAndCreatorContaining(keyword, pageable);
         List<SearchResponse> list = result.getContent().stream()
