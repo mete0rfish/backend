@@ -1,8 +1,8 @@
 package com.onetool.server.member.dto;
 
-import com.onetool.server.member.DateTimeFormat;
-import com.onetool.server.member.Member;
-import com.onetool.server.member.UserRole;
+import com.onetool.server.member.domain.DateTimeFormat;
+import com.onetool.server.member.domain.Member;
+import com.onetool.server.member.enums.UserRole;
 import lombok.Builder;
 
 import java.time.LocalDate;

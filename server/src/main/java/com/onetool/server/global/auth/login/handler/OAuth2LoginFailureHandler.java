@@ -1,4 +1,4 @@
-package com.onetool.server.global.oauth2.handler;
+package com.onetool.server.global.auth.login.handler;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

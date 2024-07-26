@@ -1,7 +1,7 @@
 package com.onetool.server.qna;
 
 import com.onetool.server.global.entity.BaseEntity;
-import com.onetool.server.member.Member;
+import com.onetool.server.member.domain.Member;
 import com.onetool.server.qna.dto.request.QnaRequest;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;

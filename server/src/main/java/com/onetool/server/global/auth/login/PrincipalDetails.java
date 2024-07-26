@@ -1,8 +1,6 @@
-package com.onetool.server.member.domain;
+package com.onetool.server.global.auth.login;
 
 import com.onetool.server.global.auth.MemberAuthContext;
-import com.onetool.server.member.Member;
-import com.onetool.server.member.UserRole;
 import lombok.Data;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;

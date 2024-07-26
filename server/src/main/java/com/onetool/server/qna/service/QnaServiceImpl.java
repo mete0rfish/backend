@@ -1,8 +1,8 @@
 package com.onetool.server.qna.service;
 
 import com.onetool.server.global.handler.MyExceptionHandler;
-import com.onetool.server.member.Member;
-import com.onetool.server.member.MemberRepository;
+import com.onetool.server.member.domain.Member;
+import com.onetool.server.member.repository.MemberRepository;
 import com.onetool.server.qna.QnaBoard;
 import com.onetool.server.qna.repository.QnaRepository;
 import lombok.RequiredArgsConstructor;

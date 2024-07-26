@@ -1,11 +1,12 @@
-package com.onetool.server.member;
+package com.onetool.server.member.domain;
 
 import com.onetool.server.cart.Cart;
 import com.onetool.server.global.entity.BaseEntity;
+import com.onetool.server.member.enums.SocialType;
+import com.onetool.server.member.enums.UserRole;
 import com.onetool.server.qna.QnaBoard;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
-import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

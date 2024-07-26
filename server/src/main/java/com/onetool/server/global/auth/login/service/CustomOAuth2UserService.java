@@ -1,11 +1,11 @@
-package com.onetool.server.global.oauth2.service;
+package com.onetool.server.global.auth.login.service;
 
 import com.onetool.server.global.auth.MemberAuthContext;
-import com.onetool.server.global.oauth2.OAuthAttributes;
-import com.onetool.server.member.Member;
-import com.onetool.server.member.MemberRepository;
-import com.onetool.server.member.SocialType;
-import com.onetool.server.member.domain.PrincipalDetails;
+import com.onetool.server.global.auth.login.OAuthAttributes;
+import com.onetool.server.member.domain.Member;
+import com.onetool.server.member.repository.MemberRepository;
+import com.onetool.server.member.enums.SocialType;
+import com.onetool.server.global.auth.login.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;

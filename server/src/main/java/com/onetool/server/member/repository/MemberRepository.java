@@ -1,5 +1,7 @@
-package com.onetool.server.member;
+package com.onetool.server.member.repository;
 
+import com.onetool.server.member.domain.Member;
+import com.onetool.server.member.enums.SocialType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 

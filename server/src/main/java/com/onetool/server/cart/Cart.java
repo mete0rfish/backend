@@ -1,7 +1,7 @@
 package com.onetool.server.cart;
 
 import com.onetool.server.global.entity.BaseEntity;
-import com.onetool.server.member.Member;
+import com.onetool.server.member.domain.Member;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;

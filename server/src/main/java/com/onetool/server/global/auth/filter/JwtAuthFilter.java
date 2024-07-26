@@ -2,7 +2,7 @@ package com.onetool.server.global.auth.filter;
 
 import com.onetool.server.global.auth.jwt.JwtUtil;
 import com.onetool.server.global.exception.MemberNotFoundException;
-import com.onetool.server.member.service.CustomUserDetailsService;
+import com.onetool.server.global.auth.login.service.CustomUserDetailsService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

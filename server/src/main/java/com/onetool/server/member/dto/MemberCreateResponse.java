@@ -1,6 +1,6 @@
 package com.onetool.server.member.dto;
 
-import com.onetool.server.member.Member;
+import com.onetool.server.member.domain.Member;
 import lombok.Builder;
 
 public record MemberCreateResponse(

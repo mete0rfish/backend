@@ -1,4 +1,4 @@
-package com.onetool.server.member;
+package com.onetool.server.member.domain;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;

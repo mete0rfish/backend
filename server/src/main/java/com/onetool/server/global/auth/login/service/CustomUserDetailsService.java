@@ -1,9 +1,9 @@
-package com.onetool.server.member.service;
+package com.onetool.server.global.auth.login.service;
 
 import com.onetool.server.global.auth.MemberAuthContext;
-import com.onetool.server.member.Member;
-import com.onetool.server.member.MemberRepository;
-import com.onetool.server.member.domain.PrincipalDetails;
+import com.onetool.server.member.domain.Member;
+import com.onetool.server.member.repository.MemberRepository;
+import com.onetool.server.global.auth.login.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

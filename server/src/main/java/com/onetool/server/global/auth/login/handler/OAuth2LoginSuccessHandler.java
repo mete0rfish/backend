@@ -1,10 +1,10 @@
-package com.onetool.server.global.oauth2.handler;
+package com.onetool.server.global.auth.login.handler;
 
 import com.onetool.server.global.auth.MemberAuthContext;
 import com.onetool.server.global.auth.jwt.JwtUtil;
-import com.onetool.server.member.MemberRepository;
-import com.onetool.server.member.UserRole;
-import com.onetool.server.member.domain.PrincipalDetails;
+import com.onetool.server.member.repository.MemberRepository;
+import com.onetool.server.member.enums.UserRole;
+import com.onetool.server.global.auth.login.PrincipalDetails;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
