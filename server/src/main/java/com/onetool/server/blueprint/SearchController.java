@@ -102,9 +102,17 @@ public class SearchController {
 
     @GetMapping("/blueprint/etc")
     public ResponseEntity searchEtcCategory(
-            @PageableDefault(size = 5, sort = "id", direction = Sort.Direction.DESC)Pageable pageable
+            @PageableDefault(page = 0, size = 10, sort = "id", direction = Sort.Direction.DESC)Pageable pageable
     ) {
         Page<SearchResponse> responses = blueprintService.findAllByFirstCategory(FirstCategoryType.CATEGORY_ETC, pageable);
+        return ResponseEntity.ok().body(responses);
+    }
+
+    @GetMapping("/blueprint/all")
+    public ResponseEntity searchAllBlueprint(
+            @PageableDefault(size = 5, sort = "id", direction = Sort.Direction.DESC)Pageable pageable
+    ) {
+        Page<SearchResponse> responses = blueprintService.findAll(pageable);
         return ResponseEntity.ok().body(responses);
     }
 }

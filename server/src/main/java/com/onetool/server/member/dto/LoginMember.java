@@ -1,6 +1,6 @@
 package com.onetool.server.member.dto;
 
-import com.onetool.server.member.UserRole;
+import com.onetool.server.member.enums.UserRole;
 import lombok.Builder;
 
 public record LoginMember(

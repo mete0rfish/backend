@@ -5,15 +5,14 @@ import com.onetool.server.global.auth.CustomAccessDeniedHandler;
 import com.onetool.server.global.auth.CustomAuthenticationEntryPoint;
 import com.onetool.server.global.auth.filter.JwtAuthFilter;
 import com.onetool.server.global.auth.jwt.JwtUtil;
-import com.onetool.server.global.oauth2.handler.OAuth2LoginFailureHandler;
-import com.onetool.server.global.oauth2.handler.OAuth2LoginSuccessHandler;
-import com.onetool.server.global.oauth2.service.CustomOAuth2UserService;
-import com.onetool.server.member.service.CustomUserDetailsService;
+import com.onetool.server.global.auth.login.handler.OAuth2LoginFailureHandler;
+import com.onetool.server.global.auth.login.handler.OAuth2LoginSuccessHandler;
+import com.onetool.server.global.auth.login.service.CustomOAuth2UserService;
+import com.onetool.server.global.auth.login.service.CustomUserDetailsService;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -36,7 +35,7 @@ public class SecurityConfig {
 
     private static final String[] AUTH_WHITELIST = {
         "/users/login/**", "/login/**",
-            "/users/signup/**"
+            "/users/signup/**", "/blueprint/**"
     };
 
     @Bean

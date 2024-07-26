@@ -1,13 +1,13 @@
-package com.onetool.server.global.oauth2.service;
+package com.onetool.server.global.auth.login.service;
 
-import com.onetool.server.global.oauth2.CustomOAuth2User;
-import com.onetool.server.global.oauth2.OAuthAttributes;
-import com.onetool.server.member.Member;
-import com.onetool.server.member.MemberRepository;
-import com.onetool.server.member.SocialType;
+import com.onetool.server.global.auth.MemberAuthContext;
+import com.onetool.server.global.auth.login.OAuthAttributes;
+import com.onetool.server.member.domain.Member;
+import com.onetool.server.member.repository.MemberRepository;
+import com.onetool.server.member.enums.SocialType;
+import com.onetool.server.global.auth.login.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
@@ -15,7 +15,6 @@ import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
 import java.util.Map;
 
 @Slf4j
@@ -43,14 +42,14 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         OAuthAttributes extractAttributes = OAuthAttributes.of(socialType, userNameAttributeName, attributes);
 
         Member createdMember = getMember(extractAttributes, socialType);
+        MemberAuthContext context = MemberAuthContext.builder()
+                .email(createdMember.getEmail())
+                .name(createdMember.getName())
+                .role(createdMember.getRole().name())
+                .password(createdMember.getPassword())
+                .build();
 
-        return new CustomOAuth2User(
-                Collections.singleton(new SimpleGrantedAuthority(createdMember.getRole().name())),
-                attributes,
-                extractAttributes.getNameAttributeKey(),
-                createdMember.getEmail(),
-                createdMember.getRole()
-        );
+        return new PrincipalDetails(context, attributes);
     }
 
     private SocialType getSocialType(String registrationId) {

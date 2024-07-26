@@ -1,11 +1,12 @@
-package com.onetool.server.member;
+package com.onetool.server.member.domain;
 
 import com.onetool.server.cart.Cart;
 import com.onetool.server.global.entity.BaseEntity;
+import com.onetool.server.member.enums.SocialType;
+import com.onetool.server.member.enums.UserRole;
 import com.onetool.server.qna.QnaBoard;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
-import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,12 +21,13 @@ import java.util.List;
 @NoArgsConstructor
 public class Member extends BaseEntity {
 
-    @Id @GeneratedValue(strategy = GenerationType.AUTO)
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String password;
 
     @NotNull @Size(min = 1, max = 100, message = "이메일은 1 ~ 100자 이여야 합니다.") @Email
+    @Column(unique = true)
     private String email;
 
     @NotNull(message = "이름은 null 일 수 없습니다.") @Size(min = 1, max = 10, message = "이름은 1 ~ 10자 이여야 합니다.")

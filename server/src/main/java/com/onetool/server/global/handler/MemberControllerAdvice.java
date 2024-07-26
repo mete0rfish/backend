@@ -1,4 +1,4 @@
-package com.onetool.server.member;
+package com.onetool.server.global.handler;
 
 import com.onetool.server.global.exception.MemberNotFoundException;
 import org.springframework.http.ResponseEntity;

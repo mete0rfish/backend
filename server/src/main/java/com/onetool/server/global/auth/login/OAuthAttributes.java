@@ -1,10 +1,10 @@
-package com.onetool.server.global.oauth2;
+package com.onetool.server.global.auth.login;
 
-import com.onetool.server.global.oauth2.userinfo.OAuth2UserInfo;
-import com.onetool.server.global.oauth2.userinfo.GoogleOAuth2UserInfo;
-import com.onetool.server.member.Member;
-import com.onetool.server.member.SocialType;
-import com.onetool.server.member.UserRole;
+import com.onetool.server.global.auth.login.userinfo.GoogleOAuth2UserInfo;
+import com.onetool.server.global.auth.login.userinfo.OAuth2UserInfo;
+import com.onetool.server.member.domain.Member;
+import com.onetool.server.member.enums.SocialType;
+import com.onetool.server.member.enums.UserRole;
 import lombok.Builder;
 import lombok.Getter;
 

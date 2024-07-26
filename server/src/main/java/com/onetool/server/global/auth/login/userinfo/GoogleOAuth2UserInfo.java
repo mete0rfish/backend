@@ -1,4 +1,4 @@
-package com.onetool.server.global.oauth2.userinfo;
+package com.onetool.server.global.auth.login.userinfo;
 
 import java.util.Map;
 

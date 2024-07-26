@@ -1,8 +1,10 @@
-package com.onetool.server.member;
+package com.onetool.server.member.service;
 
 import com.onetool.server.global.auth.MemberAuthContext;
 import com.onetool.server.global.auth.jwt.JwtUtil;
 import com.onetool.server.global.exception.MemberNotFoundException;
+import com.onetool.server.member.repository.MemberRepository;
+import com.onetool.server.member.domain.Member;
 import com.onetool.server.member.dto.LoginRequest;
 import com.onetool.server.member.dto.MemberCreateRequest;
 import com.onetool.server.member.dto.MemberCreateResponse;
@@ -11,11 +13,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 @Slf4j
 public class MemberService {
 
@@ -25,6 +25,7 @@ public class MemberService {
 
     public MemberCreateResponse createMember(MemberCreateRequest request) {
         Member member = memberRepository.save(request.toEntity());
+        log.info("회원가입됨:" + member.getEmail());
         return MemberCreateResponse.of(member);
     }
 

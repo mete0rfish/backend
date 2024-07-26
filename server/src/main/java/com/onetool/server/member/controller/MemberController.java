@@ -1,5 +1,6 @@
-package com.onetool.server.member;
+package com.onetool.server.member.controller;
 
+import com.onetool.server.member.service.MemberService;
 import com.onetool.server.member.dto.LoginRequest;
 import com.onetool.server.member.dto.MemberCreateRequest;
 import com.onetool.server.member.dto.MemberCreateResponse;
