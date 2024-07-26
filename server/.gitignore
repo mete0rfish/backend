@@ -1,3 +1,4 @@
+
 HELP.md
 .gradle
 build/
@@ -19,8 +20,8 @@ bin/
 !**/src/test/**/bin/
 
 ### IntelliJ IDEA ###
-.idea/
-*.iwsgit add .gitignore
+.idea
+*.iws
 *.iml
 *.ipr
 out/
