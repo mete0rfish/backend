@@ -40,7 +40,7 @@ public class BlueprintController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Boolean> getDelete(@PathVariable Long id){
+    public ResponseEntity<Boolean> deleteBlueprint(@PathVariable Long id){
         return ResponseEntity.ok(blueprintService.deleteBlueprint(id));
     }
 }

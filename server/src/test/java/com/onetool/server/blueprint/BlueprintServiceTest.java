@@ -115,7 +115,7 @@ public class BlueprintServiceTest {
     public void testDeleteBlueprint() {
         Long blueprintId = 1L;
 
-        ResponseEntity<Boolean> response = blueprintController.getDelete(blueprintId);
+        ResponseEntity<Boolean> response = blueprintController.deleteBlueprint(blueprintId);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isTrue();
