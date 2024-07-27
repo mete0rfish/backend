@@ -1,23 +1,20 @@
 package com.onetool.server.cart.service;
 
 import com.onetool.server.blueprint.Blueprint;
-import com.onetool.server.blueprint.BlueprintRepository;
-import com.onetool.server.blueprint.BlueprintResponse;
+import com.onetool.server.blueprint.repository.BlueprintRepository;
 import com.onetool.server.cart.Cart;
 import com.onetool.server.cart.CartBlueprint;
 import com.onetool.server.cart.repository.CartBlueprintRepository;
 import com.onetool.server.cart.repository.CartRepository;
 import com.onetool.server.global.auth.MemberAuthContext;
 import com.onetool.server.global.exception.BaseException;
-import com.onetool.server.global.handler.MyExceptionHandler;
-import com.onetool.server.member.Member;
-import com.onetool.server.member.MemberRepository;
+import com.onetool.server.member.domain.Member;
+import com.onetool.server.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import static com.onetool.server.cart.dto.CartResponse.CartItems;
 import static com.onetool.server.global.exception.codes.ErrorCode.*;
-import static com.onetool.server.blueprint.BlueprintResponse.*;
-import static com.onetool.server.cart.dto.CartResponse.*;
 
 @Service
 @RequiredArgsConstructor
@@ -93,6 +90,6 @@ public class CartServiceImpl implements CartService{
     public Member findMemberWithCart(Long id) {
         return memberRepository
                 .findByIdWithCart(id)
-                .orElseThrow(() -> new MyExceptionHandler(NON_EXIST_USER));
+                .orElseThrow(() -> new BaseException(NON_EXIST_USER));
     }
 }
