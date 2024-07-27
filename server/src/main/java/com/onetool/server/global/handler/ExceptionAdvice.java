@@ -3,7 +3,7 @@ package com.onetool.server.global.handler;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.onetool.server.global.exception.BaseException;
-import com.onetool.server.global.exception.BaseResponse;
+import com.onetool.server.global.exception.ApiResponse;
 import com.onetool.server.global.exception.codes.ErrorCode;
 import com.onetool.server.global.exception.codes.reason.Reason;
 import lombok.extern.slf4j.Slf4j;
@@ -33,7 +33,7 @@ public class ExceptionAdvice {
     @ExceptionHandler
     public ResponseEntity<Object> validation(MethodArgumentNotValidException e) {
         String message = e.getBindingResult().getFieldErrors().get(0).getDefaultMessage();
-        BaseResponse<?> baseResponse = BaseResponse.onFailure(ErrorCode.BINDING_ERROR.getCode(), message, null);
+        ApiResponse<?> baseResponse = ApiResponse.onFailure(ErrorCode.BINDING_ERROR.getCode(), message, null);
         return handleExceptionInternal(baseResponse);
     }
 
@@ -45,7 +45,7 @@ public class ExceptionAdvice {
     @ExceptionHandler
     public ResponseEntity<Object> exception(Exception e) {
         ErrorCode errorCode = ErrorCode._INTERNAL_SERVER_ERROR;
-        BaseResponse<?> baseResponse = BaseResponse.onFailure(errorCode.getCode(), errorCode.getMessage(), null);
+        ApiResponse<?> baseResponse = ApiResponse.onFailure(errorCode.getCode(), errorCode.getMessage(), null);
         return handleExceptionInternal(baseResponse);
     }
 
@@ -57,7 +57,7 @@ public class ExceptionAdvice {
     @ExceptionHandler(BaseException.class)
     public ResponseEntity<Object> onThrowException(BaseException generalException) {
         Reason.ReasonDto errorReasonHttpStatus = generalException.getErrorReasonHttpStatus();
-        BaseResponse<?> baseResponse = BaseResponse.onFailure(errorReasonHttpStatus.getCode(), errorReasonHttpStatus.getMessage(), null);
+        ApiResponse<?> baseResponse = ApiResponse.onFailure(errorReasonHttpStatus.getCode(), errorReasonHttpStatus.getMessage(), null);
         return handleExceptionInternal(baseResponse);
     }
 
@@ -162,12 +162,12 @@ public class ExceptionAdvice {
         return handleExceptionInternal(ErrorCode.NOT_FOUND_ERROR);
     }
 
-    private ResponseEntity<Object> handleExceptionInternal(BaseResponse<?> response) {
+    private ResponseEntity<Object> handleExceptionInternal(ApiResponse<?> response) {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     private ResponseEntity<Object> handleExceptionInternal(ErrorCode errorCommonStatus) {
-        BaseResponse<?> baseResponse = BaseResponse.onFailure(errorCommonStatus.getCode(), errorCommonStatus.getMessage(), null);
+        ApiResponse<?> baseResponse = ApiResponse.onFailure(errorCommonStatus.getCode(), errorCommonStatus.getMessage(), null);
         return new ResponseEntity<>(baseResponse, HttpStatus.OK);
     }
 }

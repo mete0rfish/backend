@@ -1,6 +1,6 @@
 package com.onetool.server.qna.controller;
 
-import com.onetool.server.global.exception.BaseResponse;
+import com.onetool.server.global.exception.ApiResponse;
 import com.onetool.server.qna.service.QnaBoardService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -24,8 +24,8 @@ public class QnaBoardController {
      * @return
      */
     @GetMapping("/qna/list")
-    public BaseResponse<?> qnaHome(){
-        return BaseResponse.onSuccess(qnaBoardService.getQnaBoard());
+    public ApiResponse<?> qnaHome(){
+        return ApiResponse.onSuccess(qnaBoardService.getQnaBoard());
     }
 
     /**
@@ -35,10 +35,10 @@ public class QnaBoardController {
      * @return
      */
     @PostMapping("/qna/post")
-    public BaseResponse<?> qnaWrite(Principal principal, @Valid @RequestBody PostQnaBoard request){
+    public ApiResponse<?> qnaWrite(Principal principal, @Valid @RequestBody PostQnaBoard request){
         log.info("쓰기");
         qnaBoardService.postQna(principal, request);
-        return BaseResponse.onSuccess("문의사항 등록이 완료됐습니다.");
+        return ApiResponse.onSuccess("문의사항 등록이 완료됐습니다.");
     }
 
     /**
@@ -47,8 +47,8 @@ public class QnaBoardController {
      * @return
      */
     @GetMapping("/{qnaId}")
-    public BaseResponse<?> qnaDetails(Principal principal, @PathVariable Long qnaId){
-        return BaseResponse.onSuccess(qnaBoardService.getQnaBoardDetails(principal, qnaId));
+    public ApiResponse<?> qnaDetails(Principal principal, @PathVariable Long qnaId){
+        return ApiResponse.onSuccess(qnaBoardService.getQnaBoardDetails(principal, qnaId));
     }
 
     /**
@@ -58,17 +58,17 @@ public class QnaBoardController {
      * @return
      */
     @PostMapping("/{qnaId}/delete")
-    public BaseResponse<?> qnaDelete(Principal principal, @PathVariable Long qnaId){
+    public ApiResponse<?> qnaDelete(Principal principal, @PathVariable Long qnaId){
         qnaBoardService.deleteQna(principal, qnaId);
-        return BaseResponse.onSuccess("게시글이 삭제되었습니다.");
+        return ApiResponse.onSuccess("게시글이 삭제되었습니다.");
     }
 
     //TODO : 게시글 수정 방법 : 게시글 상세 페이지 -> 게시글 수정 클릭 -> 수정 페이지 -> 수정 완료
 
     @GetMapping("/{qnaId}/update")
-    public BaseResponse<?> getQnaToUpdate(Principal principal, @PathVariable Long qnaId, @Valid @RequestBody PostQnaBoard request){
+    public ApiResponse<?> getQnaToUpdate(Principal principal, @PathVariable Long qnaId, @Valid @RequestBody PostQnaBoard request){
         qnaBoardService.updateQna(principal, qnaId, request);
-        return BaseResponse.onSuccess("게시글이 수정되었습니다.");
+        return ApiResponse.onSuccess("게시글이 수정되었습니다.");
     }
 
     /**
@@ -80,9 +80,9 @@ public class QnaBoardController {
      * @return
      */
     @PostMapping("/{qnaId}/update")
-    public BaseResponse<?> qnaUpdate(Principal principal, @PathVariable Long qnaId, @Valid @RequestBody PostQnaBoard request){
+    public ApiResponse<?> qnaUpdate(Principal principal, @PathVariable Long qnaId, @Valid @RequestBody PostQnaBoard request){
         qnaBoardService.updateQna(principal, qnaId, request);
 
-        return BaseResponse.onSuccess("게시글이 수정되었습니다.");
+        return ApiResponse.onSuccess("게시글이 수정되었습니다.");
     }
 }
