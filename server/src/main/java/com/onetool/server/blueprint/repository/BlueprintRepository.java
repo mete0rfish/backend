@@ -1,5 +1,6 @@
-package com.onetool.server.blueprint;
+package com.onetool.server.blueprint.repository;
 
+import com.onetool.server.blueprint.Blueprint;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
