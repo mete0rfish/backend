@@ -5,6 +5,7 @@ import com.onetool.server.global.entity.BaseEntity;
 import com.onetool.server.member.enums.SocialType;
 import com.onetool.server.member.enums.UserRole;
 import com.onetool.server.qna.QnaBoard;
+import com.onetool.server.qna.QnaReply;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.Builder;
@@ -62,6 +63,9 @@ public class Member extends BaseEntity {
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     private List<QnaBoard> qnaBoards = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+    private List<QnaReply> qnaReplies = new ArrayList<>();
 
     @OneToOne(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Cart cart;

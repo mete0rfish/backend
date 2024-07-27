@@ -63,8 +63,8 @@ public enum ErrorCode implements BaseCode {
 
     // 4xx : client error
 
-    //자잘한 에러
-    SEARCH_KEYWORD_TOO_SHORT(HttpStatus.BAD_REQUEST, "KEYWORD-0000", "검색어는 3글자부터 입력하세요."),
+    //사용자 에러
+    NON_EXIST_USER(HttpStatus.NOT_FOUND, "MEMBER-0001", "존재하지 않는 회원입니다"),
 
     //바인딩 에러
     BINDING_ERROR(HttpStatus.BAD_REQUEST, "BINDING-0000", "바인딩에 실패했습니다."),
@@ -76,7 +76,9 @@ public enum ErrorCode implements BaseCode {
 
 
     //Qna 에러
-    NO_QNA(HttpStatus.NO_CONTENT, "QNA-0000", "게시된 문의사항이 없습니다."),
+    NO_QNA_CONTENT(HttpStatus.NO_CONTENT, "QNA-0000", "게시된 문의사항이 없습니다."),
+    UNAVAILABLE_TO_MODIFY(HttpStatus.FORBIDDEN, "QNA-0001", "게시글에 대한 권한이 없습니다."),
+    NO_QNA_REPLY(HttpStatus.NO_CONTENT, "QNA-0002", "유효한 댓글이 아닙니다."),
     /*
     *
     *
