@@ -1,12 +1,7 @@
 package com.onetool.server.cart.controller;
 
 import com.onetool.server.cart.service.CartServiceImpl;
-import com.onetool.server.global.exception.BaseResponse;
-import com.onetool.server.member.domain.CustomUserDetails;
-import com.onetool.server.qna.security.AuthUser;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -23,7 +18,7 @@ public class CartController {
      * @return
      */
 //    @PostMapping("/api/cart/add/{blueprintId}")
-//    public BaseResponse<?> addBlueprintToCart(@AuthUser CustomUserDetails user,
+//    public ApiResponse<?> addBlueprintToCart(@AuthUser CustomUserDetails user,
 //                                              @PathVariable Long blueprintId){
 //
 //    }
