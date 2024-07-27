@@ -1,6 +1,6 @@
 package com.onetool.server.qna.service;
 
-import com.onetool.server.global.handler.MyExceptionHandler;
+import com.onetool.server.global.exception.BaseException;
 import com.onetool.server.member.domain.Member;
 import com.onetool.server.member.repository.MemberRepository;
 import com.onetool.server.qna.QnaBoard;
@@ -75,19 +75,19 @@ public class QnaBoardServiceImpl implements QnaBoardService {
 
     public void hasErrorWithNoContent(List<QnaBoard> data) {
         if(data.isEmpty())
-            throw new MyExceptionHandler(NO_QNA_CONTENT);
+            throw new BaseException(NO_QNA_CONTENT);
     }
 
     public QnaBoard findQnaBoard(Long qnaId){
         return qnaBoardRepository
                 .findByIdWithReplies(qnaId)
-                .orElseThrow(() -> new MyExceptionHandler(NO_QNA_CONTENT));
+                .orElseThrow(() -> new BaseException(NO_QNA_CONTENT));
     }
 
     public Member findMember(Principal principal){
         return memberRepository
                 .findByEmail(principal.getName())
-                .orElseThrow(() -> new MyExceptionHandler(NON_EXIST_USER));
+                .orElseThrow(() -> new BaseException(NON_EXIST_USER));
     }
     public boolean isMemberAvailableToModifyQna(QnaBoard qnaBoard, Member member){
         return qnaBoard.getMember().getEmail().equals(member.getEmail());

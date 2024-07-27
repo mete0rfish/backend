@@ -1,7 +1,6 @@
 package com.onetool.server.qna.service;
 
 import com.onetool.server.global.exception.BaseException;
-import com.onetool.server.global.handler.MyExceptionHandler;
 import com.onetool.server.member.domain.Member;
 import com.onetool.server.member.repository.MemberRepository;
 import com.onetool.server.qna.QnaBoard;
@@ -63,7 +62,7 @@ public class QnaReplyServiceImpl implements QnaReplyService{
     public Member findMember(String email) {
         return memberRepository
                 .findByEmail(email)
-                .orElseThrow(() -> new MyExceptionHandler(NON_EXIST_USER));
+                .orElseThrow(() -> new BaseException(NON_EXIST_USER));
     }
 
     public QnaBoard findQnaBoard(Long id){
