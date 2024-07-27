@@ -88,4 +88,8 @@ public class Member extends BaseEntity {
         this.qnaBoards = qnaBoards;
         this.cart = cart;
     }
+
+    public void initCart(Cart cart){
+        this.cart = cart;
+    }
 }
