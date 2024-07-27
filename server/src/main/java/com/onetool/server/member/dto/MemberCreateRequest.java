@@ -27,11 +27,11 @@ public record MemberCreateRequest(
         this.isNative = isNative;
     }
 
-    public Member toEntity() {
+    public Member toEntity(String encoded) {
         return Member.builder()
                 .email(email)
                 .role(UserRole.ROLE_USER)
-                .password(password)
+                .password(encoded)
                 .birthDate(LocalDate.parse(birthDate, DateTimeFormat.dateFormat))
                 .name(name)
                 .isNative(isNative)
