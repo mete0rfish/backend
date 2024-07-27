@@ -3,12 +3,11 @@ package com.onetool.server.cart;
 import com.onetool.server.blueprint.Blueprint;
 import com.onetool.server.global.entity.BaseEntity;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Getter
+@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CartBlueprint extends BaseEntity {
     @Id
@@ -23,5 +22,18 @@ public class CartBlueprint extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "blueprint_id")
     private Blueprint blueprint;
+
+    @Builder
+    private CartBlueprint(Cart cart, Blueprint blueprint){
+        this.cart = cart;
+        this.blueprint = blueprint;
+    }
+
+    public static CartBlueprint newCartBlueprint(Cart cart, Blueprint blueprint){
+        return CartBlueprint.builder()
+                .cart(cart)
+                .blueprint(blueprint)
+                .build();
+    }
 
 }

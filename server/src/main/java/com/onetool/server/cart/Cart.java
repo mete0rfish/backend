@@ -28,4 +28,17 @@ public class Cart extends BaseEntity {
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL)
     private List<CartBlueprint> cartItems = new ArrayList<>();
 
+    private Cart(Member member){
+        this.member = member;
+        member.initCart(this);
+        this.totalPrice = 0L;
+    }
+
+    public static Cart createCart(Member member){
+        return new Cart(member);
+    }
+
+    public void updateTotalPrice(Long totalPrice){
+        this.totalPrice = totalPrice;
+    }
 }

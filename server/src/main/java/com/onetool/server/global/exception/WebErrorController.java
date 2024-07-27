@@ -15,7 +15,7 @@ import org.springframework.web.servlet.NoHandlerFoundException;
 public class WebErrorController implements ErrorController {
 
     @RequestMapping("/error")
-    public BaseResponse<?> handleError(HttpServletRequest request) throws NoHandlerFoundException {
+    public ApiResponse<?> handleError(HttpServletRequest request) throws NoHandlerFoundException {
         log.info(request.getRequestURI());
         Object status = request.getAttribute("jakarta.servlet.error.status_code");
         if (status != null) {
@@ -24,7 +24,7 @@ public class WebErrorController implements ErrorController {
                 throw new NoHandlerFoundException("GET", request.getRequestURI(), HttpHeaders.EMPTY);
             }
         }
-        return BaseResponse.onFailure(ErrorCode.INTERNAL_SERVER_ERROR.getCode(), ErrorCode.INTERNAL_SERVER_ERROR.getMessage(), null);
+        return ApiResponse.onFailure(ErrorCode.INTERNAL_SERVER_ERROR.getCode(), ErrorCode.INTERNAL_SERVER_ERROR.getMessage(), null);
     }
 
 }
