@@ -24,7 +24,7 @@ public class MemberService {
     private final PasswordEncoder encoder;
 
     public MemberCreateResponse createMember(MemberCreateRequest request) {
-        Member member = memberRepository.save(request.toEntity());
+        Member member = memberRepository.save(request.toEntity(encoder.encode(request.password())));
         log.info("회원가입됨:" + member.getEmail());
         return MemberCreateResponse.of(member);
     }
