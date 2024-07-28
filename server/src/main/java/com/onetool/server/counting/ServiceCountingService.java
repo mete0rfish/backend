@@ -1,6 +1,6 @@
 package com.onetool.server.counting;
 
-import com.onetool.server.blueprint.BlueprintRepository;
+import com.onetool.server.blueprint.repository.BlueprintRepository;
 import com.onetool.server.counting.dto.ServiceCountingResponse;
 import com.onetool.server.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;

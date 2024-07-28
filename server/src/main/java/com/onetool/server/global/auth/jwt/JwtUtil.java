@@ -9,9 +9,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
+import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.time.ZonedDateTime;
+import java.util.Base64;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 @Slf4j
 @Component
@@ -20,21 +26,23 @@ public class JwtUtil implements AuthorizationProvider {
     private static final String USER_NAME = "name";
     private static final String USER_ROLE = "role";
 
-    private final Key key;
+    private final SecretKey key;
     private final Long expirationMilliSec;
 
     public JwtUtil(
             @Value("${onetool.jwt.secrekey}") String secretKey,
             @Value("${onetool.jwt.expiration_time}") Long expirationMilliSec
     ) {
-        byte[] keyBytes = Decoders.BASE64.decode(secretKey);
-        this.key = Keys.hmacShaKeyFor(keyBytes);
+        byte[] keyBytes = Base64.getDecoder()
+                .decode(secretKey.getBytes(StandardCharsets.UTF_8));
+        this.key = new SecretKeySpec(keyBytes, "HmacSHA256");
         this.expirationMilliSec = expirationMilliSec;
     }
 
     @Override
     public String create(MemberAuthContext context) {
-        Claims claims = Jwts.claims();
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("memberId", context.getId());
         claims.put("email", context.getEmail());
         claims.put("role", context.getRole());
 
@@ -53,7 +61,7 @@ public class JwtUtil implements AuthorizationProvider {
     @Override
     public Claims parseClaims(String token) {
         try {
-            return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
+            return Jwts.parser().verifyWith(key).build().parseSignedClaims(token).getPayload();
         } catch (ExpiredJwtException e) {
             return e.getClaims();
         }
@@ -62,7 +70,7 @@ public class JwtUtil implements AuthorizationProvider {
     @Override
     public boolean validateToken(String token) {
         try{
-            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
+            Jwts.parser().verifyWith(key).build().parseSignedClaims(token);
             return true;
         } catch(io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
             log.info("Invalid JWT Token", e);
@@ -78,6 +86,7 @@ public class JwtUtil implements AuthorizationProvider {
 
     @Override
     public Long getUserId(String token) {
-        return parseClaims(token).get("memberId", Long.class);
+        Double db = parseClaims(token).get("memberId", Double.class);
+        return db.longValue();
     }
 }

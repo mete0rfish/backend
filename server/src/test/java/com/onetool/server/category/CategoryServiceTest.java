@@ -1,6 +1,6 @@
 package com.onetool.server.category;
 
-import com.onetool.server.blueprint.BlueprintService;
+import com.onetool.server.blueprint.service.BlueprintService;
 import com.onetool.server.blueprint.dto.SearchResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
