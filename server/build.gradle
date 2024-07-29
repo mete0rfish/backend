@@ -28,6 +28,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.apache.httpcomponents:httpcore:4.3.2'
 	compileOnly 'org.projectlombok:lombok'
 	//developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	runtimeOnly 'com.mysql:mysql-connector-j'
@@ -46,6 +47,13 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf:3.3.2'
 
 	testImplementation 'io.rest-assured:rest-assured:5.5.0'
+
+	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-mail', version: '3.0.5'
+	implementation 'javax.mail:javax.mail-api:1.6.2'
+	//implementation group: 'com.sun.mail', name: 'javax.mail', version: '1.6.2'
+	implementation 'com.sun.mail:smtp:2.0.1'
+
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 }
 
 tasks.named('test') {
