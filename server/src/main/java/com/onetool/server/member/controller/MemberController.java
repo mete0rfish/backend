@@ -9,12 +9,12 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 
 @Controller
+@RequestMapping("/users")
 public class MemberController {
 
     private final MemberService memberService;
@@ -23,7 +23,7 @@ public class MemberController {
         this.memberService = memberService;
     }
 
-    @PostMapping("/users/login")
+    @PostMapping("/login")
     public ResponseEntity<String> login(
             @Valid @RequestBody LoginRequest request
     ) {
@@ -34,10 +34,24 @@ public class MemberController {
         return new ResponseEntity<>("유저가 로그인되었습니다.",headers, HttpStatus.OK);
     }
 
-    @PostMapping("/users/signup")
+    @PostMapping("/signup")
     public ResponseEntity<MemberCreateResponse> createMember(@RequestBody MemberCreateRequest request) {
         MemberCreateResponse response = memberService.createMember(request);
         return ResponseEntity.created(URI.create("/users/" + response.id())).body(response);
     }
 
+    @PostMapping("/emails/verification-requests")
+    public ResponseEntity sendMessage(@RequestParam("email") @Valid String email) {
+        memberService.sendCodeToEmail(email);
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping("/emails/verifications")
+    public ResponseEntity verificationEmail(@RequestParam("email") @Valid String email,
+                                            @RequestParam("code") String authCode) {
+        boolean response = memberService.verifiedCode(email, authCode);
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
 }
