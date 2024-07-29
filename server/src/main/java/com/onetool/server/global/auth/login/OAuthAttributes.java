@@ -42,6 +42,7 @@ public class OAuthAttributes {
                 .email(UUID.randomUUID() + "@socialUser.com")
                 .name(oauth2UserInfo.getName())
                 .role(UserRole.ROLE_GUEST)
+                .platformType("SSO")
                 .build();
     }
 }
