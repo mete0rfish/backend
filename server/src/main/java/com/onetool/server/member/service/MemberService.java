@@ -2,7 +2,11 @@ package com.onetool.server.member.service;
 
 import com.onetool.server.global.auth.MemberAuthContext;
 import com.onetool.server.global.auth.jwt.JwtUtil;
+import com.onetool.server.global.exception.BusinessLogicException;
+import com.onetool.server.global.exception.DuplicateMemberException;
 import com.onetool.server.global.exception.MemberNotFoundException;
+import com.onetool.server.global.redis.RedisService;
+import com.onetool.server.mail.MailService;
 import com.onetool.server.member.repository.MemberRepository;
 import com.onetool.server.member.domain.Member;
 import com.onetool.server.member.dto.LoginRequest;
@@ -10,18 +14,33 @@ import com.onetool.server.member.dto.MemberCreateRequest;
 import com.onetool.server.member.dto.MemberCreateResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.time.Duration;
+import java.util.Optional;
+import java.util.Random;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class MemberService {
 
+    private static final String AUTH_CODE_PREFIX = "AuthCode ";
+
     private final JwtUtil jwtUtil;
     private final MemberRepository memberRepository;
     private final PasswordEncoder encoder;
+
+    private final MailService mailService;
+    private final RedisService redisService;
+
+    @Value("${spring.mail.auth-code-expiration-millis}")
+    private long authCodeExpirationMillis;
 
     public MemberCreateResponse createMember(MemberCreateRequest request) {
         Member member = memberRepository.save(request.toEntity(encoder.encode(request.password())));
@@ -50,5 +69,45 @@ public class MemberService {
                 .build();
 
         return jwtUtil.create(context);
+    }
+
+    public void sendCodeToEmail(String toEmail) {
+        this.checkDuplicatedEmail(toEmail);
+        String title = "Travel with me 이메일 인증 번호";
+        String authCode = this.createCode();
+        mailService.sendEmail(toEmail, title, authCode);
+        // 이메일 인증 요청 시 인증 번호 Redis에 저장 ( key = "AuthCode " + Email / value = AuthCode )
+        redisService.setValues(AUTH_CODE_PREFIX + toEmail,
+                authCode, Duration.ofMillis(this.authCodeExpirationMillis));
+    }
+
+    private void checkDuplicatedEmail(String email) {
+        Optional<Member> member = memberRepository.findByEmail(email);
+        if (member.isPresent()) {
+            log.debug("MemberServiceImpl.checkDuplicatedEmail exception occur email: {}", email);
+            throw new DuplicateMemberException();
+        }
+    }
+
+    private String createCode() {
+        int lenth = 6;
+        try {
+            Random random = SecureRandom.getInstanceStrong();
+            StringBuilder builder = new StringBuilder();
+            for (int i = 0; i < lenth; i++) {
+                builder.append(random.nextInt(10));
+            }
+            return builder.toString();
+        } catch (NoSuchAlgorithmException e) {
+            log.debug("MemberService.createCode() exception occur");
+            throw new BusinessLogicException();
+        }
+    }
+
+    public boolean verifiedCode(String email, String authCode) {
+        this.checkDuplicatedEmail(email);
+        String redisAuthCode = redisService.getValues(AUTH_CODE_PREFIX + email);
+
+        return redisService.checkExistsValue(redisAuthCode) && redisAuthCode.equals(authCode);
     }
 }
