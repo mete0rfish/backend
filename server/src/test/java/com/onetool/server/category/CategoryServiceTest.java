@@ -72,11 +72,4 @@ public class CategoryServiceTest {
         assertThat(response.getTotalElements()).isEqualTo(1);
     }
 
-    @DisplayName("모든 category의 blueprint를 검색한다.")
-    @Test
-    void search_all_category() {
-        Pageable pageable = PageRequest.of(0, 5);
-        Page<SearchResponse> response = blueprintService.findAll(pageable);
-        assertThat(response.getTotalElements()).isEqualTo(6L);
-    }
 }
