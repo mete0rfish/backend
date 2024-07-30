@@ -89,11 +89,11 @@ public class MemberService {
     }
 
     private String createCode() {
-        int lenth = 6;
+        int length = 6;
         try {
             Random random = SecureRandom.getInstanceStrong();
             StringBuilder builder = new StringBuilder();
-            for (int i = 0; i < lenth; i++) {
+            for (int i = 0; i < length; i++) {
                 builder.append(random.nextInt(10));
             }
             return builder.toString();
@@ -114,11 +114,31 @@ public class MemberService {
         String email = request.getEmail();
         Member member =  memberRepository.findByEmail(email)
                 .orElseThrow(MemberNotFoundException::new);
+
+        String newPwd = createRandomPassword();
+        member.setPassword(encoder.encode(newPwd));
+        memberRepository.save(member);
+
         mailService.sendEmail(
                 member.getEmail(),
                 "원툴 비밀번호 찾기",
-                member.getPassword()
+                newPwd
         );
         return true;
+    }
+
+    private String createRandomPassword() {
+        int length = 15;
+        try {
+            Random random = SecureRandom.getInstanceStrong();
+            StringBuilder builder = new StringBuilder();
+            for (int i = 0; i < length; i++) {
+                builder.append(random.nextInt(10));
+            }
+            return builder.toString();
+        } catch (NoSuchAlgorithmException e) {
+            log.debug("MemberService.createRandomPassword() exception occur");
+            throw new BusinessLogicException();
+        }
     }
 }
