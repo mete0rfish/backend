@@ -1,9 +1,9 @@
 package com.onetool.server.member.controller;
 
+import com.onetool.server.member.domain.Member;
+import com.onetool.server.member.dto.*;
 import com.onetool.server.member.service.MemberService;
-import com.onetool.server.member.dto.LoginRequest;
-import com.onetool.server.member.dto.MemberCreateRequest;
-import com.onetool.server.member.dto.MemberCreateResponse;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -53,5 +53,15 @@ public class MemberController {
         boolean response = memberService.verifiedCode(email, authCode);
 
         return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @PostMapping("/password")
+    public ResponseEntity findPwdCheck(@RequestBody MemberFindPwdRequest request) {
+        boolean successFlag = memberService.findLostPwd(request);
+        if(successFlag) {
+            return ResponseEntity.ok("이메일을 발송했습니다.");
+        } else {
+            return ResponseEntity.badRequest().body("이메일 발송 과정에서 오류가 발생했습니다.");
+        }
     }
 }
