@@ -121,4 +121,23 @@ public class MemberService {
         );
         return true;
     }
+
+    public void updateMember(Long id, MemberUpdateRequest request) {
+        Member member = memberRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("회원이 존재하지 않습니다."));
+
+        Member updatedMember = member.updateWith(request);
+        memberRepository.save(updatedMember);
+    }
+
+    public int deleteMember(String password, Long id) {
+        Member member = memberRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("회원이 존재하지 않습니다."));
+
+        if (!encoder.matches(password, member.getPassword())) {
+            return 0;
+        }
+        memberRepository.delete(member);
+        return 1;
+    }
 }
