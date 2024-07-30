@@ -7,11 +7,11 @@ import com.onetool.server.member.domain.Member;
 import static com.onetool.server.cart.dto.CartResponse.CartItems;
 
 public interface CartService {
-    CartItems showCart(MemberAuthContext user);
+    Object showCart(MemberAuthContext user);
 
-    void addBlueprintToCart(MemberAuthContext user, Long blueprintId);
+    String addBlueprintToCart(MemberAuthContext user, Long blueprintId);
 
-    void deleteBlueprintInCart(MemberAuthContext user, Long blueprintId);
+    String deleteBlueprintInCart(MemberAuthContext user, Long blueprintId);
 
     Member findMemberWithCart(Long id);
 

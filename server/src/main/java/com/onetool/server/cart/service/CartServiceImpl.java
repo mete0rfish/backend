@@ -25,17 +25,14 @@ public class CartServiceImpl implements CartService{
     private final BlueprintRepository blueprintRepository;
     private final CartBlueprintRepository cartBlueprintRepository;
 
-    public CartItems showCart(MemberAuthContext user){
+    public Object showCart(MemberAuthContext user){
         Member member = findMemberWithCart(user.getId());
         Cart cart = member.getCart();
-        if(cart == null) {
-            throw new BaseException(NO_ITEM_IN_CART);
-        }
+        if(cart == null) return "장바구니에 상품이 없습니다.";
         return CartItems.cartItems(cart.getTotalPrice(), cart.getCartItems());
     }
 
-
-    public void addBlueprintToCart(MemberAuthContext user,
+    public String addBlueprintToCart(MemberAuthContext user,
                                    Long blueprintId){
         Member member = findMemberWithCart(user.getId());
         Cart cart = member.getCart();
@@ -59,10 +56,10 @@ public class CartServiceImpl implements CartService{
                 .sum());
 
         cartRepository.save(cart);
-
+        return "장바구니에 추가됐습니다.";
     }
 
-    public void deleteBlueprintInCart(MemberAuthContext user,
+    public String deleteBlueprintInCart(MemberAuthContext user,
                                       Long blueprintId){
         Member member = findMemberWithCart(user.getId());
         Cart cart = member.getCart();
@@ -81,6 +78,7 @@ public class CartServiceImpl implements CartService{
                 .sum());
 
         cartRepository.save(cart);
+        return "삭제됐습니다.";
     }
 
     public Blueprint getBlueprint(Long blueprintId) {
