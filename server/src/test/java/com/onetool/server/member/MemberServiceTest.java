@@ -1,15 +1,16 @@
 package com.onetool.server.member;
 
-import groovy.util.logging.Slf4j;
+import com.onetool.server.member.dto.MemberCreateResponse;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 
 import java.util.Map;
@@ -20,6 +21,8 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 public class MemberServiceTest {
+
+    private ExtractableResponse<Response> memberCreateResponse;
 
     @Test
     void create_member() {
@@ -48,6 +51,29 @@ public class MemberServiceTest {
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value()),
                 () -> assertThat(result.getString("email")).isEqualTo("admin@example.com"),
                 () -> assertThat(result.getString("name")).isEqualTo("홍길동")
+        );
+    }
+
+    @Test
+    @DisplayName("멤버가 삭제되는지 확인")
+    void memberDelete() {
+
+        // given
+        if (memberCreateResponse == null) {
+            throw new IllegalStateException("회원이 생성되지 않았습니다.");
+        }
+        final Long userId = memberCreateResponse.jsonPath().getLong("id");
+
+        // when
+        final ExtractableResponse<Response> deleteResponse = RestAssured.given().log().all()
+                .when().delete("/users/" + userId)
+                .then().log().all()
+                .extract();
+
+        // then
+        assertAll(
+                () -> assertThat(deleteResponse.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                () -> assertThat(deleteResponse.body().asString()).isEqualTo("회원 탈퇴가 완료되었습니다.")
         );
     }
 }
