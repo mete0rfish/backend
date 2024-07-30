@@ -42,6 +42,7 @@ public record BlueprintResponse(
     }
     public static BlueprintResponse items(Blueprint blueprint){
         return BlueprintResponse.builder()
+                .id(blueprint.getId())
                 .creatorName(blueprint.getCreatorName())
                 .blueprintName(blueprint.getBlueprintName())
                 .standardPrice(blueprint.getStandardPrice())
