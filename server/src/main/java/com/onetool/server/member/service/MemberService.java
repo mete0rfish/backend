@@ -7,11 +7,9 @@ import com.onetool.server.global.exception.DuplicateMemberException;
 import com.onetool.server.global.exception.MemberNotFoundException;
 import com.onetool.server.global.redis.RedisService;
 import com.onetool.server.mail.MailService;
+import com.onetool.server.member.dto.*;
 import com.onetool.server.member.repository.MemberRepository;
 import com.onetool.server.member.domain.Member;
-import com.onetool.server.member.dto.LoginRequest;
-import com.onetool.server.member.dto.MemberCreateRequest;
-import com.onetool.server.member.dto.MemberCreateResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,6 +17,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.swing.text.html.Option;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.time.Duration;
@@ -109,5 +108,17 @@ public class MemberService {
         String redisAuthCode = redisService.getValues(AUTH_CODE_PREFIX + email);
 
         return redisService.checkExistsValue(redisAuthCode) && redisAuthCode.equals(authCode);
+    }
+
+    public boolean findLostPwd(MemberFindPwdRequest request) {
+        String email = request.getEmail();
+        Member member =  memberRepository.findByEmail(email)
+                .orElseThrow(MemberNotFoundException::new);
+        mailService.sendEmail(
+                member.getEmail(),
+                "원툴 비밀번호 찾기",
+                member.getPassword()
+        );
+        return true;
     }
 }
