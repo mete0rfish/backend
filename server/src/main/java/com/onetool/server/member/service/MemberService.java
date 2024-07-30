@@ -145,7 +145,6 @@ public class MemberService {
         memberRepository.delete(member);
         return 1;
     }
-}
 
     private String createRandomPassword() {
         int length = 15;
