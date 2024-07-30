@@ -20,13 +20,13 @@ public class MailService {
                           String title,
                           String text) {
         SimpleMailMessage emailForm = createEmailForm(toEmail, title, text);
-        //try {
+        try {
             emailSender.send(emailForm);
-//        } catch (RuntimeException e) {
-//            log.error("MailService.sendEmail exception occur toEmail: {}, " +
-//                    "title: {}, text: {}", toEmail, title, text);
-//            throw new BusinessLogicException();
-//        }
+        } catch (RuntimeException e) {
+            log.error("MailService.sendEmail exception occur toEmail: {}, " +
+                    "title: {}, text: {}", toEmail, title, text);
+            throw new BusinessLogicException();
+        }
     }
 
     // 발신할 이메일 데이터 세팅
