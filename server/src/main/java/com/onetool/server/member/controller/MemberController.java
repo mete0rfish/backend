@@ -1,5 +1,6 @@
 package com.onetool.server.member.controller;
 
+import com.onetool.server.global.auth.login.PrincipalDetails;
 import com.onetool.server.member.domain.Member;
 import com.onetool.server.member.dto.*;
 import com.onetool.server.member.service.MemberService;
@@ -10,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 
 import java.net.URI;
 
@@ -62,6 +64,31 @@ public class MemberController {
             return ResponseEntity.ok("이메일을 발송했습니다.");
         } else {
             return ResponseEntity.badRequest().body("이메일 발송 과정에서 오류가 발생했습니다.");
+        }
+    }
+
+    @PutMapping("/{id}") //TODO 임시, 수정해야함
+    public ResponseEntity<String> updateMember(
+            @PathVariable Long id,
+            @Valid @RequestBody MemberUpdateRequest request,
+            @AuthenticationPrincipal PrincipalDetails principalDetails) {
+
+        memberService.updateMember(id, request);
+
+        return ResponseEntity.ok("회원 정보가 수정되었습니다.");
+    }
+
+    @DeleteMapping("users/{id}")
+    public ResponseEntity<String> deleteMember(@PathVariable Long id,
+                                               @RequestParam("password") String password,
+                                               @AuthenticationPrincipal PrincipalDetails principalDetails) {
+
+        int result = memberService.deleteMember(password, id);
+
+        if (result > 0) {
+            return ResponseEntity.ok("회원 탈퇴가 완료되었습니다.");
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("비밀번호가 일치하지 않습니다.");
         }
     }
 }
