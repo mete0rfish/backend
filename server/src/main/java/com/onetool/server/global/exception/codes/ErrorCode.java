@@ -63,8 +63,8 @@ public enum ErrorCode implements BaseCode {
 
     // 4xx : client error
 
-    //자잘한 에러
-    SEARCH_KEYWORD_TOO_SHORT(HttpStatus.BAD_REQUEST, "KEYWORD-0000", "검색어는 3글자부터 입력하세요."),
+    //사용자 에러
+    NON_EXIST_USER(HttpStatus.NOT_FOUND, "MEMBER-0001", "존재하지 않는 회원입니다"),
 
     //바인딩 에러
     BINDING_ERROR(HttpStatus.BAD_REQUEST, "BINDING-0000", "바인딩에 실패했습니다."),
@@ -74,11 +74,18 @@ public enum ErrorCode implements BaseCode {
     BAD_REQUEST(HttpStatus.BAD_REQUEST, "COMMON-0000", "잘못된 요청입니다."),
     EXIST_EMAIL(HttpStatus.BAD_REQUEST, "COMMON-0002", "이미 존재하는 회원입니다."),
 
+    //도면 에러
+    NO_BLUEPRINT_FOUND(HttpStatus.NOT_FOUND, "BLUEPRINT-0000", "도면이 존재하지 않습니다."),
+
+    //장바구니 에러
+    NO_ITEM_IN_CART(HttpStatus.NO_CONTENT, "CART-0000", "장바구니에 상품이 없습니다."),
+
 
     //Qna 에러
-    NO_QNA(HttpStatus.NO_CONTENT, "QNA-0000", "게시된 문의사항이 없습니다."),
+    NO_QNA_CONTENT(HttpStatus.NO_CONTENT, "QNA-0000", "게시된 문의사항이 없습니다."),
+    UNAVAILABLE_TO_MODIFY(HttpStatus.FORBIDDEN, "QNA-0001", "게시글에 대한 권한이 없습니다."),
+    NO_QNA_REPLY(HttpStatus.NO_CONTENT, "QNA-0002", "유효한 댓글이 아닙니다."),
     /*
-    *
     *
     * */
 

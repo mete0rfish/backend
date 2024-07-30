@@ -6,6 +6,7 @@ import lombok.Builder;
 import java.math.BigInteger;
 import java.time.LocalDateTime;
 
+@Builder
 public record BlueprintResponse(
         Long id,
         String blueprintName,
@@ -38,5 +39,14 @@ public record BlueprintResponse(
                 blueprint.getCreatorName(),
                 blueprint.getDownloadLink()
         );
+    }
+    public static BlueprintResponse items(Blueprint blueprint){
+        return BlueprintResponse.builder()
+                .creatorName(blueprint.getCreatorName())
+                .blueprintName(blueprint.getBlueprintName())
+                .standardPrice(blueprint.getStandardPrice())
+                .salePrice(blueprint.getSalePrice())
+                .blueprintImg(blueprint.getBlueprintImg())
+                .build();
     }
 }
