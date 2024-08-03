@@ -22,7 +22,7 @@ public class Cart extends BaseEntity {
     private Long totalPrice;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")
+    @JoinColumn(name = "member_cart_id")
     private Member member;
 
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL)
@@ -30,7 +30,7 @@ public class Cart extends BaseEntity {
 
     private Cart(Member member){
         this.member = member;
-        member.initCart(this);
+//        member.initCart(this);
         this.totalPrice = 0L;
     }
 
@@ -40,5 +40,9 @@ public class Cart extends BaseEntity {
 
     public void updateTotalPrice(Long totalPrice){
         this.totalPrice = totalPrice;
+    }
+
+    public boolean isCartEmpty(){
+        return cartItems.isEmpty();
     }
 }

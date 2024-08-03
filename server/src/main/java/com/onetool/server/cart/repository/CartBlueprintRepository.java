@@ -6,5 +6,5 @@ import com.onetool.server.cart.CartBlueprint;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface CartBlueprintRepository extends JpaRepository<CartBlueprint, Long> {
-    CartBlueprint findByCartAndBlueprint(Cart cart, Blueprint blueprint);
+    boolean existsByCartAndBlueprint(Cart cart, Blueprint blueprint);
 }

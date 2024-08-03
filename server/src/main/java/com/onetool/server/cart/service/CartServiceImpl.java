@@ -28,29 +28,24 @@ public class CartServiceImpl implements CartService{
     public Object showCart(MemberAuthContext user){
         Member member = findMemberWithCart(user.getId());
         Cart cart = member.getCart();
-        if(cart == null) return "장바구니에 상품이 없습니다.";
+        if(cart.isCartEmpty()) return "장바구니에 상품이 없습니다.";
         return CartItems.cartItems(cart.getTotalPrice(), cart.getCartItems());
     }
 
     public String addBlueprintToCart(MemberAuthContext user,
-                                   Long blueprintId){
+                                     Long blueprintId){
         Member member = findMemberWithCart(user.getId());
         Cart cart = member.getCart();
-        if (cart == null) {
-            cart = Cart.createCart(member);
-            cartRepository.save(cart);
+        Blueprint blueprint = getBlueprint(blueprintId);
+        if(cartBlueprintRepository.existsByCartAndBlueprint(cart, blueprint)){
+            throw new BaseException(ALREADY_EXIST_BLUEPRINT_IN_CART);
         }
 
-        Blueprint blueprint = getBlueprint(blueprintId);
-        CartBlueprint existingCartBlueprint = cartBlueprintRepository.findByCartAndBlueprint(cart, blueprint);
-
-        // 새로운 상품을 추가합니다.
-        CartBlueprint newCartBlueprint = CartBlueprint.newCartBlueprint(cart, blueprint);
+        CartBlueprint newCartBlueprint = CartBlueprint.addBlueprintToCart(cart, blueprint);
 
         cartBlueprintRepository.save(newCartBlueprint);
         cart.getCartItems().add(newCartBlueprint);
 
-        // 총 가격을 업데이트합니다. 일단 정가를 더했음
         cart.updateTotalPrice(cart.getCartItems().stream()
                 .mapToLong(item -> item.getBlueprint().getStandardPrice())
                 .sum());
@@ -63,15 +58,13 @@ public class CartServiceImpl implements CartService{
                                       Long blueprintId){
         Member member = findMemberWithCart(user.getId());
         Cart cart = member.getCart();
-        if(cart == null){
-            throw new BaseException(NO_ITEM_IN_CART);
-        }
         CartBlueprint cartBlueprint = cart.getCartItems().stream()
                 .filter(cartItem -> cartItem.getBlueprint().getId().equals(blueprintId))
                 .findFirst()
                 .orElseThrow(() -> new BaseException(NO_BLUEPRINT_FOUND));
-        cart.getCartItems().remove(cartBlueprint);
+
         cartBlueprintRepository.delete(cartBlueprint);
+        cart.getCartItems().remove(cartBlueprint);
 
         cart.updateTotalPrice(cart.getCartItems().stream()
                 .mapToLong(item -> item.getBlueprint().getStandardPrice())

@@ -91,7 +91,7 @@ public class Member extends BaseEntity {
         this.socialId = socialId;
         this.qnaBoards = qnaBoards;
         this.qnaReplies = qnaReplies;
-        this.cart = cart;
+        this.cart = Cart.createCart(this);
     }
 
     public Member updateWith(MemberUpdateRequest request) {
