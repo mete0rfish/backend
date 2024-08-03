@@ -4,7 +4,6 @@ import com.onetool.server.blueprint.Blueprint;
 import com.onetool.server.global.auth.MemberAuthContext;
 import com.onetool.server.member.domain.Member;
 
-import static com.onetool.server.cart.dto.CartResponse.CartItems;
 
 public interface CartService {
     Object showCart(MemberAuthContext user);
