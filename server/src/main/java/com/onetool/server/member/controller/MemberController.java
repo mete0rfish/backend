@@ -67,12 +67,12 @@ public class MemberController {
         }
     }
 
-    @PutMapping("/{id}") //TODO 임시, 수정해야함
+    @PutMapping //TODO 임시, 수정해야함
     public ResponseEntity<String> updateMember(
-            @PathVariable Long id,
             @Valid @RequestBody MemberUpdateRequest request,
             @AuthenticationPrincipal PrincipalDetails principalDetails) {
 
+        Long id = principalDetails.getContext().getId();
         memberService.updateMember(id, request);
 
         return ResponseEntity.ok("회원 정보가 수정되었습니다.");
