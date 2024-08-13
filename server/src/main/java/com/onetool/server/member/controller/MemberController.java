@@ -78,17 +78,14 @@ public class MemberController {
         return ResponseEntity.ok("회원 정보가 수정되었습니다.");
     }
 
-    @DeleteMapping("users/{id}")
-    public ResponseEntity<String> deleteMember(@PathVariable Long id,
-                                               @RequestParam("password") String password,
-                                               @AuthenticationPrincipal PrincipalDetails principalDetails) {
+    @DeleteMapping
+    public ResponseEntity<String> deleteMember(
+           @AuthenticationPrincipal PrincipalDetails principalDetails
+    ) {
 
-        int result = memberService.deleteMember(password, id);
+        Long id = principalDetails.getContext().getId();
+        memberService.deleteMember(id);
 
-        if (result > 0) {
-            return ResponseEntity.ok("회원 탈퇴가 완료되었습니다.");
-        } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("비밀번호가 일치하지 않습니다.");
-        }
+        return ResponseEntity.ok("회원 탈퇴가 완료되었습니다.");
     }
 }
