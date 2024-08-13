@@ -135,15 +135,10 @@ public class MemberService {
         memberRepository.save(updatedMember);
     }
 
-    public int deleteMember(String password, Long id) {
+    public void deleteMember(Long id) {
         Member member = memberRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("회원이 존재하지 않습니다."));
-
-        if (!encoder.matches(password, member.getPassword())) {
-            return 0;
-        }
         memberRepository.delete(member);
-        return 1;
     }
 
     private String createRandomPassword() {

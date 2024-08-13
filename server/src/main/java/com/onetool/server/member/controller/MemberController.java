@@ -67,28 +67,25 @@ public class MemberController {
         }
     }
 
-    @PutMapping("/{id}") //TODO 임시, 수정해야함
+    @PutMapping //TODO 임시, 수정해야함
     public ResponseEntity<String> updateMember(
-            @PathVariable Long id,
             @Valid @RequestBody MemberUpdateRequest request,
             @AuthenticationPrincipal PrincipalDetails principalDetails) {
 
+        Long id = principalDetails.getContext().getId();
         memberService.updateMember(id, request);
 
         return ResponseEntity.ok("회원 정보가 수정되었습니다.");
     }
 
-    @DeleteMapping("users/{id}")
-    public ResponseEntity<String> deleteMember(@PathVariable Long id,
-                                               @RequestParam("password") String password,
-                                               @AuthenticationPrincipal PrincipalDetails principalDetails) {
+    @DeleteMapping
+    public ResponseEntity<String> deleteMember(
+           @AuthenticationPrincipal PrincipalDetails principalDetails
+    ) {
 
-        int result = memberService.deleteMember(password, id);
+        Long id = principalDetails.getContext().getId();
+        memberService.deleteMember(id);
 
-        if (result > 0) {
-            return ResponseEntity.ok("회원 탈퇴가 완료되었습니다.");
-        } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("비밀번호가 일치하지 않습니다.");
-        }
+        return ResponseEntity.ok("회원 탈퇴가 완료되었습니다.");
     }
 }
