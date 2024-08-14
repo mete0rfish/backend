@@ -27,10 +27,4 @@ public class OrderController {
         return ApiResponse.onSuccess(orderService.getMemberInfoForOrder(principal.getContext(), request));
     }
 
-    //결제 완료 시
-    @PostMapping("/orders/complete")
-    public ApiResponse<?> createOrder(@AuthenticationPrincipal PrincipalDetails principal,
-                                      @RequestBody OrderRequest request) {
-        return ApiResponse.onSuccess(orderService.createOrders(principal.getContext(), request));
-    }
 }

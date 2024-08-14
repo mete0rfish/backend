@@ -1,7 +1,7 @@
 package com.onetool.server.order.dto.response;
 
-import com.onetool.server.diabetes.Diabetes;
-import com.onetool.server.diabetes.dto.DiabetesResponse;
+import com.onetool.server.blueprint.Blueprint;
+import com.onetool.server.blueprint.dto.BlueprintResponse;
 import com.onetool.server.member.domain.Member;
 import com.onetool.server.member.dto.MemberSimpleInfoDto;
 import com.onetool.server.order.Orders;
@@ -15,31 +15,29 @@ public class OrderResponse {
     public record OrderPageMemberResponseDto(
             Long totalPrice,
             MemberSimpleInfoDto memberInfo,
-            List<DiabetesResponse> items
+            List<BlueprintResponse> items
     ){
-        public static OrderPageMemberResponseDto orderPage(Long totalPrice, Member member, List<Diabetes> diabetes){
+        public static OrderPageMemberResponseDto orderPage(Long totalPrice, Member member, List<Blueprint> diabetes){
             return OrderPageMemberResponseDto.builder()
                     .totalPrice(totalPrice)
                     .memberInfo(MemberSimpleInfoDto.makeMemberSimpInfoDto(member))
-                    .items(diabetes.stream().map(DiabetesResponse::items).toList())
+                    .items(diabetes.stream().map(BlueprintResponse::items).toList())
                     .build();
         }
     }
 
     @Builder
     public record OrderCompleteResponseDto(
-            String orderCode,
             Long totalPrice,
-            List<DiabetesResponse> items
+            List<BlueprintResponse> blueprints
     ){
         public static OrderCompleteResponseDto response(Orders orders){
             return OrderCompleteResponseDto.builder()
-                    .orderCode(orders.getOrderCode())
                     .totalPrice(orders.getTotalPrice())
-                    .items(orders.getOrderItems()
+                    .blueprints(orders.getOrderItems()
                             .stream()
                             .map(orderBlueprint ->
-                                    DiabetesResponse.items(orderBlueprint.getDiabetes()))
+                                    BlueprintResponse.items(orderBlueprint.getBlueprint()))
                             .toList())
                     .build();
         }
