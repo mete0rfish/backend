@@ -11,8 +11,4 @@ public interface CartService {
     String addBlueprintToCart(MemberAuthContext user, Long blueprintId);
 
     String deleteBlueprintInCart(MemberAuthContext user, Long blueprintId);
-
-    Member findMemberWithCart(Long id);
-
-    Blueprint getBlueprint(Long blueprintId);
 }

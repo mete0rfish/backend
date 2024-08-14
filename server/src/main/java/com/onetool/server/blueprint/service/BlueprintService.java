@@ -85,8 +85,6 @@ public class BlueprintService {
                 .saleExpiredDate(blueprintResponse.saleExpiredDate())
                 .creatorName(blueprintResponse.creatorName())
                 .downloadLink(blueprintResponse.downloadLink())
-                .orderBlueprint(existingBlueprint.getOrderBlueprint())
-                .cartBlueprints(existingBlueprint.getCartBlueprints())
                 .build();
 
         blueprintRepository.save(updatedBlueprint);
