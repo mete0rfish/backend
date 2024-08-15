@@ -42,6 +42,12 @@ public class MemberController {
         return ResponseEntity.created(URI.create("/users/" + response.id())).body(response);
     }
 
+    @PostMapping("/email")
+    public  ResponseEntity findEmail(@RequestBody MemberFindEmailRequest request) {
+        String email = memberService.findEmail(request);
+        return ResponseEntity.ok(email);
+    }
+
     @PostMapping("/emails/verification-requests")
     public ResponseEntity sendMessage(@RequestParam("email") @Valid String email) {
         memberService.sendCodeToEmail(email);

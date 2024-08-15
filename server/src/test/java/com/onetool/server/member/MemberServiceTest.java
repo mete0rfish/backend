@@ -144,4 +144,46 @@ public class MemberServiceTest {
         assertThat(memberResponse.jsonPath().getBoolean("isNative")).isTrue();
         assertThat(memberResponse.jsonPath().getString("user_registered_at")).isEqualTo(LocalDate.now().toString());
     }
+
+    @Test
+    @DisplayName("이름과 전화번호를 통한 이메일 찾기 성공 테스트")
+    void findEmailSuccess() {
+        // Step 1: Sign up the user
+        final Map<String, Object> signupParams = Map.of(
+                "email", "admin@example.com",
+                "password", "1234",
+                "name", "홍길동",
+                "birthDate", "2001-03-26",
+                "development_field", "백엔드",
+                "phoneNum", "01000000000",
+                "isNative", true
+        );
+
+        // 회원 가입 요청
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(signupParams)
+                .when().post("/users/signup")
+                .then().log().all()
+                .statusCode(201);
+
+        final Map<String, Object> findEmailParams = Map.of(
+                "name", "홍길동",
+                "phone_num", "01000000000"
+        );
+
+        // 이메일 찾기 요청
+        ExtractableResponse<Response> findEmailResponse = RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(findEmailParams)
+                .when().post("/users/email")
+                .then().log().all()
+                .statusCode(200)
+                .extract();
+
+        String expectedEmail = "admin@example.com";
+        assertThat(findEmailResponse.body().asString()).isEqualTo(expectedEmail);
+
+        System.out.println("Find email response body: " + findEmailResponse.body().asString());
+    }
 }

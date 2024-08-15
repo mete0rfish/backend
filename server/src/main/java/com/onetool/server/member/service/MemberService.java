@@ -70,6 +70,16 @@ public class MemberService {
         return jwtUtil.create(context);
     }
 
+    public String findEmail(MemberFindEmailRequest request) {
+        String name = request.name();
+        String phoneNum = request.phone_num();
+
+        Member member = memberRepository.findByNameAndPhoneNum(name, phoneNum)
+                .orElseThrow(() -> new RuntimeException("회원 정보가 존재하지 않습니다."));
+
+        return member.getEmail();
+    }
+
     public void sendCodeToEmail(String toEmail) {
         this.checkDuplicatedEmail(toEmail);
         String title = "Travel with me 이메일 인증 번호";
