@@ -30,7 +30,6 @@ public class Cart extends BaseEntity {
 
     private Cart(Member member){
         this.member = member;
-//        member.initCart(this);
         this.totalPrice = 0L;
     }
 

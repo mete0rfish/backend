@@ -34,53 +34,70 @@ public class CartServiceImpl implements CartService{
 
     public String addBlueprintToCart(MemberAuthContext user,
                                      Long blueprintId){
+
         Member member = findMemberWithCart(user.getId());
         Cart cart = member.getCart();
-        Blueprint blueprint = getBlueprint(blueprintId);
-        if(cartBlueprintRepository.existsByCartAndBlueprint(cart, blueprint)){
-            throw new BaseException(ALREADY_EXIST_BLUEPRINT_IN_CART);
-        }
-
+        Blueprint blueprint = findBlueprint(blueprintId);
+        isBlueprintAlreadyInCart(cart, blueprint);
         CartBlueprint newCartBlueprint = CartBlueprint.addBlueprintToCart(cart, blueprint);
-
-        cartBlueprintRepository.save(newCartBlueprint);
-        cart.getCartItems().add(newCartBlueprint);
-
-        cart.updateTotalPrice(cart.getCartItems().stream()
-                .mapToLong(item -> item.getBlueprint().getStandardPrice())
-                .sum());
-
-        cartRepository.save(cart);
+        cartBlueprintRepository.save(CartBlueprint.addBlueprintToCart(cart, blueprint));
+        updateCartAndSave(cart, newCartBlueprint, Action.ADD);
         return "장바구니에 추가됐습니다.";
     }
 
     public String deleteBlueprintInCart(MemberAuthContext user,
                                       Long blueprintId){
+
         Member member = findMemberWithCart(user.getId());
         Cart cart = member.getCart();
-        CartBlueprint cartBlueprint = cart.getCartItems().stream()
-                .filter(cartItem -> cartItem.getBlueprint().getId().equals(blueprintId))
-                .findFirst()
-                .orElseThrow(() -> new BaseException(NO_BLUEPRINT_FOUND));
-
+        CartBlueprint cartBlueprint = findCartBlueprint(cart, blueprintId);
         cartBlueprintRepository.delete(cartBlueprint);
-        cart.getCartItems().remove(cartBlueprint);
-
-        cart.updateTotalPrice(cart.getCartItems().stream()
-                .mapToLong(item -> item.getBlueprint().getStandardPrice())
-                .sum());
-
-        cartRepository.save(cart);
+        updateCartAndSave(cart, cartBlueprint, Action.REMOVE);
         return "삭제됐습니다.";
     }
 
-    public Blueprint getBlueprint(Long blueprintId) {
+    private Blueprint findBlueprint(Long blueprintId) {
         return blueprintRepository.findById(blueprintId).orElseThrow(() -> new BaseException(NO_BLUEPRINT_FOUND));
     }
 
-    public Member findMemberWithCart(Long id) {
+    private Member findMemberWithCart(Long id) {
         return memberRepository
                 .findByIdWithCart(id)
                 .orElseThrow(() -> new BaseException(NON_EXIST_USER));
     }
+
+    private void isBlueprintAlreadyInCart(Cart cart, Blueprint blueprint) {
+        if(cartBlueprintRepository.existsByCartAndBlueprint(cart, blueprint)) throw new BaseException(ALREADY_EXIST_BLUEPRINT_IN_CART);
+    }
+
+    private CartBlueprint findCartBlueprint(Cart cart, Long blueprintId) {
+        return cart.getCartItems().stream()
+                .filter(cartItem -> cartItem.getBlueprint().getId().equals(blueprintId))
+                .findFirst()
+                .orElseThrow(() -> new BaseException(NO_BLUEPRINT_FOUND));
+    }
+
+    private void updateCartAndSave(Cart cart, CartBlueprint cartBlueprint, Action action) {
+        if (action == Action.ADD) {
+            cart.getCartItems().add(cartBlueprint);
+        } else if (action == Action.REMOVE) {
+            cart.getCartItems().remove(cartBlueprint);
+        }
+
+        long totalPrice = calculateTotalPrice(cart);
+        cart.updateTotalPrice(totalPrice);
+        cartRepository.save(cart);
+    }
+
+    private long calculateTotalPrice(Cart cart) {
+        return cart.getCartItems().stream()
+                .mapToLong(item -> item.getBlueprint().getStandardPrice())
+                .sum();
+    }
+
+    private enum Action {
+        ADD,
+        REMOVE
+    }
+
 }
