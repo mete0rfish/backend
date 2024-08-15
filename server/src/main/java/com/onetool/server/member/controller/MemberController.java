@@ -42,6 +42,12 @@ public class MemberController {
         return ResponseEntity.created(URI.create("/users/" + response.id())).body(response);
     }
 
+    @PostMapping("/email")
+    public  ResponseEntity findEmail(@RequestBody MemberFindEmailRequest request) {
+        String email = memberService.findEmail(request);
+        return ResponseEntity.ok(email);
+    }
+
     @PostMapping("/emails/verification-requests")
     public ResponseEntity sendMessage(@RequestParam("email") @Valid String email) {
         memberService.sendCodeToEmail(email);
@@ -88,4 +94,19 @@ public class MemberController {
 
         return ResponseEntity.ok("회원 탈퇴가 완료되었습니다.");
     }
+
+    @GetMapping
+    public ResponseEntity<MemberInfoResponse> getMemberInfo(
+            @AuthenticationPrincipal PrincipalDetails principalDetails) {
+
+        Long id = principalDetails.getContext().getId();
+
+        try {
+            MemberInfoResponse memberResponse = memberService.getMemberInfo(id);
+            return ResponseEntity.ok(memberResponse);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+    }
+
 }

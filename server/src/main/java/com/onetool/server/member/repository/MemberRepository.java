@@ -18,4 +18,6 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     @Query("SELECT m FROM Member m LEFT JOIN FETCH m.cart WHERE m.id = :id")
     Optional<Member> findByIdWithCart(@Param("id") Long id);
+
+    Optional<Member> findByNameAndPhoneNum(String name, String phoneNum);
 }

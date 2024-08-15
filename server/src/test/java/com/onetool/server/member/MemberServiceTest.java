@@ -13,6 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.annotation.DirtiesContext;
 
+import java.time.LocalDate;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -75,5 +76,114 @@ public class MemberServiceTest {
                 () -> assertThat(deleteResponse.statusCode()).isEqualTo(HttpStatus.OK.value()),
                 () -> assertThat(deleteResponse.body().asString()).isEqualTo("회원 탈퇴가 완료되었습니다.")
         );
+    }
+
+    @Test
+    @DisplayName("로그인 후 회원 정보 조회 성공 테스트")
+    void loginAndGetMemberSuccess() {
+        // given (회원 가입)
+        final Map<String, Object> signupParams = Map.of(
+                "email", "admin@example.com",
+                "password", "1234",
+                "name", "홍길동",
+                "birthDate", "2001-03-26",
+                "development_field", "백엔드",
+                "phoneNum", "01000000000",
+                "isNative", true
+        );
+
+        // 회원 가입 요청
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(signupParams)
+                .when().post("/users/signup")
+                .then().log().all()
+                .statusCode(201);
+
+        // given (로그인)
+        final Map<String, String> loginParams = Map.of(
+                "email", "admin@example.com",
+                "password", "1234"
+        );
+
+        // 로그인 요청
+        ExtractableResponse<Response> loginResponse = RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(loginParams)
+                .when().post("/users/login")
+                .then().log().all()
+                .statusCode(200)
+                .extract();
+
+        // 로그인 응답에서 Authorization 헤더 추출
+        String token = loginResponse.header("Authorization");
+        assertThat(token).isNotNull();
+
+        // 토큰에서 "Bearer " 부분 제거
+        token = token.replace("Bearer ", "").trim();
+        System.out.println("Extracted Token: " + token);
+
+        // when (회원 정보 조회)
+        ExtractableResponse<Response> memberResponse = RestAssured.given().log().all()
+                .header("Authorization", "Bearer " + token)
+                .contentType(ContentType.JSON)
+                .when().get("/users")
+                .then().log().all()
+                .statusCode(200)
+                .extract();
+
+        // 응답 본문 출력 (디버깅용)
+        System.out.println("Member response body: " + memberResponse.body().asString());
+
+        // then (조회 결과 검증)
+        assertThat(memberResponse.jsonPath().getString("email")).isEqualTo("admin@example.com");
+        assertThat(memberResponse.jsonPath().getString("name")).isEqualTo("홍길동");
+        assertThat(memberResponse.jsonPath().getString("birthDate")).isEqualTo("2001-03-26");
+        assertThat(memberResponse.jsonPath().getString("development_field")).isEqualTo("백엔드");
+        assertThat(memberResponse.jsonPath().getString("phoneNum")).isEqualTo("01000000000");
+        assertThat(memberResponse.jsonPath().getBoolean("isNative")).isTrue();
+        assertThat(memberResponse.jsonPath().getString("user_registered_at")).isEqualTo(LocalDate.now().toString());
+    }
+
+    @Test
+    @DisplayName("이름과 전화번호를 통한 이메일 찾기 성공 테스트")
+    void findEmailSuccess() {
+        // Step 1: Sign up the user
+        final Map<String, Object> signupParams = Map.of(
+                "email", "admin@example.com",
+                "password", "1234",
+                "name", "홍길동",
+                "birthDate", "2001-03-26",
+                "development_field", "백엔드",
+                "phoneNum", "01000000000",
+                "isNative", true
+        );
+
+        // 회원 가입 요청
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(signupParams)
+                .when().post("/users/signup")
+                .then().log().all()
+                .statusCode(201);
+
+        final Map<String, Object> findEmailParams = Map.of(
+                "name", "홍길동",
+                "phone_num", "01000000000"
+        );
+
+        // 이메일 찾기 요청
+        ExtractableResponse<Response> findEmailResponse = RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(findEmailParams)
+                .when().post("/users/email")
+                .then().log().all()
+                .statusCode(200)
+                .extract();
+
+        String expectedEmail = "admin@example.com";
+        assertThat(findEmailResponse.body().asString()).isEqualTo(expectedEmail);
+
+        System.out.println("Find email response body: " + findEmailResponse.body().asString());
     }
 }
