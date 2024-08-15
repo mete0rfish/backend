@@ -88,4 +88,19 @@ public class MemberController {
 
         return ResponseEntity.ok("회원 탈퇴가 완료되었습니다.");
     }
+
+    @GetMapping
+    public ResponseEntity<MemberInfoResponse> getMemberInfo(
+            @AuthenticationPrincipal PrincipalDetails principalDetails) {
+
+        Long id = principalDetails.getContext().getId();
+
+        try {
+            MemberInfoResponse memberResponse = memberService.getMemberInfo(id);
+            return ResponseEntity.ok(memberResponse);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+    }
+
 }
