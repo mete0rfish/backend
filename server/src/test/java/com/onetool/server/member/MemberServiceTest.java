@@ -186,4 +186,75 @@ public class MemberServiceTest {
 
         System.out.println("Find email response body: " + findEmailResponse.body().asString());
     }
+
+    @Test
+    @DisplayName("로그인후 회원 정보 수정 성공 테스트")
+    void updateMemberSuccess() {
+        final Map<String, Object> signupParams = Map.of(
+                "email", "admin@example.com",
+                "password", "1234",
+                "name", "홍길동",
+                "birthDate", "2001-03-26",
+                "development_field", "백엔드",
+                "phoneNum", "01000000000",
+                "isNative", true,
+                "role", "USER" // 필드 추가
+        );
+
+        ExtractableResponse<Response> signupResponse = RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(signupParams)
+                .when().post("/users/signup")
+                .then().log().all()
+                .statusCode(201)
+                .extract();
+
+        final Map<String, Object> loginParams = Map.of(
+                "email", "admin@example.com",
+                "password", "1234"
+        );
+
+        ExtractableResponse<Response> loginResponse = RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(loginParams)
+                .when().post("/users/login")
+                .then().log().all()
+                .statusCode(200)
+                .extract();
+
+        String token = loginResponse.header("Authorization");
+        assertThat(token).isNotNull();
+        token = token.replace("Bearer ", "").trim();
+        System.out.println("Extracted Token: " + token);
+
+        final Map<String, Object> updateParams = Map.of(
+                "developmentField", "프론트"
+        );
+
+        ExtractableResponse<Response> updateResponse = RestAssured.given().log().all()
+                .header("Authorization", "Bearer " + token) // 인증 헤더 추가
+                .contentType(ContentType.JSON)
+                .body(updateParams)
+                .when().patch("/users")
+                .then().log().all()
+                .statusCode(200)
+                .extract();
+
+        ExtractableResponse<Response> memberResponse = RestAssured.given().log().all()
+                .header("Authorization", "Bearer " + token)
+                .contentType(ContentType.JSON)
+                .when().get("/users")
+                .then().log().all()
+                .statusCode(200)
+                .extract();
+
+        assertThat(memberResponse.jsonPath().getString("email")).isEqualTo("admin@example.com");
+        assertThat(memberResponse.jsonPath().getString("name")).isEqualTo("홍길동");
+        assertThat(memberResponse.jsonPath().getString("birthDate")).isEqualTo("2001-03-26");
+        assertThat(memberResponse.jsonPath().getString("development_field")).isEqualTo("프론트");
+        assertThat(memberResponse.jsonPath().getString("phoneNum")).isEqualTo("01000000000");
+        assertThat(memberResponse.jsonPath().getBoolean("isNative")).isTrue();
+        assertThat(memberResponse.jsonPath().getString("user_registered_at")).isEqualTo(LocalDate.now().toString());
+    }
+
 }
