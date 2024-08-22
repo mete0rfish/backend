@@ -73,7 +73,7 @@ public class MemberController {
         }
     }
 
-    @PutMapping //TODO 임시, 수정해야함
+    @PatchMapping
     public ResponseEntity<String> updateMember(
             @Valid @RequestBody MemberUpdateRequest request,
             @AuthenticationPrincipal PrincipalDetails principalDetails) {

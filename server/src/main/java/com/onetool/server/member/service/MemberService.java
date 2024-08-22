@@ -10,6 +10,7 @@ import com.onetool.server.mail.MailService;
 import com.onetool.server.member.dto.*;
 import com.onetool.server.member.repository.MemberRepository;
 import com.onetool.server.member.domain.Member;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -137,12 +138,13 @@ public class MemberService {
         return true;
     }
 
-    public void updateMember(Long id, MemberUpdateRequest request) {
+    public Member updateMember(Long id, MemberUpdateRequest request) {
         Member member = memberRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("회원이 존재하지 않습니다."));
+                .orElseThrow(() -> new EntityNotFoundException("회원이 존재하지 않습니다."));
 
-        Member updatedMember = member.updateWith(request);
-        memberRepository.save(updatedMember);
+        member.updateWith(request);
+
+        return memberRepository.save(member);
     }
 
     public void deleteMember(Long id) {
