@@ -20,4 +20,6 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     Optional<Member> findByIdWithCart(@Param("id") Long id);
 
     Optional<Member> findByNameAndPhoneNum(String name, String phoneNum);
+
+    boolean existsByEmail(String email);
 }

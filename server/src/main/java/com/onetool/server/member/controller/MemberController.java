@@ -2,6 +2,7 @@ package com.onetool.server.member.controller;
 
 import com.onetool.server.global.auth.login.PrincipalDetails;
 import com.onetool.server.global.exception.ApiResponse;
+import com.onetool.server.global.exception.MemberNotFoundException;
 import com.onetool.server.global.exception.codes.SuccessCode;
 import com.onetool.server.member.dto.*;
 import com.onetool.server.member.service.MemberService;
@@ -41,70 +42,81 @@ public class MemberController {
     }
 
     @PostMapping("/email")
-    public  ResponseEntity findEmail(@RequestBody MemberFindEmailRequest request) {
+    public  ApiResponse<?> findEmail(@RequestBody MemberFindEmailRequest request) {
         String email = memberService.findEmail(request);
-        return ResponseEntity.ok(email);
+        return ApiResponse.onSuccess(email);
     }
 
     @PostMapping("/emails/verification-requests")
-    public ResponseEntity sendMessage(@RequestParam("email") @Valid String email) {
+    public ApiResponse<?> sendMessage(@RequestParam("email") @Valid String email) {
         memberService.sendCodeToEmail(email);
-
-        return new ResponseEntity<>(HttpStatus.OK);
+        return ApiResponse.onSuccess("이메일이 발송되었습니다.");
     }
 
     @GetMapping("/emails/verifications")
-    public ResponseEntity verificationEmail(@RequestParam("email") @Valid String email,
+    public ApiResponse<?> verificationEmail(@RequestParam("email") @Valid String email,
                                             @RequestParam("code") String authCode) {
         boolean response = memberService.verifiedCode(email, authCode);
-
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        return (response) ? ApiResponse.onSuccess("이메일이 인증되었습니다.")
+                : ApiResponse.onFailure("404", "코드가 일치하지 않습니다.", null);
     }
 
     @PostMapping("/password")
-    public ResponseEntity findPwdCheck(@RequestBody MemberFindPwdRequest request) {
+    public ApiResponse<?> findPwdCheck(@RequestBody MemberFindPwdRequest request) {
         boolean successFlag = memberService.findLostPwd(request);
         if(successFlag) {
-            return ResponseEntity.ok("이메일을 발송했습니다.");
+            return ApiResponse.onSuccess("이메일을 발송했습니다.");
         } else {
-            return ResponseEntity.badRequest().body("이메일 발송 과정에서 오류가 발생했습니다.");
+            return ApiResponse.onFailure("403", "이메일 발송 과정에서 오류가 발생했습니다.", null);
         }
     }
 
     @PatchMapping
-    public ResponseEntity<String> updateMember(
+    public ApiResponse<?> updateMember(
             @Valid @RequestBody MemberUpdateRequest request,
             @AuthenticationPrincipal PrincipalDetails principalDetails) {
+
+        if(principalDetails == null) {
+            throw new MemberNotFoundException();
+        }
 
         Long id = principalDetails.getContext().getId();
         memberService.updateMember(id, request);
 
-        return ResponseEntity.ok("회원 정보가 수정되었습니다.");
+        return ApiResponse.onSuccess("회원 정보가 수정되었습니다.");
     }
 
     @DeleteMapping
-    public ResponseEntity<String> deleteMember(
+    public ApiResponse<?> deleteMember(
            @AuthenticationPrincipal PrincipalDetails principalDetails
     ) {
+
+        if(principalDetails == null) {
+            throw new MemberNotFoundException();
+        }
+
 
         Long id = principalDetails.getContext().getId();
         memberService.deleteMember(id);
 
-        return ResponseEntity.ok("회원 탈퇴가 완료되었습니다.");
+        return ApiResponse.onSuccess("회원 탈퇴가 완료되었습니다.");
     }
 
     @GetMapping
-    public ResponseEntity<MemberInfoResponse> getMemberInfo(
+    public ApiResponse<?> getMemberInfo(
             @AuthenticationPrincipal PrincipalDetails principalDetails) {
+
+        if(principalDetails == null) {
+            throw new MemberNotFoundException();
+        }
 
         Long id = principalDetails.getContext().getId();
 
         try {
             MemberInfoResponse memberResponse = memberService.getMemberInfo(id);
-            return ResponseEntity.ok(memberResponse);
+            return ApiResponse.onSuccess(memberResponse);
         } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            return ApiResponse.onFailure("404", "회원을 찾을 수 없습니다.", null);
         }
     }
-
 }

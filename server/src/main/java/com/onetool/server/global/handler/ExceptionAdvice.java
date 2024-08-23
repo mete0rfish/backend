@@ -4,6 +4,8 @@ package com.onetool.server.global.handler;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.onetool.server.global.exception.BaseException;
 import com.onetool.server.global.exception.ApiResponse;
+import com.onetool.server.global.exception.DuplicateMemberException;
+import com.onetool.server.global.exception.MemberNotFoundException;
 import com.onetool.server.global.exception.codes.ErrorCode;
 import com.onetool.server.global.exception.codes.reason.Reason;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +22,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
 import java.io.IOException;
+import java.sql.SQLException;
 
 @Slf4j
 @RestControllerAdvice(annotations = {RestController.class})
@@ -35,6 +38,16 @@ public class ExceptionAdvice {
         String message = e.getBindingResult().getFieldErrors().get(0).getDefaultMessage();
         ApiResponse<?> baseResponse = ApiResponse.onFailure(ErrorCode.BINDING_ERROR.getCode(), message, null);
         return handleExceptionInternal(baseResponse);
+    }
+
+    @ExceptionHandler(MemberNotFoundException.class)
+    public ApiResponse<?> handleNotFoundMemberException(MemberNotFoundException e) {
+        return ApiResponse.onFailure("404", "유저를 찾을 수 없습니다.", null);
+    }
+
+    @ExceptionHandler(DuplicateMemberException.class)
+    public ApiResponse<?> handleDuplicateMemberException(DuplicateMemberException e) {
+        return ApiResponse.onFailure("400", "이메일이 중복됩니다.", null);
     }
 
     /**
