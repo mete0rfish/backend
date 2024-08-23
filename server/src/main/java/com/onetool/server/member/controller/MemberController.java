@@ -1,10 +1,10 @@
 package com.onetool.server.member.controller;
 
 import com.onetool.server.global.auth.login.PrincipalDetails;
-import com.onetool.server.member.domain.Member;
+import com.onetool.server.global.exception.ApiResponse;
+import com.onetool.server.global.exception.codes.SuccessCode;
 import com.onetool.server.member.dto.*;
 import com.onetool.server.member.service.MemberService;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -13,9 +13,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 
-import java.net.URI;
-
-@Controller
+@RestController
 @RequestMapping("/users")
 public class MemberController {
 
@@ -37,9 +35,9 @@ public class MemberController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<MemberCreateResponse> createMember(@RequestBody MemberCreateRequest request) {
+    public ApiResponse<?> createMember(@RequestBody MemberCreateRequest request) {
         MemberCreateResponse response = memberService.createMember(request);
-        return ResponseEntity.created(URI.create("/users/" + response.id())).body(response);
+        return ApiResponse.of(SuccessCode.CREATED, response);
     }
 
     @PostMapping("/email")

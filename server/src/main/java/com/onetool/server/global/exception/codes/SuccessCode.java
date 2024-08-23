@@ -9,7 +9,8 @@ import org.springframework.http.HttpStatus;
 @AllArgsConstructor
 public enum SuccessCode implements BaseCode{
 
-    SUCCESS(HttpStatus.OK, "SUCCESS-0000", "요청에 성공하였습니다.");
+    SUCCESS(HttpStatus.OK, "SUCCESS-0000", "요청에 성공하였습니다."),
+    CREATED(HttpStatus.CREATED, "CREATED-0000", "생성에 성공하였습니다.");
 
     private final HttpStatus httpStatus;
     private final String code;
