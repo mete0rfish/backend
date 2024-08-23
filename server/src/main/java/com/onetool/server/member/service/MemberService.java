@@ -2,9 +2,11 @@ package com.onetool.server.member.service;
 
 import com.onetool.server.global.auth.MemberAuthContext;
 import com.onetool.server.global.auth.jwt.JwtUtil;
+import com.onetool.server.global.exception.BaseException;
 import com.onetool.server.global.exception.BusinessLogicException;
 import com.onetool.server.global.exception.DuplicateMemberException;
 import com.onetool.server.global.exception.MemberNotFoundException;
+import com.onetool.server.global.exception.codes.ErrorCode;
 import com.onetool.server.global.redis.RedisService;
 import com.onetool.server.mail.MailService;
 import com.onetool.server.member.dto.*;
@@ -43,6 +45,11 @@ public class MemberService {
     private long authCodeExpirationMillis;
 
     public MemberCreateResponse createMember(MemberCreateRequest request) {
+        boolean isExist = memberRepository.existsByEmail(request.email());
+        if(isExist) {
+            throw new BaseException(ErrorCode.EXIST_EMAIL);
+        }
+
         Member member = memberRepository.save(request.toEntity(encoder.encode(request.password())));
         log.info("회원가입됨:" + member.getEmail());
         return MemberCreateResponse.of(member);
@@ -82,8 +89,8 @@ public class MemberService {
     }
 
     public void sendCodeToEmail(String toEmail) {
-        this.checkDuplicatedEmail(toEmail);
-        String title = "Travel with me 이메일 인증 번호";
+        //this.checkDuplicatedEmail(toEmail);
+        String title = "[OneTool] 이메일 인증 번호";
         String authCode = this.createCode();
         mailService.sendEmail(toEmail, title, authCode);
         // 이메일 인증 요청 시 인증 번호 Redis에 저장 ( key = "AuthCode " + Email / value = AuthCode )
@@ -115,7 +122,7 @@ public class MemberService {
     }
 
     public boolean verifiedCode(String email, String authCode) {
-        this.checkDuplicatedEmail(email);
+        //this.checkDuplicatedEmail(email);
         String redisAuthCode = redisService.getValues(AUTH_CODE_PREFIX + email);
 
         return redisService.checkExistsValue(redisAuthCode) && redisAuthCode.equals(authCode);
