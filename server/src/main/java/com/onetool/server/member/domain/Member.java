@@ -103,9 +103,6 @@ public class Member extends BaseEntity {
     }
 
     public Member updateWith(MemberUpdateRequest request) {
-        if (request.getEmail() != null) {
-            this.email = request.getEmail();
-        }
         if (request.getName() != null) {
             this.name = request.getName();
         }
