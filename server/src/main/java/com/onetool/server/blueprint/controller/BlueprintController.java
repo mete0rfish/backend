@@ -1,10 +1,9 @@
 package com.onetool.server.blueprint.controller;
-
 import com.onetool.server.blueprint.service.BlueprintService;
 import com.onetool.server.blueprint.dto.BlueprintRequest;
 import com.onetool.server.blueprint.dto.BlueprintResponse;
+import com.onetool.server.global.exception.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -14,33 +13,26 @@ public class BlueprintController {
     private BlueprintService blueprintService;
 
     @PostMapping("/upload")
-    public ResponseEntity<String> createBlueprint(@RequestBody BlueprintRequest blueprintRequest) {
-        boolean success = blueprintService.createBlueprint(blueprintRequest);
-        if (success) {
-            return ResponseEntity.ok("상품이 정상적으로 등록되었습니다.");
-        } else {
-            return ResponseEntity.status(400).body("상품 등록에 실패하였습니다."); //TODO 예외 추가하기
-        }
+    public ApiResponse<String> createBlueprint(@RequestBody BlueprintRequest blueprintRequest) {
+       blueprintService.createBlueprint(blueprintRequest);
+       return ApiResponse.onSuccess("상품이 정상적으로 등록되었습니다.");
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<BlueprintResponse> getBlueprintDetails(@PathVariable Long id) {
+    public ApiResponse<BlueprintResponse> getBlueprintDetails(@PathVariable Long id) {
         BlueprintResponse blueprintResponseDTO = blueprintService.findBlueprintById(id);
-        return ResponseEntity.ok(blueprintResponseDTO);
+        return ApiResponse.onSuccess(blueprintResponseDTO);
     }
 
     @PutMapping("/update")
-    public ResponseEntity<Boolean> updateBlueprint(@RequestBody BlueprintResponse blueprintResponse) {
-        try {
-            boolean success = blueprintService.updateBlueprint(blueprintResponse);
-            return ResponseEntity.ok(success);
-        } catch (Exception e) {
-            return ResponseEntity.ok(false);
-        }
+    public ApiResponse<?> updateBlueprint(@RequestBody BlueprintResponse blueprintResponse) {
+        blueprintService.updateBlueprint(blueprintResponse);
+        return ApiResponse.onSuccess("상품이 정상적으로 수정 되었습니다.");
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Boolean> deleteBlueprint(@PathVariable Long id){
-        return ResponseEntity.ok(blueprintService.deleteBlueprint(id));
+    public ApiResponse<?> deleteBlueprint(@PathVariable Long id){
+        blueprintService.deleteBlueprint(id);
+        return ApiResponse.onSuccess("상품이 정상적으로 삭제 되었습니다.");
     }
 }
