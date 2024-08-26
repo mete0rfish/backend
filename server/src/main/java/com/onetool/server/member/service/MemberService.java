@@ -83,7 +83,7 @@ public class MemberService {
         String phoneNum = request.phone_num();
 
         Member member = memberRepository.findByNameAndPhoneNum(name, phoneNum)
-                .orElseThrow(() -> new RuntimeException("회원 정보가 존재하지 않습니다."));
+                .orElseThrow(MemberNotFoundException::new);
 
         return member.getEmail();
     }
