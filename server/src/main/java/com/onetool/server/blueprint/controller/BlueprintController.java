@@ -6,6 +6,8 @@ import com.onetool.server.global.exception.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/blueprint")
 public class BlueprintController {
@@ -34,5 +36,11 @@ public class BlueprintController {
     public ApiResponse<?> deleteBlueprint(@PathVariable Long id){
         blueprintService.deleteBlueprint(id);
         return ApiResponse.onSuccess("상품이 정상적으로 삭제 되었습니다.");
+    }
+
+    @GetMapping("/sort")
+    public ApiResponse<List<BlueprintResponse>> sortBlueprints(@RequestParam String sortBy) {
+        List<BlueprintResponse> sortedBlueprints = blueprintService.sortBlueprints(sortBy);
+        return ApiResponse.onSuccess(sortedBlueprints);
     }
 }

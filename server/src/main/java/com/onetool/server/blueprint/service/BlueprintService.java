@@ -11,6 +11,8 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -40,7 +42,7 @@ public class BlueprintService {
 
     public boolean createBlueprint(BlueprintRequest blueprintRequest) {
         try {
-            Blueprint blueprint = Blueprint.builder() //TODO 불필요한 부분 수정하기
+            Blueprint blueprint = Blueprint.builder()
                     .id(blueprintRequest.id())
                     .blueprintName(blueprintRequest.blueprintName())
                     .categoryId(blueprintRequest.categoryId())
@@ -95,6 +97,47 @@ public class BlueprintService {
         blueprintRepository.deleteById(id);
         return true;
     };
+
+    public List<BlueprintResponse> sortBlueprints(String sortBy) {
+        List<Blueprint> blueprints = blueprintRepository.findAll();
+
+        Comparator<Blueprint> comparator = getComparator(sortBy);
+
+        List<Blueprint> sortedBlueprints = blueprints.stream()
+                .sorted(comparator)
+                .collect(Collectors.toList());
+
+        return sortedBlueprints.stream()
+                .map(BlueprintResponse::fromEntity)
+                .collect(Collectors.toList());
+    }
+
+    private Comparator<Blueprint> getComparator(String sortBy) {
+        switch (sortBy) {
+            case "price":
+                return Comparator.comparing(blueprint -> {
+                    if (blueprint.getSalePrice() != null && blueprint.getSaleExpiredDate() != null
+                            && blueprint.getSaleExpiredDate().isAfter(LocalDateTime.now())) {
+                        return blueprint.getSalePrice();
+                    } else {
+                        return blueprint.getStandardPrice();
+                    }
+                }, Comparator.nullsLast(Comparator.naturalOrder()));
+
+            case "createdAt":
+                return Comparator.comparing(Blueprint::getCreatedAt, Comparator.nullsLast(Comparator.naturalOrder()));
+
+            case "extension":
+                return Comparator.comparing(Blueprint::getExtension, Comparator.nullsLast(Comparator.naturalOrder()));
+
+            /*case "saleCount":
+                return Comparator.comparing(Blueprint::getSaleCount, Comparator.nullsLast(Comparator.naturalOrder()));
+
+             */
+            default:
+                throw new IllegalArgumentException("Invalid sort type: " + sortBy);
+        }
+    }
 
     public Page<SearchResponse> searchNameAndCreatorWithKeyword(String keyword, Pageable pageable) {
         Page<Blueprint> result = blueprintRepository.findAllNameAndCreatorContaining(keyword, pageable);
