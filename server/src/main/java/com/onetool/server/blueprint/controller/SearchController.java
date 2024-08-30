@@ -80,9 +80,9 @@ public class SearchController {
     ) {
         Page<SearchResponse> responses;
         if(category == null) {
-            responses = blueprintService.findAllByFirstCategory(FirstCategoryType.CATEGORY_INTERIOR, pageable);
+            responses = blueprintService.findAllByFirstCategory(FirstCategoryType.CATEGORY_MACHINE, pageable);
         } else {
-            responses = blueprintService.findAllBySecondCategory(FirstCategoryType.CATEGORY_INTERIOR, category, pageable);
+            responses = blueprintService.findAllBySecondCategory(FirstCategoryType.CATEGORY_MACHINE, category, pageable);
         }
         return ApiResponse.onSuccess(responses);
     }
@@ -94,9 +94,9 @@ public class SearchController {
     ) {
         Page<SearchResponse> responses;
         if(category == null) {
-            responses = blueprintService.findAllByFirstCategory(FirstCategoryType.CATEGORY_INTERIOR, pageable);
+            responses = blueprintService.findAllByFirstCategory(FirstCategoryType.CATEGORY_ELECTRIC, pageable);
         } else {
-            responses = blueprintService.findAllBySecondCategory(FirstCategoryType.CATEGORY_INTERIOR, category, pageable);
+            responses = blueprintService.findAllBySecondCategory(FirstCategoryType.CATEGORY_ELECTRIC, category, pageable);
         }
         return ApiResponse.onSuccess(responses);
     }
