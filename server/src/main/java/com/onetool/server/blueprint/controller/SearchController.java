@@ -38,7 +38,7 @@ public class SearchController {
             @RequestParam(required = false) String category
     ) {
         Page<SearchResponse> responses;
-        if(category.isEmpty()){
+        if(category == null){
             responses = blueprintService.findAllByFirstCategory(FirstCategoryType.CATEGORY_BUILDING, pageable);
         } else {
             responses = blueprintService.findAllBySecondCategory(FirstCategoryType.CATEGORY_BUILDING, category, pageable);
@@ -52,7 +52,7 @@ public class SearchController {
             @RequestParam(required = false) String category
     ) {
         Page<SearchResponse> responses;
-        if(category.isEmpty()) {
+        if(category == null) {
             responses = blueprintService.findAllByFirstCategory(FirstCategoryType.CATEGORY_CIVIL, pageable);
         } else {
             responses = blueprintService.findAllBySecondCategory(FirstCategoryType.CATEGORY_CIVIL, category, pageable);
@@ -66,7 +66,7 @@ public class SearchController {
             @RequestParam(required = false) String category
     ) {
         Page<SearchResponse> responses;
-        if(category.isEmpty()) {
+        if(category == null) {
             responses = blueprintService.findAllByFirstCategory(FirstCategoryType.CATEGORY_INTERIOR, pageable);
         } else {
             responses = blueprintService.findAllBySecondCategory(FirstCategoryType.CATEGORY_INTERIOR, category, pageable);
@@ -79,7 +79,7 @@ public class SearchController {
             @RequestParam(required = false) String category
     ) {
         Page<SearchResponse> responses;
-        if(category.isEmpty()) {
+        if(category == null) {
             responses = blueprintService.findAllByFirstCategory(FirstCategoryType.CATEGORY_INTERIOR, pageable);
         } else {
             responses = blueprintService.findAllBySecondCategory(FirstCategoryType.CATEGORY_INTERIOR, category, pageable);
@@ -93,7 +93,7 @@ public class SearchController {
             @RequestParam(required = false) String category
     ) {
         Page<SearchResponse> responses;
-        if(category.isEmpty()) {
+        if(category == null) {
             responses = blueprintService.findAllByFirstCategory(FirstCategoryType.CATEGORY_INTERIOR, pageable);
         } else {
             responses = blueprintService.findAllBySecondCategory(FirstCategoryType.CATEGORY_INTERIOR, category, pageable);
