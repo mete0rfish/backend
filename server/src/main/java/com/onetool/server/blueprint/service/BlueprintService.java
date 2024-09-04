@@ -25,44 +25,17 @@ public class BlueprintService {
         this.blueprintRepository = blueprintRepository;
     }
 
-    public List<BlueprintResponse> findAllBlueprints(){
-        List<Blueprint> blueprints = blueprintRepository.findAll();
-
-        return blueprints.stream()
-                .map(BlueprintResponse::fromEntity)
-                .collect(Collectors.toList());
-    }
-
     public BlueprintResponse findBlueprintById(Long id) {
         Blueprint blueprint = blueprintRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Blueprint not found with id: " + id));
-
         return BlueprintResponse.fromEntity(blueprint);
     }
 
-    public boolean createBlueprint(BlueprintRequest blueprintRequest) {
-        try {
-            Blueprint blueprint = Blueprint.builder()
-                    .id(blueprintRequest.id())
-                    .blueprintName(blueprintRequest.blueprintName())
-                    .categoryId(blueprintRequest.categoryId())
-                    .standardPrice(blueprintRequest.standardPrice())
-                    .blueprintImg(blueprintRequest.blueprintImg())
-                    .blueprintDetails(blueprintRequest.blueprintDetails())
-                    .extension(blueprintRequest.extension())
-                    .program(blueprintRequest.program())
-                    .hits(blueprintRequest.hits())
-                    .salePrice(blueprintRequest.salePrice())
-                    .saleExpiredDate(blueprintRequest.saleExpiredDate())
-                    .creatorName(blueprintRequest.creatorName())
-                    .downloadLink(blueprintRequest.downloadLink())
-                    .build();
 
-            saveBlueprint(blueprint);
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
+    public boolean createBlueprint(final BlueprintRequest blueprintRequest) {
+        Blueprint blueprint = convertToBlueprint(blueprintRequest);
+        saveBlueprint(blueprint);
+        return true;
     }
 
     public Blueprint saveBlueprint(Blueprint blueprint) {
@@ -72,24 +45,8 @@ public class BlueprintService {
     public boolean updateBlueprint(BlueprintResponse blueprintResponse) {
         Blueprint existingBlueprint = blueprintRepository.findById(blueprintResponse.id())
                 .orElseThrow(() -> new RuntimeException("Blueprint not found with id: " + blueprintResponse.id()));
-
-        Blueprint updatedBlueprint = Blueprint.builder()
-                .id(existingBlueprint.getId())
-                .blueprintName(blueprintResponse.blueprintName())
-                .categoryId(blueprintResponse.categoryId())
-                .standardPrice(blueprintResponse.standardPrice())
-                .blueprintImg(blueprintResponse.blueprintImg())
-                .blueprintDetails(blueprintResponse.blueprintDetails())
-                .extension(blueprintResponse.extension())
-                .program(blueprintResponse.program())
-                .hits(blueprintResponse.hits())
-                .salePrice(blueprintResponse.salePrice())
-                .saleExpiredDate(blueprintResponse.saleExpiredDate())
-                .creatorName(blueprintResponse.creatorName())
-                .downloadLink(blueprintResponse.downloadLink())
-                .build();
-
-        blueprintRepository.save(updatedBlueprint);
+        Blueprint updatedBlueprint = updateExistingBlueprint(existingBlueprint, blueprintResponse);
+        saveBlueprint(updatedBlueprint);
         return true;
     }
 
@@ -100,43 +57,11 @@ public class BlueprintService {
 
     public List<BlueprintResponse> sortBlueprints(String sortBy) {
         List<Blueprint> blueprints = blueprintRepository.findAll();
-
-        Comparator<Blueprint> comparator = getComparator(sortBy);
-
+        Comparator<Blueprint> comparator = getComparatorBySortType(sortBy);
         List<Blueprint> sortedBlueprints = blueprints.stream()
                 .sorted(comparator)
                 .collect(Collectors.toList());
-
-        return sortedBlueprints.stream()
-                .map(BlueprintResponse::fromEntity)
-                .collect(Collectors.toList());
-    }
-
-    private Comparator<Blueprint> getComparator(String sortBy) {
-        switch (sortBy) {
-            case "price":
-                return Comparator.comparing(blueprint -> {
-                    if (blueprint.getSalePrice() != null && blueprint.getSaleExpiredDate() != null
-                            && blueprint.getSaleExpiredDate().isAfter(LocalDateTime.now())) {
-                        return blueprint.getSalePrice();
-                    } else {
-                        return blueprint.getStandardPrice();
-                    }
-                }, Comparator.nullsLast(Comparator.naturalOrder()));
-
-            case "createdAt":
-                return Comparator.comparing(Blueprint::getCreatedAt, Comparator.nullsLast(Comparator.naturalOrder()));
-
-            case "extension":
-                return Comparator.comparing(Blueprint::getExtension, Comparator.nullsLast(Comparator.naturalOrder()));
-
-            /*case "saleCount":
-                return Comparator.comparing(Blueprint::getSaleCount, Comparator.nullsLast(Comparator.naturalOrder()));
-
-             */
-            default:
-                throw new IllegalArgumentException("Invalid sort type: " + sortBy);
-        }
+        return convertToResponseList(sortedBlueprints);
     }
 
     public Page<SearchResponse> searchNameAndCreatorWithKeyword(String keyword, Pageable pageable) {
@@ -170,5 +95,71 @@ public class BlueprintService {
                 .map(SearchResponse::from)
                 .collect(Collectors.toList());
         return new PageImpl<>(list, pageable, result.getTotalElements());
+    }
+
+    private List<BlueprintResponse> convertToResponseList(List<Blueprint> blueprints) {
+        return blueprints.stream()
+                .map(BlueprintResponse::fromEntity)
+                .collect(Collectors.toList());
+    }
+
+    private Blueprint convertToBlueprint(BlueprintRequest blueprintRequest) {
+        return Blueprint.builder()
+                .id(blueprintRequest.id())
+                .blueprintName(blueprintRequest.blueprintName())
+                .categoryId(blueprintRequest.categoryId())
+                .standardPrice(blueprintRequest.standardPrice())
+                .blueprintImg(blueprintRequest.blueprintImg())
+                .blueprintDetails(blueprintRequest.blueprintDetails())
+                .extension(blueprintRequest.extension())
+                .program(blueprintRequest.program())
+                .hits(blueprintRequest.hits())
+                .salePrice(blueprintRequest.salePrice())
+                .saleExpiredDate(blueprintRequest.saleExpiredDate())
+                .creatorName(blueprintRequest.creatorName())
+                .downloadLink(blueprintRequest.downloadLink())
+                .build();
+    }
+
+    private Blueprint updateExistingBlueprint(Blueprint existingBlueprint, BlueprintResponse blueprintResponse) {
+        return Blueprint.builder()
+                .id(existingBlueprint.getId())
+                .blueprintName(blueprintResponse.blueprintName())
+                .categoryId(blueprintResponse.categoryId())
+                .standardPrice(blueprintResponse.standardPrice())
+                .blueprintImg(blueprintResponse.blueprintImg())
+                .blueprintDetails(blueprintResponse.blueprintDetails())
+                .extension(blueprintResponse.extension())
+                .program(blueprintResponse.program())
+                .hits(blueprintResponse.hits())
+                .salePrice(blueprintResponse.salePrice())
+                .saleExpiredDate(blueprintResponse.saleExpiredDate())
+                .creatorName(blueprintResponse.creatorName())
+                .downloadLink(blueprintResponse.downloadLink())
+                .build();
+    }
+
+    private Comparator<Blueprint> getComparatorBySortType(String sortBy) {
+        if (sortBy.equals("price")) {
+            return Comparator.comparing(this::getPrice, Comparator.nullsLast(Comparator.naturalOrder()));
+        }
+
+        if (sortBy.equals("createdAt")) {
+            return Comparator.comparing(Blueprint::getCreatedAt, Comparator.nullsLast(Comparator.naturalOrder()));
+        }
+
+        if (sortBy.equals("extension")) {
+            return Comparator.comparing(Blueprint::getExtension, Comparator.nullsLast(Comparator.naturalOrder()));
+        }
+
+        throw new IllegalArgumentException("Invalid sort type: " + sortBy);
+    }
+
+    private Double getPrice(Blueprint blueprint) {
+        if (blueprint.getSalePrice() != null && blueprint.getSaleExpiredDate() != null &&
+                blueprint.getSaleExpiredDate().isAfter(LocalDateTime.now())) {
+            return blueprint.getSalePrice().doubleValue();
+        }
+        return blueprint.getStandardPrice().doubleValue();
     }
 }
