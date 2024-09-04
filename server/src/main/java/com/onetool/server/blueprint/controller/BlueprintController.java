@@ -27,13 +27,13 @@ public class BlueprintController {
     }
 
     @PutMapping("/update")
-    public ApiResponse<?> updateBlueprint(@RequestBody BlueprintResponse blueprintResponse) {
+    public ApiResponse<String> updateBlueprint(@RequestBody BlueprintResponse blueprintResponse) {
         blueprintService.updateBlueprint(blueprintResponse);
         return ApiResponse.onSuccess("상품이 정상적으로 수정 되었습니다.");
     }
 
     @DeleteMapping("/delete/{id}")
-    public ApiResponse<?> deleteBlueprint(@PathVariable Long id){
+    public ApiResponse<String> deleteBlueprint(@PathVariable Long id){
         blueprintService.deleteBlueprint(id);
         return ApiResponse.onSuccess("상품이 정상적으로 삭제 되었습니다.");
     }
