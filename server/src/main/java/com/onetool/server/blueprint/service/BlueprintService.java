@@ -31,7 +31,6 @@ public class BlueprintService {
         return BlueprintResponse.fromEntity(blueprint);
     }
 
-
     public boolean createBlueprint(final BlueprintRequest blueprintRequest) {
         Blueprint blueprint = convertToBlueprint(blueprintRequest);
         saveBlueprint(blueprint);
