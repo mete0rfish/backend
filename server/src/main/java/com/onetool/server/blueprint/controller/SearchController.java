@@ -37,12 +37,7 @@ public class SearchController {
             @PageableDefault(size = 5, sort = "id", direction = Sort.Direction.DESC)Pageable pageable,
             @RequestParam(required = false) String category
     ) {
-        Page<SearchResponse> responses;
-        if(category == null){
-            responses = blueprintService.findAllByFirstCategory(FirstCategoryType.CATEGORY_BUILDING, pageable);
-        } else {
-            responses = blueprintService.findAllBySecondCategory(FirstCategoryType.CATEGORY_BUILDING, category, pageable);
-        }
+        Page<SearchResponse> responses = blueprintService.findAllByCategory(FirstCategoryType.CATEGORY_BUILDING, category, pageable);
         return ApiResponse.onSuccess(responses);
     }
 
@@ -51,12 +46,7 @@ public class SearchController {
             @PageableDefault(size = 5, sort = "id", direction = Sort.Direction.DESC)Pageable pageable,
             @RequestParam(required = false) String category
     ) {
-        Page<SearchResponse> responses;
-        if(category == null) {
-            responses = blueprintService.findAllByFirstCategory(FirstCategoryType.CATEGORY_CIVIL, pageable);
-        } else {
-            responses = blueprintService.findAllBySecondCategory(FirstCategoryType.CATEGORY_CIVIL, category, pageable);
-        }
+        Page<SearchResponse> responses = blueprintService.findAllByCategory(FirstCategoryType.CATEGORY_CIVIL, category, pageable);
         return ApiResponse.onSuccess(responses);
     }
 
@@ -65,12 +55,7 @@ public class SearchController {
             @PageableDefault(size = 5, sort = "id", direction = Sort.Direction.DESC)Pageable pageable,
             @RequestParam(required = false) String category
     ) {
-        Page<SearchResponse> responses;
-        if(category == null) {
-            responses = blueprintService.findAllByFirstCategory(FirstCategoryType.CATEGORY_INTERIOR, pageable);
-        } else {
-            responses = blueprintService.findAllBySecondCategory(FirstCategoryType.CATEGORY_INTERIOR, category, pageable);
-        }
+        Page<SearchResponse> responses = blueprintService.findAllByCategory(FirstCategoryType.CATEGORY_INTERIOR, category, pageable);
         return ApiResponse.onSuccess(responses);
     }
     @GetMapping("/blueprint/machine")
@@ -78,12 +63,7 @@ public class SearchController {
             @PageableDefault(size = 5, sort = "id", direction = Sort.Direction.DESC)Pageable pageable,
             @RequestParam(required = false) String category
     ) {
-        Page<SearchResponse> responses;
-        if(category == null) {
-            responses = blueprintService.findAllByFirstCategory(FirstCategoryType.CATEGORY_MACHINE, pageable);
-        } else {
-            responses = blueprintService.findAllBySecondCategory(FirstCategoryType.CATEGORY_MACHINE, category, pageable);
-        }
+        Page<SearchResponse> responses = blueprintService.findAllByCategory(FirstCategoryType.CATEGORY_MACHINE, category, pageable);
         return ApiResponse.onSuccess(responses);
     }
 
@@ -92,12 +72,7 @@ public class SearchController {
             @PageableDefault(size = 5, sort = "id", direction = Sort.Direction.DESC)Pageable pageable,
             @RequestParam(required = false) String category
     ) {
-        Page<SearchResponse> responses;
-        if(category == null) {
-            responses = blueprintService.findAllByFirstCategory(FirstCategoryType.CATEGORY_ELECTRIC, pageable);
-        } else {
-            responses = blueprintService.findAllBySecondCategory(FirstCategoryType.CATEGORY_ELECTRIC, category, pageable);
-        }
+        Page<SearchResponse> responses = blueprintService.findAllByCategory(FirstCategoryType.CATEGORY_ELECTRIC, category, pageable);
         return ApiResponse.onSuccess(responses);
     }
 
@@ -105,7 +80,7 @@ public class SearchController {
     public ApiResponse<?> searchEtcCategory(
             @PageableDefault(page = 0, size = 10, sort = "id", direction = Sort.Direction.DESC)Pageable pageable
     ) {
-        Page<SearchResponse> responses = blueprintService.findAllByFirstCategory(FirstCategoryType.CATEGORY_ETC, pageable);
+        Page<SearchResponse> responses = blueprintService.findAllByCategory(FirstCategoryType.CATEGORY_CIVIL, null, pageable);
         return ApiResponse.onSuccess(responses);
     }
 
