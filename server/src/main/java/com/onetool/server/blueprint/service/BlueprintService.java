@@ -102,22 +102,8 @@ public class BlueprintService {
                 .collect(Collectors.toList());
     }
 
-    private Blueprint convertToBlueprint(BlueprintRequest blueprintRequest) {
-        return Blueprint.builder()
-                .id(blueprintRequest.id())
-                .blueprintName(blueprintRequest.blueprintName())
-                .categoryId(blueprintRequest.categoryId())
-                .standardPrice(blueprintRequest.standardPrice())
-                .blueprintImg(blueprintRequest.blueprintImg())
-                .blueprintDetails(blueprintRequest.blueprintDetails())
-                .extension(blueprintRequest.extension())
-                .program(blueprintRequest.program())
-                .hits(blueprintRequest.hits())
-                .salePrice(blueprintRequest.salePrice())
-                .saleExpiredDate(blueprintRequest.saleExpiredDate())
-                .creatorName(blueprintRequest.creatorName())
-                .downloadLink(blueprintRequest.downloadLink())
-                .build();
+    private Blueprint convertToBlueprint(final BlueprintRequest blueprintRequest) {
+        return Blueprint.fromRequest(blueprintRequest);
     }
 
     private Blueprint updateExistingBlueprint(Blueprint existingBlueprint, BlueprintResponse blueprintResponse) {
