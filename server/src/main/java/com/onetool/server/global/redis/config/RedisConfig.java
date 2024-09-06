@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
@@ -19,7 +20,7 @@ public class RedisConfig {
     private final RedisProperties redisProperties;
 
     @Bean
-    //@Primary
+    @Primary
     public RedisConnectionFactory redisConnectionFactory0() {
         return createRedis(0);
     }
