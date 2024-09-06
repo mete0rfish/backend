@@ -1,4 +1,4 @@
-package com.onetool.server.global.config;
+package com.onetool.server.global.redis;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
