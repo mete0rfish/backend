@@ -22,4 +22,7 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     Optional<Member> findByNameAndPhoneNum(String name, String phoneNum);
 
     boolean existsByEmail(String email);
+
+    @Query("SELECT m FROM Member m JOIN FETCH m.qnaBoards WHERE m.id = :memberId")
+    Optional<Member> findMemberWithQnaBoards(@Param("memberId") Long memberId);
 }

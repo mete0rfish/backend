@@ -20,7 +20,7 @@ public class QnaReplyController {
     private final QnaReplyService qnaReplyService;
 
     @PostMapping("/reply")
-    public ApiResponse<?> addReply(Principal principal,
+    public ApiResponse<String> addReply(Principal principal,
                                    @PathVariable Long qnaId,
                                    @Valid @RequestBody PostQnaReply request){
         qnaReplyService.postReply(principal, qnaId, request);
@@ -28,7 +28,7 @@ public class QnaReplyController {
     }
 
     @DeleteMapping("/reply")
-    public ApiResponse<?> deleteReply(Principal principal,
+    public ApiResponse<String> deleteReply(Principal principal,
                                       @PathVariable Long qnaId,
                                       @Valid @RequestBody ModifyQnaReply request){
         qnaReplyService.deleteReply(principal, qnaId, request);
@@ -36,7 +36,7 @@ public class QnaReplyController {
     }
 
     @PatchMapping("/reply")
-    public ApiResponse<?> updateReply(Principal principal,
+    public ApiResponse<String> updateReply(Principal principal,
                                       @PathVariable Long qnaId,
                                       @Valid @RequestBody ModifyQnaReply request){
         qnaReplyService.updateReply(principal, qnaId, request);
