@@ -12,6 +12,7 @@ import com.onetool.server.mail.MailService;
 import com.onetool.server.member.dto.*;
 import com.onetool.server.member.repository.MemberRepository;
 import com.onetool.server.member.domain.Member;
+import com.onetool.server.qna.QnaBoard;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,12 +21,15 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import javax.swing.text.html.Option;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.time.Duration;
+import java.util.List;
 import java.util.Optional;
 import java.util.Random;
+
+
+import static com.onetool.server.qna.dto.response.QnaBoardResponse.*;
 
 @Service
 @RequiredArgsConstructor
@@ -180,5 +184,16 @@ public class MemberService {
                 .orElseThrow(() -> new RuntimeException("회원 정보가 존재하지 않습니다."));
 
         return MemberInfoResponse.fromEntity(member);
+    }
+
+    public List<QnaBoardBriefResponse> findQnaWrittenById(MemberAuthContext context){
+        Member member = findMemberWithQna(context.getId());
+        List<QnaBoard> qnaBoards = member.getQnaBoards();
+        return QnaBoardBriefResponse.from(qnaBoards);
+    }
+
+    private Member findMemberWithQna(Long id){
+        return memberRepository.findMemberWithQnaBoards(id)
+                .orElseThrow(() -> new BaseException(ErrorCode.NON_EXIST_USER));
     }
 }
