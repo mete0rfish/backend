@@ -18,7 +18,7 @@ public class TokenRedisService {
 
     private final RedisTemplate<String, Object> tokenRedisTemplate;
 
-    public void setValuesWithTimeout(String s, String refreshToken, int refreshTokenExpirationMillis) {
+    public void setValuesWithTimeout(String s, String refreshToken, Long refreshTokenExpirationMillis) {
         ValueOperations<String, Object> values = tokenRedisTemplate.opsForValue();
         values.set(
                 s,

@@ -8,6 +8,7 @@ import com.onetool.server.global.redis.domain.Token;
 import com.onetool.server.global.redis.repository.TokenRepository;
 import com.onetool.server.global.redis.service.TokenRedisService;
 import io.jsonwebtoken.*;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -33,8 +34,8 @@ public class JwtUtil implements AuthorizationProvider {
 
     private final SecretKey key;
     private final Long expirationMilliSec;
-    // TODO application으로 지정하기
-    private final int refreshTokenExpirationMillis = 864_000;
+    @Getter
+    private final Long refreshTokenExpirationMillis;
 
     private final TokenRedisService tokenRedisService;
     private final TokenRepository tokenRepository;
@@ -43,6 +44,7 @@ public class JwtUtil implements AuthorizationProvider {
     public JwtUtil(
             @Value("${onetool.jwt.secrekey}") String secretKey,
             @Value("${onetool.jwt.expiration_time}") Long expirationMilliSec,
+            @Value("${onetool.jwt.refresh.expiration_time}") Long refreshTokenExpirationMillis,
             TokenRepository tokenRepository,
             CustomUserDetailsService customUserDetailsService,
             TokenRedisService tokenRedisService
@@ -51,6 +53,7 @@ public class JwtUtil implements AuthorizationProvider {
                 .decode(secretKey.getBytes(StandardCharsets.UTF_8));
         this.key = new SecretKeySpec(keyBytes, "HmacSHA256");
         this.expirationMilliSec = expirationMilliSec;
+        this.refreshTokenExpirationMillis = refreshTokenExpirationMillis;
         this.tokenRepository = tokenRepository;
         this.customUserDetailsService = customUserDetailsService;
         this.tokenRedisService = tokenRedisService;
@@ -153,9 +156,5 @@ public class JwtUtil implements AuthorizationProvider {
 
     private String subtractBearerToken(String token) {
         return token.substring(7);
-    }
-
-    public int getRefreshTokenExpirationMillis() {
-        return refreshTokenExpirationMillis;
     }
 }
