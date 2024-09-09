@@ -123,7 +123,6 @@ public class MemberController {
         }
     }
 
-
     // TODO : uri 수정 필요
     @GetMapping("/myPage/myQna")
     public ApiResponse<List<QnaBoardResponse.QnaBoardBriefResponse>> getMyQna(@AuthenticationPrincipal PrincipalDetails principalDetails) {

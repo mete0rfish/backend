@@ -186,7 +186,7 @@ public class MemberService {
         Member member = memberRepository.findById(userId)
                 .orElseThrow(MemberNotFoundException::new);
 
-        return MemberInfoResponse.fromEntity(member);
+        return MemberInfoResponse.from(member);
     }
 
     public List<QnaBoardBriefResponse> findQnaWrittenById(MemberAuthContext context){
