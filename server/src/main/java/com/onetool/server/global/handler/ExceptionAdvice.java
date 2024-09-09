@@ -62,13 +62,13 @@ public class ExceptionAdvice {
      * @param e
      * @return
      */
-//    @ExceptionHandler
-//    public ResponseEntity<Object> exception(Exception e) {
-//        log.error(e.getMessage());
-//        ErrorCode errorCode = ErrorCode._INTERNAL_SERVER_ERROR;
-//        ApiResponse<?> baseResponse = ApiResponse.onFailure(errorCode.getCode(), errorCode.getMessage(), null);
-//        return handleExceptionInternal(baseResponse);
-//    }
+    @ExceptionHandler
+    public ResponseEntity<Object> exception(Exception e) {
+        log.error(e.getMessage());
+        ErrorCode errorCode = ErrorCode._INTERNAL_SERVER_ERROR;
+        ApiResponse<?> baseResponse = ApiResponse.onFailure(errorCode.getCode(), errorCode.getMessage(), null);
+        return handleExceptionInternal(baseResponse);
+    }
 
     /**
      * 클라이언트 에러
