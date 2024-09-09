@@ -13,16 +13,19 @@ import com.onetool.server.member.dto.*;
 import com.onetool.server.member.repository.MemberRepository;
 import com.onetool.server.member.domain.Member;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.time.Duration;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
 
@@ -54,7 +57,7 @@ public class MemberService {
         return MemberCreateResponse.of(member);
     }
 
-    public String login(LoginRequest request) {
+    public Map<String, String> login(LoginRequest request) {
         String email = request.getEmail();
         String password = request.getPassword();
 
@@ -74,7 +77,7 @@ public class MemberService {
                 .password(member.getPassword())
                 .build();
 
-        return jwtUtil.create(context);
+        return jwtUtil.createTokens(context);
     }
 
     public String findEmail(MemberFindEmailRequest request) {

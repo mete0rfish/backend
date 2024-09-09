@@ -36,8 +36,8 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
-	implementation 'org.springframework.security:spring-security-web:6.3.1'
-	implementation 'org.springframework.security:spring-security-config:6.3.1'
+	implementation 'org.springframework.security:spring-security-web:6.3.3'
+	implementation 'org.springframework.security:spring-security-config:6.3.3'
 
 	implementation 'io.jsonwebtoken:jjwt-api:0.12.6'
 	implementation 'io.jsonwebtoken:jjwt-impl:0.12.6'
@@ -64,8 +64,8 @@ processResources.dependsOn('copyModule')
 
 tasks.register('copyModule', Copy) {
 	copy {
-		from './backend_submodule'
-		include "*.properties"
-		into './server/src/main/resources'
+		from '../backend_submodule'
+		include '*.properties'
+		into './src/main/resources'
 	}
 }

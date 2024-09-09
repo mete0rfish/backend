@@ -1,18 +1,23 @@
 package com.onetool.server.global.auth;
 
+import com.onetool.server.global.auth.login.PrincipalDetails;
 import io.jsonwebtoken.Claims;
+import org.springframework.security.core.Authentication;
 
 import java.time.Instant;
+import java.util.Map;
 
 public interface AuthorizationProvider {
 
-    String create(MemberAuthContext context);
+    Map<String, String> createTokens(MemberAuthContext context);
 
     Claims parseClaims(String token);
 
     boolean validateToken(String token);
 
-    public Long getUserId(String token);
+    Long getUserId(String token);
 
-    public String createRefreshToken(Long userId, Instant issuedAt);
+    Authentication getAuthentication(String token);
+
+    Authentication getAuthenticationByRefreshToken(String refreshToken);
 }
