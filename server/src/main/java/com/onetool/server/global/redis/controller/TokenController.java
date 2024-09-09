@@ -18,12 +18,13 @@ import java.util.Map;
 @RestController
 @RequiredArgsConstructor
 @Slf4j
+@RequestMapping(value = "/auth")
 public class TokenController {
 
     private final JwtUtil jwtUtil;
     private final AuthService authService;
 
-    @PostMapping("/auth/validate")
+    @PostMapping("/validate")
     public void validate(@RequestHeader("Authorization") String requestAccessToken) {
         authService.validate(requestAccessToken);
     }
