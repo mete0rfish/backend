@@ -4,9 +4,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 
 public class CartRequest {
-    @Builder
     public record AddBlueprintToCart(
-            @NotNull
-            Long blueprintId
+            @NotNull Long blueprintId
     ){}
 }

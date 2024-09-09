@@ -34,7 +34,7 @@ public class QnaBoardServiceImpl implements QnaBoardService {
         //TODO : 페이징 관련
         return qnaBoards
                 .stream()
-                .map(QnaBoardBriefResponse::brief)
+                .map(QnaBoardBriefResponse::from)
                 .toList();
     }
 
@@ -49,7 +49,7 @@ public class QnaBoardServiceImpl implements QnaBoardService {
     public QnaBoardDetailResponse getQnaBoardDetails(Principal principal, Long qnaId) {
         Member member = findMember(principal);
         QnaBoard qnaBoard = findQnaBoard(qnaId);
-        return QnaBoardDetailResponse.details(qnaBoard,
+        return QnaBoardDetailResponse.from(qnaBoard,
                 isMemberAvailableToModifyQna(qnaBoard, member));
     }
 
