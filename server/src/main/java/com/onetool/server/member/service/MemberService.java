@@ -154,7 +154,7 @@ public class MemberService {
 
     public Member updateMember(Long id, MemberUpdateRequest request) {
         Member member = memberRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("회원이 존재하지 않습니다."));
+                .orElseThrow(MemberNotFoundException::new);
 
         member.updateWith(request);
 
@@ -163,7 +163,7 @@ public class MemberService {
 
     public void deleteMember(Long id) {
         Member member = memberRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("회원이 존재하지 않습니다."));
+                .orElseThrow(MemberNotFoundException::new);
         memberRepository.delete(member);
     }
 
@@ -184,7 +184,7 @@ public class MemberService {
 
     public MemberInfoResponse getMemberInfo(Long userId) {
         Member member = memberRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("회원 정보가 존재하지 않습니다."));
+                .orElseThrow(MemberNotFoundException::new);
 
         return MemberInfoResponse.fromEntity(member);
     }
@@ -202,7 +202,7 @@ public class MemberService {
 
     public List<BlueprintDownloadResponse> getPurchasedBlueprints(final Long userId) {
         final Member member = memberRepository.findById(userId)
-                .orElseThrow(() -> new MemberNotFoundException());
+                .orElseThrow(MemberNotFoundException::new);
 
         return member.getOrders().stream()
                 .flatMap(order -> order.getOrderItems().stream())
