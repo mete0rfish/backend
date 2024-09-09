@@ -6,6 +6,7 @@ import com.onetool.server.blueprint.dto.BlueprintRequest;
 import com.onetool.server.blueprint.dto.BlueprintResponse;
 import com.onetool.server.blueprint.dto.SearchResponse;
 import com.onetool.server.category.FirstCategoryType;
+import com.onetool.server.global.exception.BlueprintNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -27,7 +28,8 @@ public class BlueprintService {
 
     public BlueprintResponse findBlueprintById(Long id) {
         Blueprint blueprint = blueprintRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Blueprint not found with id: " + id));
+                .orElseThrow(BlueprintNotFoundException::new);
+
         return BlueprintResponse.fromEntity(blueprint);
     }
 
@@ -43,13 +45,14 @@ public class BlueprintService {
 
     public boolean updateBlueprint(BlueprintResponse blueprintResponse) {
         Blueprint existingBlueprint = blueprintRepository.findById(blueprintResponse.id())
-                .orElseThrow(() -> new RuntimeException("Blueprint not found with id: " + blueprintResponse.id()));
+                .orElseThrow(BlueprintNotFoundException::new);
         Blueprint updatedBlueprint = updateExistingBlueprint(existingBlueprint, blueprintResponse);
+
         saveBlueprint(updatedBlueprint);
         return true;
     }
 
-    public boolean deleteBlueprint(Long id){
+    public boolean deleteBlueprint(Long id) {
         blueprintRepository.deleteById(id);
         return true;
     };

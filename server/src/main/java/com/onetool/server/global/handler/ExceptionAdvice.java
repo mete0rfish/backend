@@ -2,10 +2,7 @@ package com.onetool.server.global.handler;
 
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.onetool.server.global.exception.BaseException;
-import com.onetool.server.global.exception.ApiResponse;
-import com.onetool.server.global.exception.DuplicateMemberException;
-import com.onetool.server.global.exception.MemberNotFoundException;
+import com.onetool.server.global.exception.*;
 import com.onetool.server.global.exception.codes.ErrorCode;
 import com.onetool.server.global.exception.codes.reason.Reason;
 import lombok.extern.slf4j.Slf4j;
@@ -50,6 +47,11 @@ public class ExceptionAdvice {
         return ApiResponse.onFailure("400", "이메일이 중복됩니다.", null);
     }
 
+    @ExceptionHandler(BlueprintNotFoundException.class)
+    public ApiResponse<?> handleBlueprintNotFoundException(BlueprintNotFoundException e) {
+        return ApiResponse.onFailure("404", "도면을 찾을 수 없습니다.", null);
+    }
+    
     /**
      * 서버 에러
      * @param e
