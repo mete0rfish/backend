@@ -15,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -59,7 +60,14 @@ public class BlueprintService {
         return true;
     }
 
-    public List<BlueprintResponse> sortBlueprints(SortType sortType) {
+    public List<BlueprintResponse> sortBlueprints(String sortBy) {
+        if (!isValidSortType(sortBy)) {
+            throw new InvalidSortTypeException();
+        }
+
+        SortType sortType = SortType.valueOf(sortBy.toUpperCase());
+
+
         List<Blueprint> blueprints = blueprintRepository.findAll();
 
         Comparator<Blueprint> comparator = getComparatorBySortType(sortType);
@@ -152,5 +160,10 @@ public class BlueprintService {
             return blueprint.getSalePrice().doubleValue();
         }
         return blueprint.getStandardPrice().doubleValue();
+    }
+
+    public boolean isValidSortType(String sortBy) {
+        return Arrays.stream(SortType.values())
+                .anyMatch(sortType -> sortType.name().equalsIgnoreCase(sortBy));
     }
 }

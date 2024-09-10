@@ -61,9 +61,7 @@ public class BlueprintController {
 
     @GetMapping("/sort")
     public ApiResponse<List<BlueprintResponse>> sortBlueprints(@RequestParam String sortBy) {
-        SortType sortType = SortType.valueOf(sortBy.toUpperCase());
-
-        List<BlueprintResponse> sortedBlueprints = blueprintService.sortBlueprints(sortType);
+        List<BlueprintResponse> sortedBlueprints = blueprintService.sortBlueprints(sortBy);
         return ApiResponse.onSuccess(sortedBlueprints);
     }
 }
