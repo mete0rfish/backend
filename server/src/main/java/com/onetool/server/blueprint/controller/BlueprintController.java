@@ -5,6 +5,8 @@ import com.onetool.server.blueprint.dto.BlueprintRequest;
 import com.onetool.server.blueprint.dto.BlueprintResponse;
 import com.onetool.server.global.auth.login.PrincipalDetails;
 import com.onetool.server.global.exception.ApiResponse;
+import com.onetool.server.global.exception.InvalidSortTypeException;
+import com.onetool.server.global.exception.MemberNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +21,12 @@ public class BlueprintController {
     private BlueprintService blueprintService;
 
     @PostMapping("/upload")
-    public ApiResponse<String> createBlueprint(@RequestBody BlueprintRequest blueprintRequest) {
+    public ApiResponse<String> createBlueprint(@RequestBody BlueprintRequest blueprintRequest,
+                                               @AuthenticationPrincipal PrincipalDetails principalDetails) {
+        if(principalDetails == null) {
+            throw new MemberNotFoundException();
+        }
+
        blueprintService.createBlueprint(blueprintRequest);
        return ApiResponse.onSuccess("상품이 정상적으로 등록되었습니다.");
     }
@@ -31,13 +38,23 @@ public class BlueprintController {
     }
 
     @PutMapping("/update")
-    public ApiResponse<String> updateBlueprint(@RequestBody BlueprintResponse blueprintResponse) {
+    public ApiResponse<String> updateBlueprint(@RequestBody BlueprintResponse blueprintResponse,
+                                               @AuthenticationPrincipal PrincipalDetails principalDetails) {
+        if(principalDetails == null) {
+            throw new MemberNotFoundException();
+        }
+
         blueprintService.updateBlueprint(blueprintResponse);
         return ApiResponse.onSuccess("상품이 정상적으로 수정 되었습니다.");
     }
 
     @DeleteMapping("/delete/{id}")
-    public ApiResponse<String> deleteBlueprint(@PathVariable Long id){
+    public ApiResponse<String> deleteBlueprint(@PathVariable Long id,
+                                               @AuthenticationPrincipal PrincipalDetails principalDetails){
+        if(principalDetails == null) {
+            throw new MemberNotFoundException();
+        }
+
         blueprintService.deleteBlueprint(id);
         return ApiResponse.onSuccess("상품이 정상적으로 삭제 되었습니다.");
     }
