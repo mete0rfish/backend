@@ -54,7 +54,7 @@ public class ExceptionAdvice {
 
     @ExceptionHandler(InvalidSortTypeException.class)
     public ApiResponse<?> handleInvalidSortTypeException(InvalidSortTypeException e) {
-        return ApiResponse.onFailure("404", "올바르지 않은 정렬 방식입니다.", null);
+        return ApiResponse.onFailure("400", "올바르지 않은 정렬 방식입니다.", null);
     }
     
     /**
