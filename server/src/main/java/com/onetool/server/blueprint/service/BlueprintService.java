@@ -1,12 +1,14 @@
 package com.onetool.server.blueprint.service;
 
 import com.onetool.server.blueprint.Blueprint;
+import com.onetool.server.blueprint.enums.SortType;
 import com.onetool.server.blueprint.repository.BlueprintRepository;
 import com.onetool.server.blueprint.dto.BlueprintRequest;
 import com.onetool.server.blueprint.dto.BlueprintResponse;
 import com.onetool.server.blueprint.dto.SearchResponse;
 import com.onetool.server.category.FirstCategoryType;
 import com.onetool.server.global.exception.BlueprintNotFoundException;
+import com.onetool.server.global.exception.InvalidSortTypeException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -55,11 +57,12 @@ public class BlueprintService {
     public boolean deleteBlueprint(Long id) {
         blueprintRepository.deleteById(id);
         return true;
-    };
+    }
 
-    public List<BlueprintResponse> sortBlueprints(String sortBy) {
+    public List<BlueprintResponse> sortBlueprints(SortType sortType) {
         List<Blueprint> blueprints = blueprintRepository.findAll();
-        Comparator<Blueprint> comparator = getComparatorBySortType(sortBy);
+
+        Comparator<Blueprint> comparator = getComparatorBySortType(sortType);
         List<Blueprint> sortedBlueprints = blueprints.stream()
                 .sorted(comparator)
                 .collect(Collectors.toList());
@@ -127,20 +130,20 @@ public class BlueprintService {
                 .build();
     }
 
-    private Comparator<Blueprint> getComparatorBySortType(String sortBy) {
-        if (sortBy.equals("price")) {
+    private Comparator<Blueprint> getComparatorBySortType(SortType sortType) {
+        if (sortType == SortType.PRICE) {
             return Comparator.comparing(this::getPrice, Comparator.nullsLast(Comparator.naturalOrder()));
         }
 
-        if (sortBy.equals("createdAt")) {
+        if (sortType == SortType.CREATED_AT) {
             return Comparator.comparing(Blueprint::getCreatedAt, Comparator.nullsLast(Comparator.naturalOrder()));
         }
 
-        if (sortBy.equals("extension")) {
+        if (sortType == SortType.EXTENSION) {
             return Comparator.comparing(Blueprint::getExtension, Comparator.nullsLast(Comparator.naturalOrder()));
         }
 
-        throw new IllegalArgumentException("Invalid sort type: " + sortBy);
+        throw new IllegalArgumentException("Invalid sort type: " + sortType);
     }
 
     private Double getPrice(Blueprint blueprint) {
