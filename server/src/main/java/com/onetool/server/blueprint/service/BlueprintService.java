@@ -33,7 +33,7 @@ public class BlueprintService {
         Blueprint blueprint = blueprintRepository.findById(id)
                 .orElseThrow(BlueprintNotFoundException::new);
 
-        return BlueprintResponse.fromEntity(blueprint);
+        return BlueprintResponse.from(blueprint);
     }
 
     public boolean createBlueprint(final BlueprintRequest blueprintRequest) {
@@ -112,7 +112,7 @@ public class BlueprintService {
 
     private List<BlueprintResponse> convertToResponseList(List<Blueprint> blueprints) {
         return blueprints.stream()
-                .map(BlueprintResponse::fromEntity)
+                .map(BlueprintResponse::from)
                 .collect(Collectors.toList());
     }
 
