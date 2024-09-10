@@ -51,6 +51,11 @@ public class ExceptionAdvice {
     public ApiResponse<?> handleBlueprintNotFoundException(BlueprintNotFoundException e) {
         return ApiResponse.onFailure("404", "도면을 찾을 수 없습니다.", null);
     }
+
+    @ExceptionHandler(InvalidSortTypeException.class)
+    public ApiResponse<?> handleInvalidSortTypeException(InvalidSortTypeException e) {
+        return ApiResponse.onFailure("404", "올바르지 않은 정렬 방식입니다.", null);
+    }
     
     /**
      * 서버 에러

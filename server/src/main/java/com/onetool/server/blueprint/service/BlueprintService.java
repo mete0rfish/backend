@@ -143,7 +143,7 @@ public class BlueprintService {
             return Comparator.comparing(Blueprint::getExtension, Comparator.nullsLast(Comparator.naturalOrder()));
         }
 
-        throw new IllegalArgumentException("Invalid sort type: " + sortType);
+        throw new InvalidSortTypeException();
     }
 
     private Double getPrice(Blueprint blueprint) {
