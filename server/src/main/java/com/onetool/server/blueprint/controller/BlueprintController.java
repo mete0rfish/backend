@@ -1,9 +1,12 @@
 package com.onetool.server.blueprint.controller;
+import com.onetool.server.blueprint.enums.SortType;
 import com.onetool.server.blueprint.service.BlueprintService;
 import com.onetool.server.blueprint.dto.BlueprintRequest;
 import com.onetool.server.blueprint.dto.BlueprintResponse;
+import com.onetool.server.global.auth.login.PrincipalDetails;
 import com.onetool.server.global.exception.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -41,7 +44,9 @@ public class BlueprintController {
 
     @GetMapping("/sort")
     public ApiResponse<List<BlueprintResponse>> sortBlueprints(@RequestParam String sortBy) {
-        List<BlueprintResponse> sortedBlueprints = blueprintService.sortBlueprints(sortBy);
+        SortType sortType = SortType.valueOf(sortBy.toUpperCase());
+
+        List<BlueprintResponse> sortedBlueprints = blueprintService.sortBlueprints(sortType);
         return ApiResponse.onSuccess(sortedBlueprints);
     }
 }
