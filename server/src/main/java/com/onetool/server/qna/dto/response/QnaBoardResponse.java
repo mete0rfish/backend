@@ -5,6 +5,7 @@ import lombok.Builder;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.onetool.server.qna.dto.response.QnaReplyResponse.QnaDetailsReplyResponse;
 
@@ -18,15 +19,20 @@ public class QnaBoardResponse {
             Long views,
             Integer replies
     ){
-        public static QnaBoardBriefResponse brief(QnaBoard qnaBoard){
-            return new QnaBoardBriefResponse(
-                    qnaBoard.getTitle(),
-                    qnaBoard.getMember().getName(),
-                    qnaBoard.getCreatedAt().toLocalDate(),
-                    qnaBoard.getViews(),
-                    qnaBoard.getQnaReplies().size());
+        public static QnaBoardBriefResponse from(QnaBoard qnaBoard){
+            return QnaBoardBriefResponse.builder()
+                    .title(qnaBoard.getTitle())
+                    .writer(qnaBoard.getTitle())
+                    .postDate(qnaBoard.getCreatedAt().toLocalDate())
+                    .views(qnaBoard.getViews())
+                    .replies(qnaBoard.getQnaReplies().size())
+                    .build();
         }
-
+        public static List<QnaBoardBriefResponse> from(List<QnaBoard> qnaBoards){
+            return qnaBoards.stream()
+                    .map(QnaBoardBriefResponse::from)
+                    .collect(Collectors.toList());
+        }
     }
 
     @Builder
@@ -38,17 +44,18 @@ public class QnaBoardResponse {
             List<QnaDetailsReplyResponse> replies,
             boolean authorization
     ){
-        public static QnaBoardDetailResponse details(QnaBoard qnaBoard, boolean hasAuthorization){
-            return new QnaBoardDetailResponse(
-                    qnaBoard.getTitle(),
-                    qnaBoard.getMember().getName(),
-                    qnaBoard.getContent(),
-                    qnaBoard.getCreatedAt().toLocalDate(),
-                    qnaBoard.getQnaReplies()
+        public static QnaBoardDetailResponse from(QnaBoard qnaBoard, boolean hasAuthorization){
+            return QnaBoardDetailResponse.builder()
+                    .title(qnaBoard.getTitle())
+                    .content(qnaBoard.getContent())
+                    .writer(qnaBoard.getMember().getName())
+                    .postDate(qnaBoard.getCreatedAt().toLocalDate())
+                    .replies(qnaBoard.getQnaReplies()
                             .stream()
-                            .map(QnaDetailsReplyResponse::entityToDto)
-                            .toList(),
-                    hasAuthorization);
+                            .map(QnaDetailsReplyResponse::from)
+                            .toList())
+                    .authorization(hasAuthorization)
+                    .build();
         }
 
     }
