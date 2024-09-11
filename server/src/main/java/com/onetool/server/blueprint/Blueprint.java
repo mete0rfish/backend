@@ -1,5 +1,6 @@
 package com.onetool.server.blueprint;
 
+import com.onetool.server.blueprint.dto.BlueprintRequest;
 import com.onetool.server.cart.CartBlueprint;
 import com.onetool.server.global.entity.BaseEntity;
 import com.onetool.server.order.OrderBlueprint;
@@ -71,5 +72,23 @@ public class Blueprint extends BaseEntity {
         this.creatorName = creatorName;
         this.downloadLink = downloadLink;
         this.secondCategory = secondCategory;
+    }
+
+    public static Blueprint fromRequest(final BlueprintRequest blueprintRequest) {
+        return Blueprint.builder()
+                .id(blueprintRequest.id())
+                .blueprintName(blueprintRequest.blueprintName())
+                .categoryId(blueprintRequest.categoryId())
+                .standardPrice(blueprintRequest.standardPrice())
+                .blueprintImg(blueprintRequest.blueprintImg())
+                .blueprintDetails(blueprintRequest.blueprintDetails())
+                .extension(blueprintRequest.extension())
+                .program(blueprintRequest.program())
+                .hits(blueprintRequest.hits())
+                .salePrice(blueprintRequest.salePrice())
+                .saleExpiredDate(blueprintRequest.saleExpiredDate())
+                .creatorName(blueprintRequest.creatorName())
+                .downloadLink(blueprintRequest.downloadLink())
+                .build();
     }
 }

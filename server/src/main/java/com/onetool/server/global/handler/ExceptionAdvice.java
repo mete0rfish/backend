@@ -2,10 +2,7 @@ package com.onetool.server.global.handler;
 
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.onetool.server.global.exception.BaseException;
-import com.onetool.server.global.exception.ApiResponse;
-import com.onetool.server.global.exception.DuplicateMemberException;
-import com.onetool.server.global.exception.MemberNotFoundException;
+import com.onetool.server.global.exception.*;
 import com.onetool.server.global.exception.codes.ErrorCode;
 import com.onetool.server.global.exception.codes.reason.Reason;
 import lombok.extern.slf4j.Slf4j;
@@ -55,6 +52,16 @@ public class ExceptionAdvice {
     public ApiResponse<?> handleAccessDeniedException(AccessDeniedException e) {
         log.error(e.toString());
         return ApiResponse.onFailure("400", "인증 중 문제가 발생했습니다.", null);
+    }
+
+    @ExceptionHandler(BlueprintNotFoundException.class)
+    public ApiResponse<?> handleBlueprintNotFoundException(BlueprintNotFoundException e) {
+        return ApiResponse.onFailure("404", "도면을 찾을 수 없습니다.", null);
+    }
+
+    @ExceptionHandler(InvalidSortTypeException.class)
+    public ApiResponse<?> handleInvalidSortTypeException(InvalidSortTypeException e) {
+        return ApiResponse.onFailure("400", "올바르지 않은 정렬 방식입니다.", null);
     }
 
     /**
