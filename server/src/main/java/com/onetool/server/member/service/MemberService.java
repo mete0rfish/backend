@@ -7,23 +7,25 @@ import com.onetool.server.global.exception.BusinessLogicException;
 import com.onetool.server.global.exception.DuplicateMemberException;
 import com.onetool.server.global.exception.MemberNotFoundException;
 import com.onetool.server.global.exception.codes.ErrorCode;
-import com.onetool.server.global.redis.RedisService;
+import com.onetool.server.global.redis.service.MailRedisService;
 import com.onetool.server.mail.MailService;
 import com.onetool.server.member.dto.*;
 import com.onetool.server.member.repository.MemberRepository;
 import com.onetool.server.member.domain.Member;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import javax.swing.text.html.Option;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.time.Duration;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
 
@@ -39,7 +41,7 @@ public class MemberService {
     private final PasswordEncoder encoder;
 
     private final MailService mailService;
-    private final RedisService redisService;
+    private final MailRedisService mailRedisService;
 
     @Value("${spring.mail.auth-code-expiration-millis}")
     private long authCodeExpirationMillis;
@@ -55,7 +57,7 @@ public class MemberService {
         return MemberCreateResponse.of(member);
     }
 
-    public String login(LoginRequest request) {
+    public Map<String, String> login(LoginRequest request) {
         String email = request.getEmail();
         String password = request.getPassword();
 
@@ -75,7 +77,7 @@ public class MemberService {
                 .password(member.getPassword())
                 .build();
 
-        return jwtUtil.create(context);
+        return jwtUtil.createTokens(context);
     }
 
     public String findEmail(MemberFindEmailRequest request) {
@@ -94,7 +96,7 @@ public class MemberService {
         String authCode = this.createCode();
         mailService.sendEmail(toEmail, title, authCode);
         // 이메일 인증 요청 시 인증 번호 Redis에 저장 ( key = "AuthCode " + Email / value = AuthCode )
-        redisService.setValues(AUTH_CODE_PREFIX + toEmail,
+        mailRedisService.setValues(AUTH_CODE_PREFIX + toEmail,
                 authCode, Duration.ofMillis(this.authCodeExpirationMillis));
     }
 
@@ -123,9 +125,9 @@ public class MemberService {
 
     public boolean verifiedCode(String email, String authCode) {
         //this.checkDuplicatedEmail(email);
-        String redisAuthCode = redisService.getValues(AUTH_CODE_PREFIX + email);
+        String redisAuthCode = mailRedisService.getValues(AUTH_CODE_PREFIX + email);
 
-        return redisService.checkExistsValue(redisAuthCode) && redisAuthCode.equals(authCode);
+        return mailRedisService.checkExistsValue(redisAuthCode) && redisAuthCode.equals(authCode);
     }
 
     public boolean findLostPwd(MemberFindPwdRequest request) {
