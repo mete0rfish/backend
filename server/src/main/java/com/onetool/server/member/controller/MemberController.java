@@ -6,6 +6,7 @@ import com.onetool.server.global.exception.MemberNotFoundException;
 import com.onetool.server.global.exception.codes.SuccessCode;
 import com.onetool.server.member.dto.*;
 import com.onetool.server.member.service.MemberService;
+import com.onetool.server.qna.dto.response.QnaBoardResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 
 import java.util.Map;
+import java.util.List;
 
 @RestController
 @RequestMapping("/users")
@@ -121,5 +123,12 @@ public class MemberController {
         } catch (RuntimeException e) {
             return ApiResponse.onFailure("404", "회원을 찾을 수 없습니다.", null);
         }
+    }
+
+
+    // TODO : uri 수정 필요
+    @GetMapping("/myPage/myQna")
+    public ApiResponse<List<QnaBoardResponse.QnaBoardBriefResponse>> getMyQna(@AuthenticationPrincipal PrincipalDetails principalDetails) {
+        return ApiResponse.onSuccess(memberService.findQnaWrittenById(principalDetails.getContext()));
     }
 }

@@ -1,11 +1,14 @@
 package com.onetool.server.cart.controller;
 
+import com.onetool.server.blueprint.dto.BlueprintResponse;
 import com.onetool.server.cart.service.CartService;
 import com.onetool.server.global.auth.login.PrincipalDetails;
 import com.onetool.server.global.exception.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -20,18 +23,18 @@ public class CartController {
      * @return
      */
     @PostMapping("/api/cart/add/{blueprintId}")
-    public ApiResponse<?> addBlueprintToCart(@AuthenticationPrincipal PrincipalDetails principal,
+    public ApiResponse<String> addBlueprintToCart(@AuthenticationPrincipal PrincipalDetails principal,
                                              @PathVariable Long blueprintId){
         return ApiResponse.onSuccess(cartService.addBlueprintToCart(principal.getContext(), blueprintId));
     }
 
     @GetMapping("/cart")
-    public ApiResponse<?> showMyCart(@AuthenticationPrincipal PrincipalDetails principal){
+    public ApiResponse<Object> showMyCart(@AuthenticationPrincipal PrincipalDetails principal){
         return ApiResponse.onSuccess(cartService.showCart(principal.getContext()));
     }
 
     @DeleteMapping("/api/cart/delete/{blueprintId}")
-    public ApiResponse<?> deleteBlueprintInCart(@AuthenticationPrincipal PrincipalDetails principal,
+    public ApiResponse<String> deleteBlueprintInCart(@AuthenticationPrincipal PrincipalDetails principal,
                                                 @PathVariable Long blueprintId){
         return ApiResponse.onSuccess(cartService.deleteBlueprintInCart(principal.getContext(), blueprintId));
     }
