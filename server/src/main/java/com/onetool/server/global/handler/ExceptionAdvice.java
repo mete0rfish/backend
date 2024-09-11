@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingRequestHeaderException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
@@ -47,6 +48,12 @@ public class ExceptionAdvice {
         return ApiResponse.onFailure("400", "이메일이 중복됩니다.", null);
     }
 
+    @ExceptionHandler(AccessDeniedException.class)
+    public ApiResponse<?> handleAccessDeniedException(AccessDeniedException e) {
+        log.error(e.toString());
+        return ApiResponse.onFailure("400", "인증 중 문제가 발생했습니다.", null);
+    }
+
     @ExceptionHandler(BlueprintNotFoundException.class)
     public ApiResponse<?> handleBlueprintNotFoundException(BlueprintNotFoundException e) {
         return ApiResponse.onFailure("404", "도면을 찾을 수 없습니다.", null);
@@ -56,7 +63,7 @@ public class ExceptionAdvice {
     public ApiResponse<?> handleInvalidSortTypeException(InvalidSortTypeException e) {
         return ApiResponse.onFailure("400", "올바르지 않은 정렬 방식입니다.", null);
     }
-    
+
     /**
      * 서버 에러
      * @param e
@@ -64,6 +71,7 @@ public class ExceptionAdvice {
      */
     @ExceptionHandler
     public ResponseEntity<Object> exception(Exception e) {
+        log.error(e.getMessage());
         ErrorCode errorCode = ErrorCode._INTERNAL_SERVER_ERROR;
         ApiResponse<?> baseResponse = ApiResponse.onFailure(errorCode.getCode(), errorCode.getMessage(), null);
         return handleExceptionInternal(baseResponse);
@@ -176,11 +184,11 @@ public class ExceptionAdvice {
      * @param e NoHandlerFoundException
      * @return ResponseEntity<ErrorResponse>
      */
-    @ExceptionHandler(NoHandlerFoundException.class)
-    protected ResponseEntity<Object> handleNoHandlerFoundExceptionException(NoHandlerFoundException e) {
-        log.error("handleNoHandlerFoundExceptionException", e);
-        return handleExceptionInternal(ErrorCode.NOT_FOUND_ERROR);
-    }
+//    @ExceptionHandler(NoHandlerFoundException.class)
+//    protected ResponseEntity<Object> handleNoHandlerFoundExceptionException(NoHandlerFoundException e) {
+//        log.error("handleNoHandlerFoundExceptionException", e);
+//        return handleExceptionInternal(ErrorCode.NOT_FOUND_ERROR);
+//    }
 
     private ResponseEntity<Object> handleExceptionInternal(ApiResponse<?> response) {
         return new ResponseEntity<>(response, HttpStatus.OK);
