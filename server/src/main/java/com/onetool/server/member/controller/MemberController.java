@@ -15,6 +15,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 
+import java.util.Map;
 import java.util.List;
 
 @RestController
@@ -28,14 +29,15 @@ public class MemberController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(
+    public ApiResponse<MemberLoginResponse> login(
             @Valid @RequestBody LoginRequest request
     ) {
-        String token = memberService.login(request);
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", "Bearer " + token);
-
-        return new ResponseEntity<>("유저가 로그인되었습니다.",headers, HttpStatus.OK);
+        Map<String, String> tokens = memberService.login(request);
+        MemberLoginResponse response = MemberLoginResponse.builder()
+                .accessToken("Bearer " + tokens.get("accessToken"))
+                .refreshToken(tokens.get("refreshToken"))
+                .build();
+        return ApiResponse.onSuccess(response);
     }
 
     @PostMapping("/signup")
