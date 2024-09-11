@@ -1,5 +1,6 @@
 package com.onetool.server.member.service;
 
+import com.onetool.server.blueprint.Blueprint;
 import com.onetool.server.global.auth.MemberAuthContext;
 import com.onetool.server.global.auth.jwt.JwtUtil;
 import com.onetool.server.global.exception.BaseException;
@@ -12,6 +13,7 @@ import com.onetool.server.mail.MailService;
 import com.onetool.server.member.dto.*;
 import com.onetool.server.member.repository.MemberRepository;
 import com.onetool.server.member.domain.Member;
+import com.onetool.server.order.OrderBlueprint;
 import com.onetool.server.qna.QnaBoard;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -31,6 +33,7 @@ import java.util.Map;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 
 import static com.onetool.server.qna.dto.response.QnaBoardResponse.*;
@@ -54,7 +57,7 @@ public class MemberService {
 
     public MemberCreateResponse createMember(MemberCreateRequest request) {
         boolean isExist = memberRepository.existsByEmail(request.email());
-        if(isExist) {
+        if (isExist) {
             throw new BaseException(ErrorCode.EXIST_EMAIL);
         }
 
@@ -71,7 +74,7 @@ public class MemberService {
         log.info("============== 로그인 유저 정보 ===============");
         log.info(member.toString());
 
-        if(!encoder.matches(password, member.getPassword())){
+        if (!encoder.matches(password, member.getPassword())) {
             throw new BadCredentialsException("비밀번호가 일치하지 않습니다.");
         }
 
@@ -138,7 +141,7 @@ public class MemberService {
 
     public boolean findLostPwd(MemberFindPwdRequest request) {
         String email = request.getEmail();
-        Member member =  memberRepository.findByEmail(email)
+        Member member = memberRepository.findByEmail(email)
                 .orElseThrow(MemberNotFoundException::new);
 
         String newPwd = createRandomPassword();
@@ -155,7 +158,7 @@ public class MemberService {
 
     public Member updateMember(Long id, MemberUpdateRequest request) {
         Member member = memberRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("회원이 존재하지 않습니다."));
+                .orElseThrow(MemberNotFoundException::new);
 
         member.updateWith(request);
 
@@ -164,7 +167,7 @@ public class MemberService {
 
     public void deleteMember(Long id) {
         Member member = memberRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("회원이 존재하지 않습니다."));
+                .orElseThrow(MemberNotFoundException::new);
         memberRepository.delete(member);
     }
 
@@ -185,9 +188,9 @@ public class MemberService {
 
     public MemberInfoResponse getMemberInfo(Long userId) {
         Member member = memberRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("회원 정보가 존재하지 않습니다."));
+                .orElseThrow(MemberNotFoundException::new);
 
-        return MemberInfoResponse.fromEntity(member);
+        return MemberInfoResponse.from(member);
     }
 
     public List<QnaBoardBriefResponse> findQnaWrittenById(MemberAuthContext context){
@@ -199,5 +202,26 @@ public class MemberService {
     private Member findMemberWithQna(Long id){
         return memberRepository.findMemberWithQnaBoards(id)
                 .orElseThrow(() -> new BaseException(ErrorCode.NON_EXIST_USER));
+    }
+
+    public List<BlueprintDownloadResponse> getPurchasedBlueprints(final Long userId) {
+        final Member member = memberRepository.findById(userId)
+                .orElseThrow(MemberNotFoundException::new);
+
+        return member.getOrders().stream()
+                .flatMap(order -> order.getOrderItems().stream())
+                .map(this::convertToBlueprintDownloadResponse)
+                .collect(Collectors.toList());
+    }
+
+    private BlueprintDownloadResponse convertToBlueprintDownloadResponse(final OrderBlueprint orderItem) {
+        final Blueprint blueprint = orderItem.getBlueprint();
+        return new BlueprintDownloadResponse(
+                blueprint.getId(),
+                blueprint.getBlueprintImg(),
+                blueprint.getDownloadLink(),
+                blueprint.getBlueprintName(),
+                blueprint.getCreatorName()
+        );
     }
 }

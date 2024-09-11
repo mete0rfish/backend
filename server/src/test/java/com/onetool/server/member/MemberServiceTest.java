@@ -257,4 +257,45 @@ public class MemberServiceTest {
         assertThat(memberResponse.jsonPath().getString("user_registered_at")).isEqualTo(LocalDate.now().toString());
     }
 
+    @Test
+    @DisplayName("유저의 구매 내역을 조회하면 정상적으로 응답한다")
+    void 유저의_구매내역을_조회하면_정상적으로_응답한다() {
+        // given (회원 가입 및 로그인)
+        final Map<String, String> loginParams = Map.of(
+                "email", "admin@example.com",
+                "password", "1234"
+        );
+
+        // 로그인 요청
+        ExtractableResponse<Response> loginResponse = RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(loginParams)
+                .when().post("/users/login")
+                .then().log().all()
+                .statusCode(200)
+                .extract();
+
+        // 로그인 응답에서 Authorization 헤더 추출
+        String token = loginResponse.header("Authorization");
+        assertThat(token).isNotNull();
+        token = token.replace("Bearer ", "").trim();
+
+
+        // when (구매 내역 조회 요청)
+        ExtractableResponse<Response> purchaseResponse = RestAssured.given().log().all()
+                .header("Authorization", "Bearer " + token)
+                .contentType(ContentType.JSON)
+                .when().get("/users/1/myPurchase") // 적절한 userId를 사용하세요
+                .then().log().all()
+                .statusCode(200)
+                .extract();
+
+        // 응답 본문 출력
+        System.out.println("Purchase response body: " + purchaseResponse.body().asString());
+
+        // then
+        assertThat(purchaseResponse.jsonPath().getBoolean("isSuccess")).isTrue();
+        assertThat(purchaseResponse.jsonPath().getString("code")).isEqualTo("SUCCESS-0000");
+        assertThat(purchaseResponse.jsonPath().getString("message")).isEqualTo("요청에 성공하였습니다.");
+    }
 }
