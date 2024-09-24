@@ -23,7 +23,7 @@ public record BlueprintResponse(
         String downloadLink
 )  {
     @Builder
-    public static BlueprintResponse fromEntity(Blueprint blueprint) {
+    public static BlueprintResponse from(Blueprint blueprint) {
         return new BlueprintResponse(
                 blueprint.getId(),
                 blueprint.getBlueprintName(),

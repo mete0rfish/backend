@@ -6,6 +6,7 @@ import com.onetool.server.global.exception.MemberNotFoundException;
 import com.onetool.server.global.exception.codes.SuccessCode;
 import com.onetool.server.member.dto.*;
 import com.onetool.server.member.service.MemberService;
+import com.onetool.server.qna.dto.response.QnaBoardResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -13,6 +14,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+
+import java.util.Map;
+import java.util.List;
 
 @RestController
 @RequestMapping("/users")
@@ -25,14 +29,15 @@ public class MemberController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(
+    public ApiResponse<MemberLoginResponse> login(
             @Valid @RequestBody LoginRequest request
     ) {
-        String token = memberService.login(request);
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", "Bearer " + token);
-
-        return new ResponseEntity<>("유저가 로그인되었습니다.",headers, HttpStatus.OK);
+        Map<String, String> tokens = memberService.login(request);
+        MemberLoginResponse response = MemberLoginResponse.builder()
+                .accessToken("Bearer " + tokens.get("accessToken"))
+                .refreshToken(tokens.get("refreshToken"))
+                .build();
+        return ApiResponse.onSuccess(response);
     }
 
     @PostMapping("/signup")
@@ -118,5 +123,18 @@ public class MemberController {
         } catch (RuntimeException e) {
             return ApiResponse.onFailure("404", "회원을 찾을 수 없습니다.", null);
         }
+    }
+
+    // TODO : uri 수정 필요
+    @GetMapping("/myPage/myQna")
+    public ApiResponse<List<QnaBoardResponse.QnaBoardBriefResponse>> getMyQna(@AuthenticationPrincipal PrincipalDetails principalDetails) {
+        return ApiResponse.onSuccess(memberService.findQnaWrittenById(principalDetails.getContext()));
+    }
+
+    @GetMapping("/myPurchase")
+    public ApiResponse<List<BlueprintDownloadResponse>> getMyPurchases(@AuthenticationPrincipal PrincipalDetails principalDetails) {
+        Long userId = principalDetails.getContext().getId();
+        List<BlueprintDownloadResponse> blueprints = memberService.getPurchasedBlueprints(userId);
+        return ApiResponse.onSuccess(blueprints);
     }
 }

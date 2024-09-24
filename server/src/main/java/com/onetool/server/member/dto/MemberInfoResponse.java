@@ -38,7 +38,7 @@ public record MemberInfoResponse(
     }
 
 
-    public static MemberInfoResponse fromEntity(Member member) {
+    public static MemberInfoResponse from(Member member) {
         return new MemberInfoResponse(
                 member.getId(),
                 member.getEmail(),
