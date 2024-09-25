@@ -1,7 +1,9 @@
 package com.onetool.server;
 
 import com.onetool.server.blueprint.Blueprint;
+import com.onetool.server.blueprint.InspectionStatus;
 import com.onetool.server.blueprint.repository.BlueprintRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
@@ -10,11 +12,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class TestDataLoader implements CommandLineRunner {
 
+    @Autowired
     private BlueprintRepository blueprintRepository;
-
-    public TestDataLoader(BlueprintRepository blueprintRepository) {
-        this.blueprintRepository = blueprintRepository;
-    }
 
     @Override
     public void run(String... args) throws Exception {
@@ -31,6 +30,7 @@ public class TestDataLoader implements CommandLineRunner {
                         .blueprintImg("https://s3.bucket.image.com/")
                         .categoryId(1L)
                         .secondCategory("주거")
+                        .inspectionStatus(InspectionStatus.NONE)
                         .build()
         );
         final Blueprint civil1 = blueprintRepository.save(
@@ -46,6 +46,7 @@ public class TestDataLoader implements CommandLineRunner {
                         .secondCategory("공공")
                         .blueprintImg("https://s3.bucket.image.com/")
                         .categoryId(2L)
+                        .inspectionStatus(InspectionStatus.NONE)
                         .build()
         );
         final Blueprint interior1 = blueprintRepository.save(
@@ -61,6 +62,7 @@ public class TestDataLoader implements CommandLineRunner {
                         .secondCategory("도로")
                         .blueprintImg("https://s3.bucket.image.com/")
                         .categoryId(3L)
+                        .inspectionStatus(InspectionStatus.NONE)
                         .build()
         );
         final Blueprint machine1 = blueprintRepository.save(
@@ -76,6 +78,7 @@ public class TestDataLoader implements CommandLineRunner {
                         .secondCategory("기계부품")
                         .blueprintImg("https://s3.bucket.image.com/")
                         .categoryId(4L)
+                        .inspectionStatus(InspectionStatus.NONE)
                         .build()
         );
         final Blueprint electric1 = blueprintRepository.save(
@@ -91,6 +94,7 @@ public class TestDataLoader implements CommandLineRunner {
                         .secondCategory("전기")
                         .blueprintImg("https://s3.bucket.image.com/")
                         .categoryId(5L)
+                        .inspectionStatus(InspectionStatus.NONE)
                         .build()
         );
         final Blueprint etc1 = blueprintRepository.save(
@@ -105,6 +109,7 @@ public class TestDataLoader implements CommandLineRunner {
                         .extension(".exe")
                         .blueprintImg("https://s3.bucket.image.com/")
                         .categoryId(6L)
+                        .inspectionStatus(InspectionStatus.NONE)
                         .build()
         );
     }

@@ -26,7 +26,7 @@ public class CategoryServiceTest {
         FirstCategoryType type = FirstCategoryType.CATEGORY_BUILDING;
 
         Pageable pageable = PageRequest.of(0, 5);
-        Page<SearchResponse> response = blueprintService.findAllByCategory(type,null, pageable);
+        Page<SearchResponse> response = blueprintService.findAllByCategory(type, null, pageable);
         assertThat(response.getTotalElements()).isEqualTo(1);
     }
 

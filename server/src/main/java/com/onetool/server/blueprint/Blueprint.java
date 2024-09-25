@@ -25,30 +25,43 @@ public class Blueprint extends BaseEntity {
 
     @Column(name="blueprint_name")
     private String blueprintName;
+
     @Column(name="category_id")
     private Long categoryId;
+
     @Column(name = "standard_price")
     private Long standardPrice;
+
     @Column(name = "blueprint_img")
     private String blueprintImg;
+
     @Column(name = "blueprint_details")
     private String blueprintDetails;
-    @Column(name = "extension")
+
     private String extension;
-    @Column(name = "program")
+
     private String program;
-    @Column(name = "hits")
+
     private BigInteger hits;
+
     @Column(name = "sale_price")
     private Long salePrice;
+
     @Column(name = "sale_expired_date")
     private LocalDateTime saleExpiredDate;
+
     @Column(name = "creator_name")
     private String creatorName;
+
     @Column(name = "download_link")
     private String downloadLink;
+
     @Column(name = "second_category")
     private String secondCategory;
+
+    @Column(name = "inspection_status")
+    @Enumerated(EnumType.STRING)
+    private InspectionStatus inspectionStatus;
 
     @OneToMany(mappedBy = "blueprint")
     private List<OrderBlueprint> orderBlueprints = new ArrayList<>();
@@ -57,7 +70,7 @@ public class Blueprint extends BaseEntity {
     private List<CartBlueprint> cartBlueprints = new ArrayList<>();
 
     @Builder
-    public Blueprint(Long id, String blueprintName, Long categoryId, Long standardPrice, String blueprintImg, String blueprintDetails, String extension, String program, BigInteger hits, Long salePrice, LocalDateTime saleExpiredDate, String creatorName, String downloadLink, String secondCategory) {
+    public Blueprint(Long id, String blueprintName, Long categoryId, Long standardPrice, String blueprintImg, String blueprintDetails, String extension, String program, BigInteger hits, Long salePrice, LocalDateTime saleExpiredDate, String creatorName, String downloadLink, String secondCategory, InspectionStatus inspectionStatus, List<OrderBlueprint> orderBlueprints, List<CartBlueprint> cartBlueprints) {
         this.id = id;
         this.blueprintName = blueprintName;
         this.categoryId = categoryId;
@@ -72,8 +85,15 @@ public class Blueprint extends BaseEntity {
         this.creatorName = creatorName;
         this.downloadLink = downloadLink;
         this.secondCategory = secondCategory;
+        this.inspectionStatus = inspectionStatus;
+        this.orderBlueprints = orderBlueprints;
+        this.cartBlueprints = cartBlueprints;
     }
 
+    public void approveBlueprint() {
+        this.inspectionStatus = InspectionStatus.PASSED;
+    }
+  
     public static Blueprint fromRequest(final BlueprintRequest blueprintRequest) {
         return Blueprint.builder()
                 .id(blueprintRequest.id())
