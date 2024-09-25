@@ -21,7 +21,7 @@ public class WebErrorController implements ErrorController {
         if (status != null) {
             int statusCode = Integer.parseInt(status.toString());
             if (statusCode == HttpStatus.NOT_FOUND.value()) {
-                throw new NoHandlerFoundException("GET", request.getRequestURI(), HttpHeaders.EMPTY);
+                throw new BaseException(ErrorCode.IO_ERROR);
             }
         }
         return ApiResponse.onFailure(ErrorCode.INTERNAL_SERVER_ERROR.getCode(), ErrorCode.INTERNAL_SERVER_ERROR.getMessage(), null);
