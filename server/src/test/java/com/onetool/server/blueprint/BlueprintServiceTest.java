@@ -5,6 +5,7 @@ import com.onetool.server.blueprint.service.BlueprintService;
 import com.onetool.server.blueprint.dto.BlueprintRequest;
 import com.onetool.server.blueprint.dto.BlueprintResponse;
 import com.onetool.server.blueprint.dto.SearchResponse;
+import com.onetool.server.global.auth.login.PrincipalDetails;
 import com.onetool.server.global.exception.ApiResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -27,6 +28,9 @@ public class BlueprintServiceTest {
     private BlueprintController blueprintController;
     @Autowired
     private BlueprintService blueprintService;
+
+    @Autowired
+    private PrincipalDetails principalDetails;
 
     @DisplayName("키워드 기반 검색이 잘되는지 확인")
     @Test
@@ -56,7 +60,7 @@ public class BlueprintServiceTest {
                 "https://onetool.com/download"
         );
 
-        ApiResponse<String> response = blueprintController.createBlueprint(blueprintRequest);
+        ApiResponse<String> response = blueprintController.createBlueprint(blueprintRequest, principalDetails);
 
         assertThat(response.getResult()).isEqualTo("상품이 정상적으로 등록되었습니다.");
     }
@@ -76,11 +80,12 @@ public class BlueprintServiceTest {
     public void testDeleteBlueprint() {
         Long blueprintId = 1L;
 
-        ApiResponse<?> response = blueprintController.deleteBlueprint(blueprintId);
+        ApiResponse<?> response = blueprintController.deleteBlueprint(blueprintId, principalDetails);
 
         assertThat(response.getMessage()).isEqualTo("요청에 성공하였습니다.");
         assertThat(response.getResult()).isEqualTo("상품이 정상적으로 삭제 되었습니다.");
     }
+
 
     @DisplayName("blueprint가 정상적으로 업데이트되는지 확인")
     @Test
@@ -101,7 +106,7 @@ public class BlueprintServiceTest {
                 "https://onetool.com/download"
         );
 
-        ApiResponse<?> response = blueprintController.updateBlueprint(blueprintResponse);
+        ApiResponse<?> response = blueprintController.updateBlueprint(blueprintResponse, principalDetails);
 
         assertThat(response.getMessage()).isEqualTo("요청에 성공하였습니다.");
         assertThat(response.getResult()).isEqualTo("상품이 정상적으로 수정 되었습니다.");
