@@ -125,10 +125,16 @@ public class MemberController {
         }
     }
 
-
     // TODO : uri 수정 필요
     @GetMapping("/myPage/myQna")
     public ApiResponse<List<QnaBoardResponse.QnaBoardBriefResponse>> getMyQna(@AuthenticationPrincipal PrincipalDetails principalDetails) {
         return ApiResponse.onSuccess(memberService.findQnaWrittenById(principalDetails.getContext()));
+    }
+
+    @GetMapping("/myPurchase")
+    public ApiResponse<List<BlueprintDownloadResponse>> getMyPurchases(@AuthenticationPrincipal PrincipalDetails principalDetails) {
+        Long userId = principalDetails.getContext().getId();
+        List<BlueprintDownloadResponse> blueprints = memberService.getPurchasedBlueprints(userId);
+        return ApiResponse.onSuccess(blueprints);
     }
 }
