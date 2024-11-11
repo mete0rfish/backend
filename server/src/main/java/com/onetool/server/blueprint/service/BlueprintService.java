@@ -1,12 +1,14 @@
 package com.onetool.server.blueprint.service;
 
 import com.onetool.server.blueprint.Blueprint;
+import com.onetool.server.blueprint.InspectionStatus;
 import com.onetool.server.blueprint.enums.SortType;
 import com.onetool.server.blueprint.repository.BlueprintRepository;
 import com.onetool.server.blueprint.dto.BlueprintRequest;
 import com.onetool.server.blueprint.dto.BlueprintResponse;
 import com.onetool.server.blueprint.dto.SearchResponse;
 import com.onetool.server.category.FirstCategoryType;
+import com.onetool.server.global.exception.BlueprintNotApprovedException;
 import com.onetool.server.global.exception.BlueprintNotFoundException;
 import com.onetool.server.global.exception.InvalidSortTypeException;
 import org.springframework.data.domain.Page;
@@ -29,17 +31,21 @@ public class BlueprintService {
         this.blueprintRepository = blueprintRepository;
     }
 
-    public BlueprintResponse findBlueprintById(Long id) {
-        Blueprint blueprint = blueprintRepository.findById(id)
-                .orElseThrow(BlueprintNotFoundException::new);
-
-        return BlueprintResponse.from(blueprint);
-    }
-
     public boolean createBlueprint(final BlueprintRequest blueprintRequest) {
         Blueprint blueprint = convertToBlueprint(blueprintRequest);
         saveBlueprint(blueprint);
         return true;
+    }
+
+    public BlueprintResponse findApprovedBlueprintById(Long id) {
+        Blueprint blueprint = blueprintRepository.findById(id)
+                .orElseThrow(BlueprintNotFoundException::new);
+
+        if (blueprint.getInspectionStatus() != InspectionStatus.PASSED) {
+            throw new BlueprintNotApprovedException();
+        }
+
+        return BlueprintResponse.from(blueprint);
     }
 
     public Blueprint saveBlueprint(Blueprint blueprint) {
@@ -67,7 +73,6 @@ public class BlueprintService {
 
         SortType sortType = SortType.valueOf(sortBy.toUpperCase());
 
-
         List<Blueprint> blueprints = blueprintRepository.findAll();
 
         Comparator<Blueprint> comparator = getComparatorBySortType(sortType);
@@ -78,7 +83,7 @@ public class BlueprintService {
     }
 
     public Page<SearchResponse> searchNameAndCreatorWithKeyword(String keyword, Pageable pageable) {
-        Page<Blueprint> result = blueprintRepository.findAllNameAndCreatorContaining(keyword, pageable);
+        Page<Blueprint> result = blueprintRepository.findAllNameAndCreatorContaining(keyword, InspectionStatus.PASSED, pageable);
         List<SearchResponse> list = result.getContent().stream()
                 .map(SearchResponse::from)
                 .collect(Collectors.toList());
@@ -101,7 +106,7 @@ public class BlueprintService {
     }
 
     private Page<SearchResponse> findAllByFirstCategory(FirstCategoryType category, Pageable pageable) {
-        Page<Blueprint> result = blueprintRepository.findAllByFirstCategory(category.getType(), pageable);
+        Page<Blueprint> result = blueprintRepository.findAllByFirstCategory(category.getType(), InspectionStatus.PASSED, pageable);
         List<SearchResponse> list = result.getContent().stream()
                 .map(SearchResponse::from)
                 .collect(Collectors.toList());
@@ -110,7 +115,7 @@ public class BlueprintService {
 
     private Page<SearchResponse> findAllBySecondCategory(FirstCategoryType firstCategory, String secondCategory, Pageable pageable) {
         Page<Blueprint> result = blueprintRepository.findAllBySecondCategory(
-                firstCategory.getType(), secondCategory, pageable);
+                firstCategory.getType(), secondCategory, InspectionStatus.PASSED, pageable);
         List<SearchResponse> list = result.getContent().stream()
                 .map(SearchResponse::from)
                 .collect(Collectors.toList());
