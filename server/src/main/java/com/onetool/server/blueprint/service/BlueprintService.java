@@ -83,7 +83,7 @@ public class BlueprintService {
     }
 
     public Page<SearchResponse> searchNameAndCreatorWithKeyword(String keyword, Pageable pageable) {
-        Page<Blueprint> result = blueprintRepository.findAllNameAndCreatorContaining(keyword, pageable);
+        Page<Blueprint> result = blueprintRepository.findAllNameAndCreatorContaining(keyword, InspectionStatus.PASSED, pageable);
         List<SearchResponse> list = result.getContent().stream()
                 .map(SearchResponse::from)
                 .collect(Collectors.toList());
@@ -106,7 +106,7 @@ public class BlueprintService {
     }
 
     private Page<SearchResponse> findAllByFirstCategory(FirstCategoryType category, Pageable pageable) {
-        Page<Blueprint> result = blueprintRepository.findAllByFirstCategory(category.getType(), pageable);
+        Page<Blueprint> result = blueprintRepository.findAllByFirstCategory(category.getType(), InspectionStatus.PASSED, pageable);
         List<SearchResponse> list = result.getContent().stream()
                 .map(SearchResponse::from)
                 .collect(Collectors.toList());
@@ -115,7 +115,7 @@ public class BlueprintService {
 
     private Page<SearchResponse> findAllBySecondCategory(FirstCategoryType firstCategory, String secondCategory, Pageable pageable) {
         Page<Blueprint> result = blueprintRepository.findAllBySecondCategory(
-                firstCategory.getType(), secondCategory, pageable);
+                firstCategory.getType(), secondCategory, InspectionStatus.PASSED, pageable);
         List<SearchResponse> list = result.getContent().stream()
                 .map(SearchResponse::from)
                 .collect(Collectors.toList());

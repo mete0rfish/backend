@@ -3,6 +3,7 @@ package com.onetool.server.global.redis.service;
 import com.onetool.server.member.dto.MemberLoginResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
@@ -13,10 +14,15 @@ import java.time.Duration;
 
 @Slf4j
 @Service
-@RequiredArgsConstructor
 public class TokenRedisService {
 
     private final RedisTemplate<String, Object> tokenRedisTemplate;
+
+    public TokenRedisService(
+            @Qualifier("tokenRedisTemplate")
+            RedisTemplate<String, Object> tokenRedisTemplate) {
+        this.tokenRedisTemplate = tokenRedisTemplate;
+    }
 
     public void setValuesWithTimeout(String s, String refreshToken, Long refreshTokenExpirationMillis) {
         ValueOperations<String, Object> values = tokenRedisTemplate.opsForValue();

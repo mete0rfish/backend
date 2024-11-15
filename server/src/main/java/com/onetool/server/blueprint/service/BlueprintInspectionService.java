@@ -33,4 +33,9 @@ public class BlueprintInspectionService {
     public void approveBlueprint(Long id) {
         blueprintRepository.findById(id).ifPresent(Blueprint::approveBlueprint);
     }
+
+    @Transactional
+    public void rejectBlueprint(Long id) {
+        blueprintRepository.deleteById(id);
+    }
 }
