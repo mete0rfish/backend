@@ -9,6 +9,7 @@ import com.onetool.server.global.redis.repository.TokenRepository;
 import com.onetool.server.global.redis.service.TokenRedisService;
 import io.jsonwebtoken.*;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -27,6 +28,7 @@ import java.util.Map;
 
 @Slf4j
 @Component
+@Setter
 public class JwtUtil implements AuthorizationProvider {
 
     private static final String USER_NAME = "name";
