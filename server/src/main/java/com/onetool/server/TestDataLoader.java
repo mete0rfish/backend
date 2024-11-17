@@ -3,20 +3,37 @@ package com.onetool.server;
 import com.onetool.server.blueprint.Blueprint;
 import com.onetool.server.blueprint.InspectionStatus;
 import com.onetool.server.blueprint.repository.BlueprintRepository;
+import com.onetool.server.member.domain.Member;
+import com.onetool.server.member.enums.UserRole;
+import com.onetool.server.member.repository.MemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 @Profile("test")
 @Component
 public class TestDataLoader implements CommandLineRunner {
-
     @Autowired
     private BlueprintRepository blueprintRepository;
+    @Autowired
+    private MemberRepository memberRepository;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Override
     public void run(String... args) throws Exception {
+
+        Member member = memberRepository.save(
+                Member.builder()
+                        .name("admin")
+                        .password(passwordEncoder.encode("1234"))
+                        .email("admin@example.com")
+                        .role(UserRole.ROLE_ADMIN)
+                        .build()
+        );
+
         final Blueprint building1 = blueprintRepository.save(
                 Blueprint.builder()
                         .blueprintName("대한민국 마을")
@@ -62,7 +79,7 @@ public class TestDataLoader implements CommandLineRunner {
                         .secondCategory("도로")
                         .blueprintImg("https://s3.bucket.image.com/")
                         .categoryId(3L)
-                        .inspectionStatus(InspectionStatus.NONE)
+                        .inspectionStatus(InspectionStatus.PASSED)
                         .build()
         );
         final Blueprint machine1 = blueprintRepository.save(
