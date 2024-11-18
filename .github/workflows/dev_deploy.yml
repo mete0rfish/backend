@@ -46,7 +46,7 @@ jobs:
       - name: Docker 이미지 생성 및 DockerHub에 푸시  # Docker 이미지를 빌드하고 DockerHub에 푸시합니다
         run: |
           docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}  # DockerHub 로그인
-          cd ./dev-route/  # dev-route 디렉토리로 이동
+          cd ./server/  # dev-route 디렉토리로 이동
           docker buildx build --cache-from=type=local,src=/tmp/.buildx-cache \
             --cache-to=type=local,dest=/tmp/.buildx-cache,mode=max \
             --push \
