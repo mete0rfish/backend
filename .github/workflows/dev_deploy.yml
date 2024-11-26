@@ -60,4 +60,4 @@ jobs:
           script: |  # EC2에서 실행할 스크립트
             docker stop $(docker ps -q) && docker rm $(docker ps -qa)
             docker pull ${{ secrets.DOCKER_REPO }}/onetool-test-server:${{ github.sha }}
-            docker run -d -p 8080:8080 -e "SPRING_PROFILES_ACTIVE=dev" ${{ secrets.DOCKER_REPO }}/onetool-test-server:${{ github.sha }}  # 새 컨테이너 실행
+            docker-compose -f compose.yml up -d
