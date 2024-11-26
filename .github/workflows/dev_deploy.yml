@@ -46,7 +46,7 @@ jobs:
       - name: Docker 이미지 생성 및 DockerHub에 푸시  # Docker 이미지를 빌드하고 DockerHub에 푸시합니다
         run: |
           docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}  # DockerHub 로그인
-          docker build --no-cache -t onetool-test-server:v1 .  # Docker Buildx 사용
+          docker build --no-cache -t ${{ secrets.DOCKER_REPO }}/onetool-test-server:v1 .  # Docker Buildx 사용
           docker push ${{ secrets.DOCKER_REPO }}/onetool-test-server:v1
 
       - name: EC2에서 이미지 pull 후 컨테이너 실행  # EC2 서버에서 Docker 이미지 pull 후 컨테이너 실행
