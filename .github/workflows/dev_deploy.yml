@@ -46,8 +46,8 @@ jobs:
       - name: Docker 이미지 생성 및 DockerHub에 푸시  # Docker 이미지를 빌드하고 DockerHub에 푸시합니다
         run: |
           docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}  # DockerHub 로그인
-          docker build --no-cache --tag test1 .  # Docker Buildx 사용
-          docker push ${{ secrets.DOCKER_REPO }}/onetool-test-server:test1
+          docker build --no-cache -t onetool-test-server:v1 .  # Docker Buildx 사용
+          docker push ${{ secrets.DOCKER_REPO }}/onetool-test-server:v1
 
       - name: EC2에서 이미지 pull 후 컨테이너 실행  # EC2 서버에서 Docker 이미지 pull 후 컨테이너 실행
         uses: appleboy/ssh-action@master  # EC2 서버에 SSH 접속 후 명령 실행
@@ -57,5 +57,5 @@ jobs:
           key: ${{ secrets.PRIVATE_KEY }}  # SSH 프라이빗 키
           script: |  # EC2에서 실행할 스크립트
             docker stop $(docker ps -q) && docker rm $(docker ps -qa)
-            docker pull ${{ secrets.DOCKER_REPO }}/onetool-test-server:test1
+            docker pull ${{ secrets.DOCKER_REPO }}/onetool-test-server:v1
             docker-compose -f compose.yml up -d
