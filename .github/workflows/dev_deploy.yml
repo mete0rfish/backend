@@ -59,6 +59,5 @@ jobs:
           key: ${{ secrets.PRIVATE_KEY }}  # SSH 프라이빗 키
           script: |  # EC2에서 실행할 스크립트
             docker stop $(docker ps -q) && docker rm $(docker ps -qa)
-            docker image prune
             docker pull ${{ secrets.DOCKER_REPO }}/onetool-test-server:${{ github.sha }}
             docker-compose -f compose.yml up -d
