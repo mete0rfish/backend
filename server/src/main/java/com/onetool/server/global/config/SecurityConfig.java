@@ -26,6 +26,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.security.web.context.*;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.CorsUtils;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration
@@ -79,7 +80,9 @@ public class SecurityConfig {
                         .accessDeniedHandler(accessDeniedHandler))
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(AUTH_WHITELIST).permitAll()
-                        .anyRequest().authenticated())
+                        .anyRequest().authenticated()
+                        .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
+                )
                 .oauth2Login(auth -> {
                     auth.successHandler(oAuth2LoginSuccessHandler)
                             .failureHandler(oAuth2LoginFailureHandler)
