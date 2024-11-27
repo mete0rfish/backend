@@ -10,6 +10,7 @@ import com.onetool.server.global.auth.login.handler.OAuth2LoginSuccessHandler;
 import com.onetool.server.global.auth.login.service.CustomOAuth2UserService;
 import com.onetool.server.global.auth.login.service.CustomUserDetailsService;
 import lombok.AllArgsConstructor;
+import org.springframework.boot.web.servlet.server.CookieSameSiteSupplier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -38,7 +39,7 @@ public class SecurityConfig {
     private final CustomOAuth2UserService customOAuth2UserService;
 
     private static final String[] AUTH_WHITELIST = {
-            "/users/**", "/login/**", "/blueprint/**"
+            "/users/**", "/login/**", "/blueprint/**", "/actuator/health"
     };
 
     @Bean
@@ -103,5 +104,10 @@ public class SecurityConfig {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
+    }
+
+    @Bean
+    public CookieSameSiteSupplier cookieSameSiteSupplier() {
+        return CookieSameSiteSupplier.ofLax();
     }
 }
