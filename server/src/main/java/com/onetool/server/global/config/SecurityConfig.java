@@ -10,6 +10,7 @@ import com.onetool.server.global.auth.login.handler.OAuth2LoginSuccessHandler;
 import com.onetool.server.global.auth.login.service.CustomOAuth2UserService;
 import com.onetool.server.global.auth.login.service.CustomUserDetailsService;
 import lombok.AllArgsConstructor;
+import org.apache.catalina.filters.CorsFilter;
 import org.springframework.boot.web.servlet.server.CookieSameSiteSupplier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,6 +26,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.security.web.context.*;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.CorsUtils;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration
@@ -59,7 +61,7 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
-                .cors(Customizer.withDefaults())
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .anonymous(AbstractHttpConfigurer::disable)
                 .securityContext((securityContext) -> {
                     securityContext.securityContextRepository(securityContextRepository());
@@ -78,7 +80,9 @@ public class SecurityConfig {
                         .accessDeniedHandler(accessDeniedHandler))
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(AUTH_WHITELIST).permitAll()
-                        .anyRequest().authenticated())
+                        .anyRequest().authenticated()
+                        .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
+                )
                 .oauth2Login(auth -> {
                     auth.successHandler(oAuth2LoginSuccessHandler)
                             .failureHandler(oAuth2LoginFailureHandler)
@@ -89,8 +93,9 @@ public class SecurityConfig {
     }
 
     @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
+    public UrlBasedCorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
+        configuration.addAllowedOrigin("^https?:\\/\\/linklinklink~~.com$");
         configuration.addAllowedOrigin("http://www.onetool.co.kr");
         configuration.addAllowedOrigin("http://localhost:8080");
         configuration.addAllowedOrigin("http://onetool.co.kr");
