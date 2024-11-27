@@ -10,6 +10,7 @@ import com.onetool.server.global.auth.login.handler.OAuth2LoginSuccessHandler;
 import com.onetool.server.global.auth.login.service.CustomOAuth2UserService;
 import com.onetool.server.global.auth.login.service.CustomUserDetailsService;
 import lombok.AllArgsConstructor;
+import org.apache.catalina.filters.CorsFilter;
 import org.springframework.boot.web.servlet.server.CookieSameSiteSupplier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -59,7 +60,7 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
-                .cors(Customizer.withDefaults())
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .anonymous(AbstractHttpConfigurer::disable)
                 .securityContext((securityContext) -> {
                     securityContext.securityContextRepository(securityContextRepository());
@@ -89,8 +90,9 @@ public class SecurityConfig {
     }
 
     @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
+    public UrlBasedCorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
+        configuration.addAllowedOrigin("^https?:\\/\\/linklinklink~~.com$");
         configuration.addAllowedOrigin("http://www.onetool.co.kr");
         configuration.addAllowedOrigin("http://localhost:8080");
         configuration.addAllowedOrigin("http://onetool.co.kr");
