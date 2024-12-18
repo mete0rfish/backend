@@ -9,6 +9,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
 
 import java.math.BigInteger;
 import java.time.LocalDateTime;
@@ -60,6 +61,7 @@ public class Blueprint extends BaseEntity {
     private String secondCategory;
 
     @Column(name = "inspection_status")
+    @ColumnDefault("'NONE'") // default
     @Enumerated(EnumType.STRING)
     private InspectionStatus inspectionStatus;
 
