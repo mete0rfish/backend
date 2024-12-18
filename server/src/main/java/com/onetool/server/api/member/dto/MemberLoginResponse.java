@@ -3,13 +3,11 @@ package com.onetool.server.api.member.dto;
 import lombok.Builder;
 
 public record MemberLoginResponse(
-        String accessToken,
-        String refreshToken
+        String accessToken
 ) {
 
     @Builder
-    public MemberLoginResponse(String accessToken, String refreshToken) {
+    public MemberLoginResponse(String accessToken) {
         this.accessToken = accessToken;
-        this.refreshToken = refreshToken;
     }
 }
