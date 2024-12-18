@@ -7,10 +7,17 @@ import com.onetool.server.global.exception.ApiResponse;
 import com.onetool.server.global.exception.MemberNotFoundException;
 import com.onetool.server.global.exception.codes.SuccessCode;
 import com.onetool.server.api.qna.dto.response.QnaBoardResponse;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import org.springframework.boot.web.server.Cookie;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 
+import java.time.Duration;
 import java.util.Map;
 import java.util.List;
 
@@ -26,13 +33,15 @@ public class MemberController {
 
     @PostMapping("/login")
     public ApiResponse<MemberLoginResponse> login(
-            @Valid @RequestBody LoginRequest request
+            @Valid @RequestBody LoginRequest request,
+            HttpServletResponse servletResponse
     ) {
         Map<String, String> tokens = memberService.login(request);
         MemberLoginResponse response = MemberLoginResponse.builder()
                 .accessToken("Bearer " + tokens.get("accessToken"))
-                .refreshToken(tokens.get("refreshToken"))
                 .build();
+        ResponseCookie refreshTokenCookie = createRefreshTokenCookie(tokens.get("refreshToken"));
+        servletResponse.setHeader("Set-Cookie", refreshTokenCookie.toString());
         return ApiResponse.onSuccess(response);
     }
 
@@ -43,7 +52,7 @@ public class MemberController {
     }
 
     @PostMapping("/email")
-    public  ApiResponse<?> findEmail(@RequestBody MemberFindEmailRequest request) {
+    public ApiResponse<?> findEmail(@RequestBody MemberFindEmailRequest request) {
         String email = memberService.findEmail(request);
         return ApiResponse.onSuccess(email);
     }
@@ -65,7 +74,7 @@ public class MemberController {
     @PostMapping("/password")
     public ApiResponse<?> findPwdCheck(@RequestBody MemberFindPwdRequest request) {
         boolean successFlag = memberService.findLostPwd(request);
-        if(successFlag) {
+        if (successFlag) {
             return ApiResponse.onSuccess("이메일을 발송했습니다.");
         } else {
             return ApiResponse.onFailure("403", "이메일 발송 과정에서 오류가 발생했습니다.", null);
@@ -77,7 +86,7 @@ public class MemberController {
             @Valid @RequestBody MemberUpdateRequest request,
             @AuthenticationPrincipal PrincipalDetails principalDetails) {
 
-        if(principalDetails == null) {
+        if (principalDetails == null) {
             throw new MemberNotFoundException();
         }
 
@@ -89,10 +98,10 @@ public class MemberController {
 
     @DeleteMapping
     public ApiResponse<?> deleteMember(
-           @AuthenticationPrincipal PrincipalDetails principalDetails
+            @AuthenticationPrincipal PrincipalDetails principalDetails
     ) {
 
-        if(principalDetails == null) {
+        if (principalDetails == null) {
             throw new MemberNotFoundException();
         }
 
@@ -107,7 +116,7 @@ public class MemberController {
     public ApiResponse<?> getMemberInfo(
             @AuthenticationPrincipal PrincipalDetails principalDetails) {
 
-        if(principalDetails == null) {
+        if (principalDetails == null) {
             throw new MemberNotFoundException();
         }
 
@@ -132,5 +141,15 @@ public class MemberController {
         Long userId = principalDetails.getContext().getId();
         List<BlueprintDownloadResponse> blueprints = memberService.getPurchasedBlueprints(userId);
         return ApiResponse.onSuccess(blueprints);
+    }
+
+    private ResponseCookie createRefreshTokenCookie(String refreshToken) {
+        return ResponseCookie.from("refreshToken", refreshToken)
+                .maxAge(7 * 24 * 60 * 60)
+                .path("/")
+                .secure(true)
+                .sameSite("None")
+                .httpOnly(true)
+                .build();
     }
 }
