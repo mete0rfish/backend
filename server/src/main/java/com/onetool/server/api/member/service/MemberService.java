@@ -187,7 +187,7 @@ public class MemberService {
     }
 
     public MemberInfoResponse getMemberInfo(Long userId) {
-        Member member = memberRepository.findById(userId)
+        Member member = memberRepository.findByIdAndIsDeleted(userId,false)
                 .orElseThrow(MemberNotFoundException::new);
 
         return MemberInfoResponse.from(member);

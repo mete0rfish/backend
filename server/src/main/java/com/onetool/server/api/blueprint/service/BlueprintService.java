@@ -66,10 +66,10 @@ public class BlueprintService {
 
     @Transactional
     public boolean deleteBlueprint(Long id) {
-        Blueprint blueprint = blueprintRepository.findById(id)
+        blueprintRepository.findById(id)
                 .orElseThrow(BlueprintNotFoundException::new);
 
-        blueprintRepository.delete(blueprint);
+        blueprintRepository.deleteById(id);
         return true;
     }
 

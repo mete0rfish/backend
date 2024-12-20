@@ -28,4 +28,7 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     @Query("SELECT m FROM Member m JOIN FETCH m.qnaBoards WHERE m.id = :memberId AND m.isDeleted = false")
     Optional<Member> findMemberWithQnaBoards(@Param("memberId") Long memberId);
+
+    @Query("SELECT m FROM Member m WHERE m.id = :id AND m.isDeleted = :isDeleted")
+    Optional<Member> findByIdAndIsDeleted(@Param("id") Long id, @Param("isDeleted") boolean isDeleted);
 }
