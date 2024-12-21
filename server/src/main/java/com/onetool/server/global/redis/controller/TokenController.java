@@ -18,24 +18,23 @@ import java.util.Map;
 @RestController
 @RequiredArgsConstructor
 @Slf4j
-@RequestMapping(value = "/auth")
 public class TokenController {
 
     private final JwtUtil jwtUtil;
     private final AuthService authService;
 
-    @PostMapping("/validate")
+    @PostMapping("/auth/validate")
     public void validate(@RequestHeader("Authorization") String requestAccessToken) {
         authService.validate(requestAccessToken);
     }
 
-    @PostMapping("/auth/reissue")
-    public ResponseEntity<?> reissue(@CookieValue(name = "refresh-token") String refreshToken) {
+    @PostMapping("/silent-refresh")
+    public ResponseEntity<?> reissue(@CookieValue(name = "refreshToken") String refreshToken) {
         log.info("reissue token: {}", refreshToken);
         Map<String, String> tokens = authService.reissue(refreshToken);
 
         if (tokens != null) {
-            ResponseCookie responseCookie = ResponseCookie.from("refresh-token", tokens.get("refreshToken"))
+            ResponseCookie responseCookie = ResponseCookie.from("refreshToken", tokens.get("refreshToken"))
                     .maxAge(860000)
                     .httpOnly(true)
                     .secure(true)
@@ -46,7 +45,7 @@ public class TokenController {
                     .header(HttpHeaders.AUTHORIZATION, "Bearer " + tokens.get("accessToken"))
                     .build();
         } else {
-            ResponseCookie responseCookie = ResponseCookie.from("refresh-token", "")
+            ResponseCookie responseCookie = ResponseCookie.from("refreshToken", "")
                     .maxAge(0)
                     .path("/")
                     .build();
