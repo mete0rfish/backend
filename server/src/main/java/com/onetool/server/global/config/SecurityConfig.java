@@ -41,7 +41,7 @@ public class SecurityConfig {
     private final CustomOAuth2UserService customOAuth2UserService;
 
     private static final String[] AUTH_WHITELIST = {
-            "/users/**", "/login/**", "/blueprint/**", "/actuator/health"
+            "/users/**", "/login/**", "/blueprint/**", "/actuator/health", "/silent-refresh"
     };
 
     @Bean
