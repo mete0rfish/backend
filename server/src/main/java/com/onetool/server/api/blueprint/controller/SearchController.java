@@ -4,6 +4,7 @@ import com.onetool.server.api.blueprint.dto.SearchResponse;
 import com.onetool.server.api.blueprint.service.BlueprintService;
 import com.onetool.server.api.category.FirstCategoryType;
 import com.onetool.server.global.exception.ApiResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -12,6 +13,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
+
+@Slf4j
 @RestController
 public class SearchController {
 
@@ -26,8 +31,9 @@ public class SearchController {
             @RequestParam("s")String keyword,
             @PageableDefault(size = 5, sort = "id", direction = Sort.Direction.DESC)Pageable pageable
     ) {
-
-        Page<SearchResponse> response = blueprintService.searchNameAndCreatorWithKeyword(keyword, pageable);
+        String decodedKeyword = URLDecoder.decode(keyword, StandardCharsets.UTF_8);
+        log.info("Decoded keyword: {}", decodedKeyword);
+        Page<SearchResponse> response = blueprintService.searchNameAndCreatorWithKeyword(decodedKeyword, pageable);
         return ApiResponse.onSuccess(response);
     }
 
