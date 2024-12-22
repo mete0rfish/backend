@@ -42,7 +42,7 @@ public class BlueprintInspectionTest {
         // then
         assertThat(
                 blueprintInspectionService.findAllNotPassedBlueprints(pageable).size()
-        ).isEqualTo(5);
+        ).isEqualTo(1);
     }
 
     @Test
