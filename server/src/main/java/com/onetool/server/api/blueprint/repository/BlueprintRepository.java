@@ -31,5 +31,5 @@ public interface BlueprintRepository extends JpaRepository<Blueprint, Long> {
     Long countAllBlueprint();
 
     @Query(value = "SELECT b FROM Blueprint b WHERE b.inspectionStatus = :status")
-    List<Blueprint> findByInspectionStatus(@Param("status") InspectionStatus status);
+    Page<Blueprint> findByInspectionStatus(@Param("status") InspectionStatus status, Pageable pageable);
 }
