@@ -6,6 +6,8 @@ import com.onetool.server.api.blueprint.repository.BlueprintRepository;
 import com.onetool.server.api.blueprint.InspectionStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,8 +22,8 @@ public class BlueprintInspectionService {
     private final BlueprintRepository blueprintRepository;
 
     @Transactional
-    public List<BlueprintResponse> findAllNotPassedBlueprints(){
-        List<Blueprint> blueprints = blueprintRepository.findByInspectionStatus(InspectionStatus.NONE);
+    public List<BlueprintResponse> findAllNotPassedBlueprints(Pageable pageable){
+        Page<Blueprint> blueprints = blueprintRepository.findByInspectionStatus(InspectionStatus.NONE, pageable);
 
         return blueprints.stream()
                 .map(BlueprintResponse::from)

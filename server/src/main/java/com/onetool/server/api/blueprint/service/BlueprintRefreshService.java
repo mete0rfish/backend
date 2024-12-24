@@ -6,6 +6,8 @@ import com.onetool.server.api.blueprint.InspectionStatus;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -21,13 +23,12 @@ public class BlueprintRefreshService {
     @Scheduled(cron = "0 0 0 * * *")  // 매일 자정 새로고침
     public void refreshApprovedBlueprints() {
         log.info("Refreshing approved blueprints at midnight...");
+        PageRequest pageable = PageRequest.of(0, 10);
+        Page<Blueprint> approvedBlueprints = blueprintRepository.findByInspectionStatus(InspectionStatus.PASSED, pageable);
 
-        List<Blueprint> approvedBlueprints = blueprintRepository.findByInspectionStatus(InspectionStatus.PASSED);
-
-        refreshBlueprints(approvedBlueprints);
+        refreshBlueprints(approvedBlueprints.getContent());
     }
 
-    @Transactional
     private void refreshBlueprints(List<Blueprint> blueprints) {
         for (Blueprint blueprint : blueprints) {
             log.info("Refreshing blueprint: {}", blueprint.getId());

@@ -105,7 +105,7 @@ public class BlueprintService {
     }
 
     public Page<SearchResponse> findAll(Pageable pageable) {
-        Page<Blueprint> result = blueprintRepository.findAll(pageable);
+        Page<Blueprint> result = blueprintRepository.findByInspectionStatus(InspectionStatus.PASSED, pageable);
         List<SearchResponse> list = result.getContent().stream()
                 .map(SearchResponse::from)
                 .collect(Collectors.toList());
