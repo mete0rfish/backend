@@ -62,6 +62,7 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 
     private void loginSuccess(HttpServletResponse response, MemberAuthContext context) throws  IOException {
         MemberAuthContext memberAuthContext = MemberAuthContext.builder()
+                .id(context.getId())
                 .email(context.getEmail())
                 .role(context.getRole())
                 .build();
