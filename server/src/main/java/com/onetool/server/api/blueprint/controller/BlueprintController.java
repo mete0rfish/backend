@@ -1,6 +1,8 @@
 package com.onetool.server.api.blueprint.controller;
 import com.onetool.server.api.blueprint.dto.BlueprintRequest;
 import com.onetool.server.api.blueprint.dto.BlueprintResponse;
+import com.onetool.server.api.blueprint.dto.BlueprintSortRequest;
+import org.springframework.data.domain.Pageable;
 import com.onetool.server.api.blueprint.service.BlueprintService;
 import com.onetool.server.global.auth.login.PrincipalDetails;
 import com.onetool.server.global.exception.ApiResponse;
@@ -58,8 +60,26 @@ public class BlueprintController {
     }
 
     @GetMapping("/sort")
-    public ApiResponse<List<BlueprintResponse>> sortBlueprints(@RequestParam String sortBy) {
-        List<BlueprintResponse> sortedBlueprints = blueprintService.sortBlueprints(sortBy);
+    public ApiResponse<List<BlueprintResponse>> sortBlueprints(
+            @RequestParam String sortBy,
+            @RequestParam(required = false) String sortOrder,
+            Pageable pageable
+    ) {
+
+        BlueprintSortRequest blueprintSortRequest = new BlueprintSortRequest(null, sortBy, sortOrder);
+        List<BlueprintResponse> sortedBlueprints = blueprintService.sortBlueprintsByCategory(blueprintSortRequest, pageable);
+        return ApiResponse.onSuccess(sortedBlueprints);
+    }
+
+    @GetMapping("/{categoryId}/sort")
+    public ApiResponse<List<BlueprintResponse>> sortBlueprints(
+            @PathVariable long categoryId,
+            @RequestParam String sortBy,
+            @RequestParam(required = false) String sortOrder,
+            Pageable pageable
+    ) {
+        BlueprintSortRequest blueprintSortRequest = new BlueprintSortRequest(categoryId, sortBy, sortOrder);
+        List<BlueprintResponse> sortedBlueprints = blueprintService.sortBlueprintsByCategory(blueprintSortRequest, pageable);
         return ApiResponse.onSuccess(sortedBlueprints);
     }
 }
