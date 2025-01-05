@@ -59,27 +59,16 @@ public class BlueprintController {
         return ApiResponse.onSuccess("상품이 정상적으로 삭제 되었습니다.");
     }
 
-    @GetMapping("/sort")
+    @GetMapping({"/sort", "{categoryId}/sort"})
     public ApiResponse<List<BlueprintResponse>> sortBlueprints(
+            @PathVariable(value = "categoryId", required = false) Long categoryId,
             @RequestParam String sortBy,
-            @RequestParam(required = false) String sortOrder,
+            @RequestParam(required = false, defaultValue = "asc") String sortOrder,
             Pageable pageable
     ) {
-
-        BlueprintSortRequest blueprintSortRequest = new BlueprintSortRequest(null, sortBy, sortOrder);
-        List<BlueprintResponse> sortedBlueprints = blueprintService.sortBlueprintsByCategory(blueprintSortRequest, pageable);
-        return ApiResponse.onSuccess(sortedBlueprints);
+        BlueprintSortRequest request = new BlueprintSortRequest(categoryId, sortBy, sortOrder);
+        List<BlueprintResponse> sortedItems = blueprintService.sortBlueprintsByCategory(request, pageable);
+        return ApiResponse.onSuccess(sortedItems);
     }
 
-    @GetMapping("/{categoryId}/sort")
-    public ApiResponse<List<BlueprintResponse>> sortBlueprints(
-            @PathVariable long categoryId,
-            @RequestParam String sortBy,
-            @RequestParam(required = false) String sortOrder,
-            Pageable pageable
-    ) {
-        BlueprintSortRequest blueprintSortRequest = new BlueprintSortRequest(categoryId, sortBy, sortOrder);
-        List<BlueprintResponse> sortedBlueprints = blueprintService.sortBlueprintsByCategory(blueprintSortRequest, pageable);
-        return ApiResponse.onSuccess(sortedBlueprints);
-    }
 }

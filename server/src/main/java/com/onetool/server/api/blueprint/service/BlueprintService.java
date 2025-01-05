@@ -79,23 +79,26 @@ public class BlueprintService {
         Pageable sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort);
 
         if (blueprintSortRequest.categoryId() == null) {
-            Page<Blueprint> blueprintPage = blueprintRepository.findByInspectionStatus(InspectionStatus.PASSED, sortedPageable);
-
-            return blueprintPage.stream()
-                    .map(BlueprintResponse::from)
-                    .collect(Collectors.toList());
+            return sortBlueprintsWithoutCategory(sortedPageable);
         }
 
-        Page<Blueprint> blueprintPage = blueprintRepository.findByCategoryIdAndStatus(
-                blueprintSortRequest.categoryId(),
-                InspectionStatus.PASSED,
-                sortedPageable
-        );
+        return sortBlueprintsWithCategory(blueprintSortRequest.categoryId(), sortedPageable);
+    }
 
+    private List<BlueprintResponse> sortBlueprintsWithoutCategory(Pageable sortedPageable) {
+        Page<Blueprint> blueprintPage = blueprintRepository.findByInspectionStatus(InspectionStatus.PASSED, sortedPageable);
         return blueprintPage.stream()
                 .map(BlueprintResponse::from)
                 .collect(Collectors.toList());
     }
+
+    private List<BlueprintResponse> sortBlueprintsWithCategory(Long categoryId, Pageable sortedPageable) {
+        Page<Blueprint> blueprintPage = blueprintRepository.findByCategoryIdAndStatus(categoryId, InspectionStatus.PASSED, sortedPageable);
+        return blueprintPage.stream()
+                .map(BlueprintResponse::from)
+                .collect(Collectors.toList());
+    }
+
 
     public Page<SearchResponse> searchNameAndCreatorWithKeyword(String keyword, Pageable pageable) {
         Page<Blueprint> result = blueprintRepository.findAllNameAndCreatorContaining(keyword, InspectionStatus.PASSED, pageable);
@@ -160,17 +163,10 @@ public class BlueprintService {
     }
 
     private Sort getSortBySortType(SortType sortType, String sortOrder) {
-        Sort.Direction direction = Sort.Direction.ASC;
-
-        if ("desc".equalsIgnoreCase(sortOrder)) {
-            direction = Sort.Direction.DESC;
-        }
+        Sort.Direction direction = getDirection(sortOrder);
 
         if (sortType == SortType.PRICE) {
-            return Sort.by(
-                    Sort.Order.by("salePrice").with(direction).nullsLast(),
-                    Sort.Order.by("standardPrice").with(direction).nullsLast()
-            );
+            return getPriceSort(direction);
         }
 
         if (sortType == SortType.CREATED_AT) {
@@ -183,22 +179,20 @@ public class BlueprintService {
 
         throw new InvalidSortTypeException();
     }
-    private Double getPrice(Blueprint blueprint) {
-        if (blueprint.getSalePrice() != null
-                && blueprint.getSaleExpiredDate() != null
-                && blueprint.getSaleExpiredDate().isAfter(LocalDateTime.now())) {
-            return blueprint.getSalePrice().doubleValue();
-        }
 
-        if (blueprint.getStandardPrice() != null) {
-            return blueprint.getStandardPrice().doubleValue();
+    private Sort.Direction getDirection(String sortOrder) {
+        if ("desc".equalsIgnoreCase(sortOrder)) {
+            return Sort.Direction.DESC;
         }
-
-        return 0.0;
+        return Sort.Direction.ASC;
     }
 
-    public boolean isValidSortType(String sortBy) {
-        return Arrays.stream(SortType.values())
-                .anyMatch(sortType -> sortType.name().equalsIgnoreCase(sortBy));
+    private Sort getPriceSort(Sort.Direction direction) {
+        return Sort.by(
+                Sort.Order.by("saleExpiredDate").with(Sort.Direction.DESC).nullsLast(), // 만료일자 우선 정렬
+                Sort.Order.by("salePrice").with(direction).nullsLast(),    // 만료되지 않은 경우 salePrice 기준 정렬
+                Sort.Order.by("standardPrice").with(direction).nullsLast() // 만료된 경우 standardPrice 기준 정렬
+        );
     }
+
 }
