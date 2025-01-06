@@ -3,6 +3,7 @@ package com.onetool.server.api.blueprint.service;
 import com.onetool.server.api.blueprint.Blueprint;
 import com.onetool.server.api.blueprint.dto.BlueprintRequest;
 import com.onetool.server.api.blueprint.dto.BlueprintResponse;
+import com.onetool.server.api.blueprint.dto.BlueprintSortRequest;
 import com.onetool.server.api.blueprint.dto.SearchResponse;
 import com.onetool.server.api.blueprint.enums.SortType;
 import com.onetool.server.api.blueprint.repository.BlueprintRepository;
@@ -12,14 +13,11 @@ import com.onetool.server.global.exception.BlueprintNotApprovedException;
 import com.onetool.server.global.exception.BlueprintNotFoundException;
 import com.onetool.server.global.exception.InvalidSortTypeException;
 import jakarta.transaction.Transactional;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -73,21 +71,34 @@ public class BlueprintService {
         return true;
     }
 
-    public List<BlueprintResponse> sortBlueprints(String sortBy) {
-        if (!isValidSortType(sortBy)) {
-            throw new InvalidSortTypeException();
+    public List<BlueprintResponse> sortBlueprintsByCategory(BlueprintSortRequest blueprintSortRequest, Pageable pageable) {
+        SortType sortType = SortType.valueOf(blueprintSortRequest.sortBy().toUpperCase());
+        String sortOrder = blueprintSortRequest.sortOrder();
+        Sort sort = getSortBySortType(sortType, sortOrder);
+
+        Pageable sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort);
+
+        if (blueprintSortRequest.categoryId() == null) {
+            return sortBlueprintsWithoutCategory(sortedPageable);
         }
 
-        SortType sortType = SortType.valueOf(sortBy.toUpperCase());
-
-        List<Blueprint> blueprints = blueprintRepository.findAll();
-
-        Comparator<Blueprint> comparator = getComparatorBySortType(sortType);
-        List<Blueprint> sortedBlueprints = blueprints.stream()
-                .sorted(comparator)
-                .collect(Collectors.toList());
-        return convertToResponseList(sortedBlueprints);
+        return sortBlueprintsWithCategory(blueprintSortRequest.categoryId(), sortedPageable);
     }
+
+    private List<BlueprintResponse> sortBlueprintsWithoutCategory(Pageable sortedPageable) {
+        Page<Blueprint> blueprintPage = blueprintRepository.findByInspectionStatus(InspectionStatus.PASSED, sortedPageable);
+        return blueprintPage.stream()
+                .map(BlueprintResponse::from)
+                .collect(Collectors.toList());
+    }
+
+    private List<BlueprintResponse> sortBlueprintsWithCategory(Long categoryId, Pageable sortedPageable) {
+        Page<Blueprint> blueprintPage = blueprintRepository.findByCategoryIdAndStatus(categoryId, InspectionStatus.PASSED, sortedPageable);
+        return blueprintPage.stream()
+                .map(BlueprintResponse::from)
+                .collect(Collectors.toList());
+    }
+
 
     public Page<SearchResponse> searchNameAndCreatorWithKeyword(String keyword, Pageable pageable) {
         Page<Blueprint> result = blueprintRepository.findAllNameAndCreatorContaining(keyword, InspectionStatus.PASSED, pageable);
@@ -129,12 +140,6 @@ public class BlueprintService {
         return new PageImpl<>(list, pageable, result.getTotalElements());
     }
 
-    private List<BlueprintResponse> convertToResponseList(List<Blueprint> blueprints) {
-        return blueprints.stream()
-                .map(BlueprintResponse::from)
-                .collect(Collectors.toList());
-    }
-
     private Blueprint convertToBlueprint(final BlueprintRequest blueprintRequest) {
         return Blueprint.fromRequest(blueprintRequest);
     }
@@ -157,32 +162,37 @@ public class BlueprintService {
                 .build();
     }
 
-    private Comparator<Blueprint> getComparatorBySortType(SortType sortType) {
+    private Sort getSortBySortType(SortType sortType, String sortOrder) {
+        Sort.Direction direction = getDirection(sortOrder);
+
         if (sortType == SortType.PRICE) {
-            return Comparator.comparing(this::getPrice, Comparator.nullsLast(Comparator.naturalOrder()));
+            return getPriceSort(direction);
         }
 
         if (sortType == SortType.CREATED_AT) {
-            return Comparator.comparing(Blueprint::getCreatedAt, Comparator.nullsLast(Comparator.naturalOrder()));
+            return Sort.by(Sort.Order.by("createdAt").with(direction).nullsLast());
         }
 
         if (sortType == SortType.EXTENSION) {
-            return Comparator.comparing(Blueprint::getExtension, Comparator.nullsLast(Comparator.naturalOrder()));
+            return Sort.by(Sort.Order.by("extension").with(direction).nullsLast());
         }
 
         throw new InvalidSortTypeException();
     }
 
-    private Double getPrice(Blueprint blueprint) {
-        if (blueprint.getSalePrice() != null && blueprint.getSaleExpiredDate() != null &&
-                blueprint.getSaleExpiredDate().isAfter(LocalDateTime.now())) {
-            return blueprint.getSalePrice().doubleValue();
+    private Sort.Direction getDirection(String sortOrder) {
+        if ("desc".equalsIgnoreCase(sortOrder)) {
+            return Sort.Direction.DESC;
         }
-        return blueprint.getStandardPrice().doubleValue();
+        return Sort.Direction.ASC;
     }
 
-    public boolean isValidSortType(String sortBy) {
-        return Arrays.stream(SortType.values())
-                .anyMatch(sortType -> sortType.name().equalsIgnoreCase(sortBy));
+    private Sort getPriceSort(Sort.Direction direction) {
+        return Sort.by(
+                Sort.Order.by("saleExpiredDate").with(Sort.Direction.DESC).nullsLast(), // 만료일자 우선 정렬
+                Sort.Order.by("salePrice").with(direction).nullsLast(),    // 만료되지 않은 경우 salePrice 기준 정렬
+                Sort.Order.by("standardPrice").with(direction).nullsLast() // 만료된 경우 standardPrice 기준 정렬
+        );
     }
+
 }

@@ -2,6 +2,7 @@ package com.onetool.server.blueprint;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.onetool.server.api.blueprint.controller.BlueprintController;
+import com.onetool.server.api.blueprint.dto.BlueprintSortRequest;
 import com.onetool.server.api.blueprint.service.BlueprintService;
 import com.onetool.server.api.blueprint.dto.BlueprintRequest;
 import com.onetool.server.api.blueprint.dto.BlueprintResponse;
@@ -15,7 +16,8 @@ import com.onetool.server.api.member.service.MemberService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.MockitoAnnotations;
+import org.mockito.Mockito;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -44,11 +46,6 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
-import static org.mockito.BDDMockito.given;
-import static org.mockito.ArgumentMatchers.any;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.Mockito.mock;
 
 @WebMvcTest({BlueprintController.class, MemberController.class})
 @AutoConfigureMockMvc
@@ -211,6 +208,70 @@ public class BlueprintServiceMockTest {
                         .header("Authorization", "Bearer " + accessToken))
                 .andExpect(status().isOk())
                 .andExpect(content().string(objectMapper.writeValueAsString(ApiResponse.onSuccess("상품이 정상적으로 삭제 되었습니다."))));
+    }
+
+    @DisplayName("blueprint를 카테고리별로 정렬한다")
+    @Test
+    public void blueprint를_카테고리별로_정렬한다() throws Exception {
+        BlueprintSortRequest sortRequest = new BlueprintSortRequest(
+                1L,
+                "price",
+                null
+        );
+
+        String accessToken = obtainAccessToken("admin@example.com", "1234");
+
+        List<BlueprintResponse> sortedBlueprints = List.of(
+                new BlueprintResponse(
+                        1L,
+                        "Example Blueprint A",
+                        1L,
+                        10000L,
+                        "https://example.com/imageA.png",
+                        "Example Description A",
+                        ".pdf",
+                        "CAD",
+                        BigInteger.valueOf(50),
+                        9000L,
+                        LocalDateTime.now().plusDays(30),
+                        "Author A",
+                        "https://example.com/downloadA",
+                        false
+                ),
+                new BlueprintResponse(
+                        2L,
+                        "Example Blueprint B",
+                        1L,
+                        15000L,
+                        "https://example.com/imageB.png",
+                        "Example Description B",
+                        ".dwg",
+                        "CAD",
+                        BigInteger.valueOf(100),
+                        14000L,
+                        LocalDateTime.now().plusDays(20),
+                        "Author B",
+                        "https://example.com/downloadB",
+                        false
+                )
+        );
+
+        // when
+        Mockito.when(blueprintService.sortBlueprintsByCategory(Mockito.any(BlueprintSortRequest.class), Mockito.any()))
+                .thenReturn(sortedBlueprints);
+
+        // then
+        mockMvc.perform(get("/blueprint/sort?sortBy=price")
+                        .with(csrf())
+                        .header("Authorization", "Bearer " + accessToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(sortRequest)))
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.isSuccess").value(true))
+                .andExpect(jsonPath("$.result[0].blueprintName").value("Example Blueprint A"))
+                .andExpect(jsonPath("$.result[1].blueprintName").value("Example Blueprint B"));
+
     }
 
     @Test

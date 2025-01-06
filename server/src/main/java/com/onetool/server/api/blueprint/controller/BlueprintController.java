@@ -1,6 +1,8 @@
 package com.onetool.server.api.blueprint.controller;
 import com.onetool.server.api.blueprint.dto.BlueprintRequest;
 import com.onetool.server.api.blueprint.dto.BlueprintResponse;
+import com.onetool.server.api.blueprint.dto.BlueprintSortRequest;
+import org.springframework.data.domain.Pageable;
 import com.onetool.server.api.blueprint.service.BlueprintService;
 import com.onetool.server.global.auth.login.PrincipalDetails;
 import com.onetool.server.global.exception.ApiResponse;
@@ -57,9 +59,16 @@ public class BlueprintController {
         return ApiResponse.onSuccess("상품이 정상적으로 삭제 되었습니다.");
     }
 
-    @GetMapping("/sort")
-    public ApiResponse<List<BlueprintResponse>> sortBlueprints(@RequestParam String sortBy) {
-        List<BlueprintResponse> sortedBlueprints = blueprintService.sortBlueprints(sortBy);
-        return ApiResponse.onSuccess(sortedBlueprints);
+    @GetMapping({"/sort", "{categoryId}/sort"})
+    public ApiResponse<List<BlueprintResponse>> sortBlueprints(
+            @PathVariable(value = "categoryId", required = false) Long categoryId,
+            @RequestParam String sortBy,
+            @RequestParam(required = false, defaultValue = "asc") String sortOrder,
+            Pageable pageable
+    ) {
+        BlueprintSortRequest request = new BlueprintSortRequest(categoryId, sortBy, sortOrder);
+        List<BlueprintResponse> sortedItems = blueprintService.sortBlueprintsByCategory(request, pageable);
+        return ApiResponse.onSuccess(sortedItems);
     }
+
 }

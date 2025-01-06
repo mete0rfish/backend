@@ -9,8 +9,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
-
 @Repository
 public interface BlueprintRepository extends JpaRepository<Blueprint, Long> {
 
@@ -32,4 +30,11 @@ public interface BlueprintRepository extends JpaRepository<Blueprint, Long> {
 
     @Query(value = "SELECT b FROM Blueprint b WHERE b.inspectionStatus = :status AND b.isDeleted = false")
     Page<Blueprint> findByInspectionStatus(@Param("status") InspectionStatus status, Pageable pageable);
+
+    @Query("SELECT b FROM Blueprint b WHERE b.categoryId = :categoryId AND b.inspectionStatus = :inspectionStatus")
+    Page<Blueprint> findByCategoryIdAndStatus(
+            @Param("categoryId")   Long categoryId,
+            @Param("inspectionStatus") InspectionStatus inspectionStatus,
+            Pageable pageable
+    );
 }
