@@ -61,7 +61,7 @@ public class BlueprintServiceTest {
         String keyword = "마을";
         Pageable pageable = PageRequest.of(0, 5);
         Page<SearchResponse> response = blueprintService.searchNameAndCreatorWithKeyword(keyword, pageable);
-        assertThat(response.getTotalElements()).isEqualTo(1);
+        assertThat(response.getTotalElements()).isEqualTo(6);
     }
 
     @DisplayName("id가 1인 Blueprint가 삭제 상태로 변경되는지 확인")

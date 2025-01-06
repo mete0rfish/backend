@@ -14,8 +14,32 @@ import java.util.List;
 @Repository
 public interface BlueprintRepository extends JpaRepository<Blueprint, Long> {
 
-    @Query(value = "SELECT b FROM Blueprint b WHERE (b.blueprintName LIKE %:keyword% OR b.creatorName LIKE %:keyword%) AND b.inspectionStatus = :status AND b.isDeleted = false")
-    Page<Blueprint> findAllNameAndCreatorContaining(@Param("keyword") String keyword, @Param("status") InspectionStatus status, Pageable pageable);
+    @Query(value = """
+        SELECT b
+        FROM Blueprint b
+        WHERE (b.blueprintName LIKE %:keyword% OR b.creatorName LIKE %:keyword%)
+          AND b.inspectionStatus = :status
+          AND b.isDeleted = false
+    """)
+    Page<Blueprint> findAllNameAndCreatorContaining(@Param("keyword") String keyword,
+                                                    @Param("status") InspectionStatus status,
+                                                    Pageable pageable);
+
+    @Query(value = """
+        SELECT DISTINCT b
+        FROM Blueprint b
+        LEFT JOIN FETCH b.orderBlueprints
+        WHERE b IN :blueprints
+    """)
+    List<Blueprint> findWithOrderBlueprints(@Param("blueprints") List<Blueprint> blueprints);
+
+    @Query(value = """
+        SELECT DISTINCT b
+        FROM Blueprint b
+        LEFT JOIN FETCH b.cartBlueprints
+        WHERE b IN :blueprints
+    """)
+    List<Blueprint> findWithCartBlueprints(@Param("blueprints") List<Blueprint> blueprints);
 
     @Query(value = "SELECT b FROM Blueprint b WHERE b.categoryId = " +
             "(SELECT f.id FROM FirstCategory f WHERE f.name = :first) " +
