@@ -30,10 +30,9 @@ public class BlueprintService {
         this.blueprintRepository = blueprintRepository;
     }
 
-    public boolean createBlueprint(final BlueprintRequest blueprintRequest) {
+    public void createBlueprint(final BlueprintRequest blueprintRequest) {
         Blueprint blueprint = convertToBlueprint(blueprintRequest);
         saveBlueprint(blueprint);
-        return true;
     }
 
     public BlueprintResponse findApprovedBlueprintById(Long id) {
@@ -48,27 +47,25 @@ public class BlueprintService {
     }
 
     @Transactional
-    public Blueprint saveBlueprint(Blueprint blueprint) {
-        return blueprintRepository.save(blueprint);
+    public void saveBlueprint(Blueprint blueprint) {
+        blueprintRepository.save(blueprint);
     }
 
     @Transactional
-    public boolean updateBlueprint(BlueprintResponse blueprintResponse) {
+    public void updateBlueprint(BlueprintResponse blueprintResponse) {
         Blueprint existingBlueprint = blueprintRepository.findById(blueprintResponse.id())
                 .orElseThrow(BlueprintNotFoundException::new);
         Blueprint updatedBlueprint = updateExistingBlueprint(existingBlueprint, blueprintResponse);
 
         saveBlueprint(updatedBlueprint);
-        return true;
     }
 
     @Transactional
-    public boolean deleteBlueprint(Long id) {
+    public void deleteBlueprint(Long id) {
         blueprintRepository.findById(id)
                 .orElseThrow(BlueprintNotFoundException::new);
 
         blueprintRepository.deleteById(id);
-        return true;
     }
 
     public List<BlueprintResponse> sortBlueprintsByCategory(BlueprintSortRequest blueprintSortRequest, Pageable pageable) {
@@ -101,11 +98,12 @@ public class BlueprintService {
 
 
     public Page<SearchResponse> searchNameAndCreatorWithKeyword(String keyword, Pageable pageable) {
-        Page<Blueprint> result = blueprintRepository.findAllNameAndCreatorContaining(keyword, InspectionStatus.PASSED, pageable);
-        List<SearchResponse> list = result.getContent().stream()
-                .map(SearchResponse::from)
-                .collect(Collectors.toList());
-        return new PageImpl<>(list, pageable, result.getTotalElements());
+        Page<Blueprint> page = blueprintRepository.findAllNameAndCreatorContaining(keyword, InspectionStatus.PASSED, pageable);
+        List<Blueprint> withOrderBlueprints = blueprintRepository.findWithOrderBlueprints(page.getContent());
+        List<Blueprint> withCartBlueprints = blueprintRepository.findWithCartBlueprints(withOrderBlueprints);
+
+        List<SearchResponse> list = convertToSearchResponseList(withCartBlueprints);
+        return new PageImpl<>(list, pageable, page.getTotalElements());
     }
 
     public Page<SearchResponse> findAllByCategory(FirstCategoryType firstCategory, String secondCategory, Pageable pageable) {
@@ -117,9 +115,7 @@ public class BlueprintService {
 
     public Page<SearchResponse> findAll(Pageable pageable) {
         Page<Blueprint> result = blueprintRepository.findByInspectionStatus(InspectionStatus.PASSED, pageable);
-        List<SearchResponse> list = result.getContent().stream()
-                .map(SearchResponse::from)
-                .collect(Collectors.toList());
+        List<SearchResponse> list = convertToSearchResponseList(result.getContent());
         return new PageImpl<>(list, pageable, result.getTotalElements());
     }
 
@@ -140,6 +136,18 @@ public class BlueprintService {
         return new PageImpl<>(list, pageable, result.getTotalElements());
     }
 
+    private List<BlueprintResponse> convertToResponseList(List<Blueprint> blueprints) {
+        return blueprints.stream()
+                .map(BlueprintResponse::from)
+                .collect(Collectors.toList());
+    }
+
+    private List<SearchResponse> convertToSearchResponseList(List<Blueprint> blueprints) {
+        return blueprints.stream()
+                .map(SearchResponse::from)
+                .collect(Collectors.toList());
+    }
+  
     private Blueprint convertToBlueprint(final BlueprintRequest blueprintRequest) {
         return Blueprint.fromRequest(blueprintRequest);
     }
