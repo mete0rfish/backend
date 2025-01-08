@@ -2,7 +2,9 @@ package com.onetool.server.blueprint;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.onetool.server.api.blueprint.controller.BlueprintController;
+import com.onetool.server.api.blueprint.controller.SearchController;
 import com.onetool.server.api.blueprint.dto.BlueprintSortRequest;
+import com.onetool.server.api.blueprint.service.BlueprintSearchService;
 import com.onetool.server.api.blueprint.service.BlueprintService;
 import com.onetool.server.api.blueprint.dto.BlueprintRequest;
 import com.onetool.server.api.blueprint.dto.BlueprintResponse;
@@ -47,7 +49,7 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest({BlueprintController.class, MemberController.class})
+@WebMvcTest({BlueprintController.class, MemberController.class, SearchController.class})
 @AutoConfigureMockMvc
 @ActiveProfiles({"test"})
 public class BlueprintServiceMockTest {
@@ -55,13 +57,16 @@ public class BlueprintServiceMockTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private MemberService memberService;
-
-    @MockBean
     private JwtUtil jwtUtil;
 
     @MockBean
+    private MemberService memberService;
+
+    @MockBean
     private BlueprintService blueprintService;
+
+    @MockBean
+    private BlueprintSearchService blueprintSearchService;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -257,7 +262,7 @@ public class BlueprintServiceMockTest {
         );
 
         // when
-        Mockito.when(blueprintService.sortBlueprintsByCategory(Mockito.any(BlueprintSortRequest.class), Mockito.any()))
+        Mockito.when(blueprintSearchService.sortBlueprintsByCategory(Mockito.any(BlueprintSortRequest.class), Mockito.any()))
                 .thenReturn(sortedBlueprints);
 
         // then
