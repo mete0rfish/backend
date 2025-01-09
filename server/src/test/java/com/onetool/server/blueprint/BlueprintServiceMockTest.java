@@ -34,6 +34,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
@@ -224,8 +225,6 @@ public class BlueprintServiceMockTest {
                 null
         );
 
-        String accessToken = obtainAccessToken("admin@example.com", "1234");
-
         List<BlueprintResponse> sortedBlueprints = List.of(
                 new BlueprintResponse(
                         1L,
@@ -268,7 +267,6 @@ public class BlueprintServiceMockTest {
         // then
         mockMvc.perform(get("/blueprint/sort?sortBy=price")
                         .with(csrf())
-                        .header("Authorization", "Bearer " + accessToken)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(sortRequest)))
                 .andExpect(status().isOk())
