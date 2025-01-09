@@ -1,7 +1,9 @@
 package com.onetool.server.api.blueprint.controller;
 
+import com.onetool.server.api.blueprint.dto.BlueprintResponse;
+import com.onetool.server.api.blueprint.dto.BlueprintSortRequest;
 import com.onetool.server.api.blueprint.dto.SearchResponse;
-import com.onetool.server.api.blueprint.service.BlueprintService;
+import com.onetool.server.api.blueprint.service.BlueprintSearchService;
 import com.onetool.server.api.category.FirstCategoryType;
 import com.onetool.server.global.exception.ApiResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -10,20 +12,22 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 @Slf4j
 @RestController
 public class SearchController {
 
-    private BlueprintService blueprintService;
+    private final BlueprintSearchService blueprintSearchService;
 
-    public SearchController(BlueprintService blueprintService) {
-        this.blueprintService = blueprintService;
+    public SearchController(BlueprintSearchService blueprintSearchService) {
+        this.blueprintSearchService = blueprintSearchService;
     }
 
     @GetMapping("/blueprint")
@@ -33,7 +37,7 @@ public class SearchController {
     ) {
         String decodedKeyword = URLDecoder.decode(keyword, StandardCharsets.UTF_8);
         log.info("Decoded keyword: {}", decodedKeyword);
-        Page<SearchResponse> response = blueprintService.searchNameAndCreatorWithKeyword(decodedKeyword, pageable);
+        Page<SearchResponse> response = blueprintSearchService.searchNameAndCreatorWithKeyword(decodedKeyword, pageable);
         return ApiResponse.onSuccess(response);
     }
 
@@ -42,7 +46,7 @@ public class SearchController {
             @PageableDefault(size = 5, sort = "id", direction = Sort.Direction.DESC)Pageable pageable,
             @RequestParam(required = false) String category
     ) {
-        Page<SearchResponse> responses = blueprintService.findAllByCategory(FirstCategoryType.CATEGORY_BUILDING, category, pageable);
+        Page<SearchResponse> responses = blueprintSearchService.findAllByCategory(FirstCategoryType.CATEGORY_BUILDING, category, pageable);
         return ApiResponse.onSuccess(responses);
     }
 
@@ -51,7 +55,7 @@ public class SearchController {
             @PageableDefault(size = 5, sort = "id", direction = Sort.Direction.DESC)Pageable pageable,
             @RequestParam(required = false) String category
     ) {
-        Page<SearchResponse> responses = blueprintService.findAllByCategory(FirstCategoryType.CATEGORY_CIVIL, category, pageable);
+        Page<SearchResponse> responses = blueprintSearchService.findAllByCategory(FirstCategoryType.CATEGORY_CIVIL, category, pageable);
         return ApiResponse.onSuccess(responses);
     }
 
@@ -60,7 +64,7 @@ public class SearchController {
             @PageableDefault(size = 5, sort = "id", direction = Sort.Direction.DESC)Pageable pageable,
             @RequestParam(required = false) String category
     ) {
-        Page<SearchResponse> responses = blueprintService.findAllByCategory(FirstCategoryType.CATEGORY_INTERIOR, category, pageable);
+        Page<SearchResponse> responses = blueprintSearchService.findAllByCategory(FirstCategoryType.CATEGORY_INTERIOR, category, pageable);
         return ApiResponse.onSuccess(responses);
     }
     @GetMapping("/blueprint/machine")
@@ -68,7 +72,7 @@ public class SearchController {
             @PageableDefault(size = 5, sort = "id", direction = Sort.Direction.DESC)Pageable pageable,
             @RequestParam(required = false) String category
     ) {
-        Page<SearchResponse> responses = blueprintService.findAllByCategory(FirstCategoryType.CATEGORY_MACHINE, category, pageable);
+        Page<SearchResponse> responses = blueprintSearchService.findAllByCategory(FirstCategoryType.CATEGORY_MACHINE, category, pageable);
         return ApiResponse.onSuccess(responses);
     }
 
@@ -77,7 +81,7 @@ public class SearchController {
             @PageableDefault(size = 5, sort = "id", direction = Sort.Direction.DESC)Pageable pageable,
             @RequestParam(required = false) String category
     ) {
-        Page<SearchResponse> responses = blueprintService.findAllByCategory(FirstCategoryType.CATEGORY_ELECTRIC, category, pageable);
+        Page<SearchResponse> responses = blueprintSearchService.findAllByCategory(FirstCategoryType.CATEGORY_ELECTRIC, category, pageable);
         return ApiResponse.onSuccess(responses);
     }
 
@@ -85,7 +89,7 @@ public class SearchController {
     public ApiResponse<Page<SearchResponse>> searchEtcCategory(
             @PageableDefault(page = 0, size = 10, sort = "id", direction = Sort.Direction.DESC)Pageable pageable
     ) {
-        Page<SearchResponse> responses = blueprintService.findAllByCategory(FirstCategoryType.CATEGORY_CIVIL, null, pageable);
+        Page<SearchResponse> responses = blueprintSearchService.findAllByCategory(FirstCategoryType.CATEGORY_CIVIL, null, pageable);
         return ApiResponse.onSuccess(responses);
     }
 
@@ -93,7 +97,26 @@ public class SearchController {
     public ApiResponse<Page<SearchResponse>> searchAllBlueprint(
             @PageableDefault(size = 5, sort = "id", direction = Sort.Direction.DESC)Pageable pageable
     ) {
-        Page<SearchResponse> responses = blueprintService.findAll(pageable);
+        Page<SearchResponse> responses = blueprintSearchService.findAll(pageable);
         return ApiResponse.onSuccess(responses);
     }
+
+    @GetMapping("/blueprint/{id}")
+    public ApiResponse<BlueprintResponse> getBlueprintDetails(@PathVariable Long id) {
+        BlueprintResponse blueprintResponseDTO = blueprintSearchService.findApprovedBlueprintById(id);
+        return ApiResponse.onSuccess(blueprintResponseDTO);
+    }
+
+    @GetMapping({"/blueprint/sort", "/blueprint/{categoryId}/sort"})
+    public ApiResponse<List<BlueprintResponse>> sortBlueprints(
+            @PathVariable(value = "categoryId", required = false) Long categoryId,
+            @RequestParam String sortBy,
+            @RequestParam(required = false, defaultValue = "asc") String sortOrder,
+            Pageable pageable
+    ) {
+        BlueprintSortRequest request = new BlueprintSortRequest(categoryId, sortBy, sortOrder);
+        List<BlueprintResponse> sortedItems = blueprintSearchService.sortBlueprintsByCategory(request, pageable);
+        return ApiResponse.onSuccess(sortedItems);
+    }
+
 }

@@ -4,12 +4,14 @@ import com.onetool.server.api.blueprint.Blueprint;
 import com.onetool.server.api.blueprint.InspectionStatus;
 import com.onetool.server.api.blueprint.dto.SearchResponse;
 import com.onetool.server.api.blueprint.repository.BlueprintRepository;
+import com.onetool.server.api.blueprint.service.BlueprintSearchService;
 import com.onetool.server.api.blueprint.service.BlueprintService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -27,6 +29,9 @@ public class BlueprintServiceTest {
 
     @Autowired
     private BlueprintService blueprintService;
+
+    @Autowired
+    private BlueprintSearchService blueprintSearchService;
 
     @Autowired
     private BlueprintRepository blueprintRepository;
@@ -60,7 +65,7 @@ public class BlueprintServiceTest {
     void search_with_keyword() {
         String keyword = "마을";
         Pageable pageable = PageRequest.of(0, 5);
-        Page<SearchResponse> response = blueprintService.searchNameAndCreatorWithKeyword(keyword, pageable);
+        Page<SearchResponse> response = blueprintSearchService.searchNameAndCreatorWithKeyword(keyword, pageable);
         assertThat(response.getTotalElements()).isEqualTo(6);
     }
 

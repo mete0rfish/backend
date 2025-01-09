@@ -31,12 +31,6 @@ public class BlueprintController {
         return ApiResponse.onSuccess("상품이 정상적으로 등록되었습니다.");
     }
 
-    @GetMapping("/{id}")
-    public ApiResponse<BlueprintResponse> getBlueprintDetails(@PathVariable Long id) {
-        BlueprintResponse blueprintResponseDTO = blueprintService.findApprovedBlueprintById(id);
-        return ApiResponse.onSuccess(blueprintResponseDTO);
-    }
-
     @PutMapping("/update")
     public ApiResponse<String> updateBlueprint(@RequestBody BlueprintResponse blueprintResponse,
                                                @AuthenticationPrincipal PrincipalDetails principalDetails) {
@@ -57,18 +51,6 @@ public class BlueprintController {
 
         blueprintService.deleteBlueprint(id);
         return ApiResponse.onSuccess("상품이 정상적으로 삭제 되었습니다.");
-    }
-
-    @GetMapping({"/sort", "{categoryId}/sort"})
-    public ApiResponse<List<BlueprintResponse>> sortBlueprints(
-            @PathVariable(value = "categoryId", required = false) Long categoryId,
-            @RequestParam String sortBy,
-            @RequestParam(required = false, defaultValue = "asc") String sortOrder,
-            Pageable pageable
-    ) {
-        BlueprintSortRequest request = new BlueprintSortRequest(categoryId, sortBy, sortOrder);
-        List<BlueprintResponse> sortedItems = blueprintService.sortBlueprintsByCategory(request, pageable);
-        return ApiResponse.onSuccess(sortedItems);
     }
 
 }
