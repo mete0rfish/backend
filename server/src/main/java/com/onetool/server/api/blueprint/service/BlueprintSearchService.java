@@ -9,7 +9,7 @@ import com.onetool.server.api.blueprint.enums.SortType;
 import com.onetool.server.api.blueprint.repository.BlueprintRepository;
 import com.onetool.server.api.category.FirstCategoryType;
 import com.onetool.server.global.exception.BlueprintNotApprovedException;
-import com.onetool.server.global.exception.InvalidSortTypeException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.*;
 import com.onetool.server.global.exception.BlueprintNotFoundException;
 import org.springframework.stereotype.Service;
@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 public class BlueprintSearchService {
     private final BlueprintRepository blueprintRepository;
@@ -39,7 +40,7 @@ public class BlueprintSearchService {
     public List<BlueprintResponse> sortBlueprintsByCategory(BlueprintSortRequest blueprintSortRequest, Pageable pageable) {
         SortType sortType = SortType.valueOf(blueprintSortRequest.sortBy().toUpperCase());
         String sortOrder = blueprintSortRequest.sortOrder();
-        Sort sort = getSortBySortType(sortType, sortOrder);
+        Sort sort = SortType.getSortBySortType(sortType, sortOrder);
 
         Pageable sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort);
 
@@ -107,38 +108,5 @@ public class BlueprintSearchService {
         return blueprints.stream()
                 .map(SearchResponse::from)
                 .collect(Collectors.toList());
-    }
-
-    private Sort getSortBySortType(SortType sortType, String sortOrder) {
-        Sort.Direction direction = getDirection(sortOrder);
-
-        if (sortType == SortType.PRICE) {
-            return getPriceSort(direction);
-        }
-
-        if (sortType == SortType.CREATED_AT) {
-            return Sort.by(Sort.Order.by("createdAt").with(direction).nullsLast());
-        }
-
-        if (sortType == SortType.EXTENSION) {
-            return Sort.by(Sort.Order.by("extension").with(direction).nullsLast());
-        }
-
-        throw new InvalidSortTypeException();
-    }
-
-    private Sort.Direction getDirection(String sortOrder) {
-        if ("desc".equalsIgnoreCase(sortOrder)) {
-            return Sort.Direction.DESC;
-        }
-        return Sort.Direction.ASC;
-    }
-
-    private Sort getPriceSort(Sort.Direction direction) {
-        return Sort.by(
-                Sort.Order.by("saleExpiredDate").with(Sort.Direction.DESC).nullsLast(),
-                Sort.Order.by("salePrice").with(direction).nullsLast(),
-                Sort.Order.by("standardPrice").with(direction).nullsLast()
-        );
     }
 }

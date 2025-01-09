@@ -43,7 +43,7 @@ public class BlueprintController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public ApiResponse<String> deleteBlueprint(@PathVariable Long id,
+    public ApiResponse<String> deleteBlueprint(@PathVariable("id") Long id,
                                                @AuthenticationPrincipal PrincipalDetails principalDetails){
         if(principalDetails == null) {
             throw new MemberNotFoundException();
