@@ -32,17 +32,14 @@ public class MemberController {
     }
 
     @PostMapping("/login")
-    public ApiResponse<MemberLoginResponse> login(
+    public ApiResponse<String> login(
             @Valid @RequestBody LoginRequest request,
             HttpServletResponse servletResponse
     ) {
         Map<String, String> tokens = memberService.login(request);
-        MemberLoginResponse response = MemberLoginResponse.builder()
-                .accessToken("Bearer " + tokens.get("accessToken"))
-                .build();
         ResponseCookie refreshTokenCookie = createRefreshTokenCookie(tokens.get("refreshToken"));
         servletResponse.setHeader("Set-Cookie", refreshTokenCookie.toString());
-        return ApiResponse.onSuccess(response);
+        return ApiResponse.onSuccess(tokens.get("accessToken"));
     }
 
     @PostMapping("/signup")
