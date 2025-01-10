@@ -42,8 +42,7 @@ public class TokenController {
             return ResponseEntity
                     .status(HttpStatus.OK)
                     .header(HttpHeaders.SET_COOKIE, responseCookie.toString())
-                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + tokens.get("accessToken"))
-                    .build();
+                    .body(tokens.get("accessToken"));
         } else {
             ResponseCookie responseCookie = ResponseCookie.from("refreshToken", "")
                     .maxAge(0)
