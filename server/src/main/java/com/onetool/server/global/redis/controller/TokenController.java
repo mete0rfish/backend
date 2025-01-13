@@ -32,6 +32,7 @@ public class TokenController {
     public ResponseEntity<?> reissue(@CookieValue(name = "refreshToken") String refreshToken) {
         log.info("reissue token: {}", refreshToken);
         Map<String, String> tokens = authService.reissue(refreshToken);
+        log.info("reissued token: {}", tokens);
 
         if (tokens != null) {
             ResponseCookie responseCookie = ResponseCookie.from("refreshToken", tokens.get("refreshToken"))
