@@ -10,7 +10,7 @@ import java.util.Optional;
 
 public interface MemberRepository extends JpaRepository<Member, Long> {
     @Query("SELECT m FROM Member m WHERE m.email = :email AND m.isDeleted = false")
-    Optional<Member> findByEmail(String email);
+    Optional<Member> findByEmail(@Param("email") String email);
 
     @Query(value = "SELECT count(*) FROM Member m WHERE m.isDeleted = false")
     Long countAllMember();
@@ -21,10 +21,10 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     Optional<Member> findByIdWithCart(@Param("id") Long id);
 
     @Query("SELECT m FROM Member m WHERE m.name = :name AND m.phoneNum = :phoneNum AND m.isDeleted = false")
-    Optional<Member> findByNameAndPhoneNum(String name, String phoneNum);
+    Optional<Member> findByNameAndPhoneNum(@Param("name") String name, @Param("phoneNum") String phoneNum);
 
     @Query("SELECT CASE WHEN COUNT(m) > 0 THEN true ELSE false END FROM Member m WHERE m.email = :email AND m.isDeleted = false")
-    boolean existsByEmail(String email);
+    boolean existsByEmail(@Param("email") String email);
 
     @Query("SELECT m FROM Member m JOIN FETCH m.qnaBoards WHERE m.id = :memberId AND m.isDeleted = false")
     Optional<Member> findMemberWithQnaBoards(@Param("memberId") Long memberId);
