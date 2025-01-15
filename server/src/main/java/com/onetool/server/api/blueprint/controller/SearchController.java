@@ -107,16 +107,16 @@ public class SearchController {
         return ApiResponse.onSuccess(blueprintResponseDTO);
     }
 
-    @GetMapping({"/blueprint/sort", "/blueprint/{categoryId}/sort"})
+    @GetMapping({"/blueprint/sort", "/blueprint/{categoryName}/sort"})
     public ApiResponse<List<BlueprintResponse>> sortBlueprints(
-            @PathVariable(name = "categoryId", value = "categoryId", required = false) Long categoryId,
+            @PathVariable(name = "categoryName", required = false) String categoryName,
             @RequestParam(name = "sortBy") String sortBy,
             @RequestParam(name = "sortOrder", required = false, defaultValue = "asc") String sortOrder,
             Pageable pageable
     ) {
-        BlueprintSortRequest request = new BlueprintSortRequest(categoryId, sortBy, sortOrder);
-        List<BlueprintResponse> sortedItems = blueprintSearchService.sortBlueprintsByCategory(request, pageable);
+        List<BlueprintResponse> sortedItems = blueprintSearchService.sortBlueprints(categoryName, sortBy, sortOrder, pageable);
         return ApiResponse.onSuccess(sortedItems);
     }
+
 
 }

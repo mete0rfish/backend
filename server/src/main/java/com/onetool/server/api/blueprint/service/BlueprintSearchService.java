@@ -39,18 +39,22 @@ public class BlueprintSearchService {
         return BlueprintResponse.from(blueprint);
     }
 
-    public List<BlueprintResponse> sortBlueprintsByCategory(BlueprintSortRequest blueprintSortRequest, Pageable pageable) {
-        SortType sortType = SortType.valueOf(blueprintSortRequest.sortBy().toUpperCase());
-        String sortOrder = blueprintSortRequest.sortOrder();
-        Sort sort = SortType.getSortBySortType(sortType, sortOrder);
-
+    public List<BlueprintResponse> sortBlueprints(
+            String categoryName,
+            String sortBy,
+            String sortOrder,
+            Pageable pageable
+    ) {
+        Sort sort = SortType.getSortBySortType(SortType.valueOf(sortBy.toUpperCase()), sortOrder);
         Pageable sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort);
 
-        if (blueprintSortRequest.categoryId() == null) {
+        if (categoryName == null) {
             return sortBlueprintsWithoutCategory(sortedPageable);
         }
+        FirstCategoryType categoryType = FirstCategoryType.findByType(categoryName);
+        Long categoryId = categoryType.getCategoryId();
 
-        return sortBlueprintsWithCategory(blueprintSortRequest.categoryId(), sortedPageable);
+        return sortBlueprintsWithCategory(categoryId, sortedPageable);
     }
 
     private List<BlueprintResponse> sortBlueprintsWithoutCategory(Pageable sortedPageable) {
@@ -61,7 +65,9 @@ public class BlueprintSearchService {
     }
 
     private List<BlueprintResponse> sortBlueprintsWithCategory(Long categoryId, Pageable sortedPageable) {
-        Page<Blueprint> blueprintPage = blueprintRepository.findByCategoryIdAndStatus(categoryId, InspectionStatus.PASSED, sortedPageable);
+        FirstCategoryType category = FirstCategoryType.findByCategoryId(categoryId);
+        Page<Blueprint> blueprintPage = blueprintRepository.findAllByFirstCategory(
+                category.getType(), InspectionStatus.PASSED, sortedPageable);
         return blueprintPage.stream()
                 .map(BlueprintResponse::from)
                 .collect(Collectors.toList());

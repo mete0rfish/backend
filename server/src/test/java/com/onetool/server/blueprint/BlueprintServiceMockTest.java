@@ -24,6 +24,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.security.authentication.TestingAuthenticationToken;
@@ -45,6 +47,7 @@ import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.BDDMockito.given;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -216,65 +219,62 @@ public class BlueprintServiceMockTest {
                 .andExpect(content().string(objectMapper.writeValueAsString(ApiResponse.onSuccess("상품이 정상적으로 삭제 되었습니다."))));
     }
 
-    @DisplayName("blueprint를 카테고리별로 정렬한다")
+
+    @DisplayName("카테고리 없이 blueprint를 정렬한다.")
     @Test
-    public void blueprint를_카테고리별로_정렬한다() throws Exception {
-        BlueprintSortRequest sortRequest = new BlueprintSortRequest(
-                1L,
-                "price",
-                null
+    void blueprintWithoutCategorySortTest() throws Exception {
+        String sortBy = "price";
+        String sortOrder = "asc";
+        Pageable pageable = PageRequest.of(0, 10);
+        List<BlueprintResponse> mockResponse = List.of(
+                BlueprintResponse.builder().id(1L).blueprintName("골프장 1인실 평면도(1)").build(),
+                BlueprintResponse.builder().id(2L).blueprintName("골프장 레이아웃 평면도(1)").build()
         );
 
-        List<BlueprintResponse> sortedBlueprints = List.of(
-                new BlueprintResponse(
-                        1L,
-                        "Example Blueprint A",
-                        1L,
-                        10000L,
-                        "https://example.com/imageA.png",
-                        "Example Description A",
-                        ".pdf",
-                        "CAD",
-                        BigInteger.valueOf(50),
-                        9000L,
-                        LocalDateTime.now().plusDays(30),
-                        "Author A",
-                        "https://example.com/downloadA",
-                        false
-                ),
-                new BlueprintResponse(
-                        2L,
-                        "Example Blueprint B",
-                        1L,
-                        15000L,
-                        "https://example.com/imageB.png",
-                        "Example Description B",
-                        ".dwg",
-                        "CAD",
-                        BigInteger.valueOf(100),
-                        14000L,
-                        LocalDateTime.now().plusDays(20),
-                        "Author B",
-                        "https://example.com/downloadB",
-                        false
-                )
-        );
+        Mockito.when(blueprintSearchService.sortBlueprints(null, sortBy, sortOrder, pageable))
+                .thenReturn(mockResponse);
 
-        // when
-        Mockito.when(blueprintSearchService.sortBlueprintsByCategory(Mockito.any(BlueprintSortRequest.class), Mockito.any()))
-                .thenReturn(sortedBlueprints);
-
-        // then
-        mockMvc.perform(get("/blueprint/sort?sortBy=price")
-                        .with(csrf())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(sortRequest)))
+        // when & then
+        mockMvc.perform(get("/blueprint/sort")
+                        .param("sortBy", sortBy)
+                        .param("sortOrder", sortOrder)
+                        .param("page", "0")
+                        .param("size", "10"))
                 .andExpect(status().isOk())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.isSuccess").value(true))
-                .andExpect(jsonPath("$.result[0].blueprintName").value("Example Blueprint A"))
-                .andExpect(jsonPath("$.result[1].blueprintName").value("Example Blueprint B"));
+                .andExpect(jsonPath("$.result[0].blueprintName").value("골프장 1인실 평면도(1)"))
+                .andExpect(jsonPath("$.result[1].blueprintName").value("골프장 레이아웃 평면도(1)"));
+    }
 
+    @DisplayName("카테고리 별로 blueprint를 정렬한다.")
+    @Test
+    void blueprintWithCategorySortTest() throws Exception {
+        String categoryName = "building";
+        String sortBy = "price";
+        String sortOrder = "asc";
+        Pageable pageable = PageRequest.of(0, 10);
+
+        // Mock 응답
+        List<BlueprintResponse> mockResponse = List.of(
+                BlueprintResponse.builder().id(1L).blueprintName("골프장 1인실 평면도(1)").categoryId(1L).build(),
+                BlueprintResponse.builder().id(2L).blueprintName("골프장 레이아웃 평면도(1)").categoryId(1L).build()
+        );
+
+        // 카테고리별 정렬 메서드 mock
+        Mockito.when(blueprintSearchService.sortBlueprints(categoryName, sortBy, sortOrder, pageable))
+                .thenReturn(mockResponse);
+
+        // when & then
+        mockMvc.perform(get("/blueprint/building/sort")
+                        .param("sortBy", sortBy)
+                        .param("sortOrder", sortOrder)
+                        .param("page", "0")
+                        .param("size", "10"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.result[0].blueprintName").value("골프장 1인실 평면도(1)"))
+                .andExpect(jsonPath("$.result[1].blueprintName").value("골프장 레이아웃 평면도(1)"))
+                .andExpect(jsonPath("$.result[0].categoryId").value(1L))
+                .andExpect(jsonPath("$.result[1].categoryId").value(1L))
+                .andExpect(jsonPath("$.result.length()").value(2));
     }
 
     @Test
