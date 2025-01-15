@@ -38,17 +38,12 @@ public class TokenRedisService {
         return (String) values.get(key);
     }
 
-    public void deleteValues(String memberId) {
+    public void deleteValues(String email) {
         ValueOperations<String, Object> values = tokenRedisTemplate.opsForValue();
-        values.getAndDelete(memberId);
+        values.getAndDelete(email);
     }
 
     public boolean hasKey(String key) {
         return Boolean.TRUE.equals(tokenRedisTemplate.hasKey(key));
-    }
-
-    public void setBlackList(String accessToken, Long expiration) {
-        tokenRedisTemplate.opsForValue()
-                .set(accessToken, "BlackList", expiration, TimeUnit.MINUTES);
     }
 }

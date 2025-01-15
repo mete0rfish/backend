@@ -14,6 +14,7 @@ import com.onetool.server.api.member.repository.MemberRepository;
 import com.onetool.server.api.member.domain.Member;
 import com.onetool.server.api.order.OrderBlueprint;
 import com.onetool.server.api.qna.QnaBoard;
+import com.onetool.server.global.redis.service.TokenBlackListRedisService;
 import com.onetool.server.global.redis.service.TokenRedisService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -49,6 +50,8 @@ public class MemberService {
     private final MailRedisService mailRedisService;
 
     private final TokenRedisService tokenRedisService;
+
+    private final TokenBlackListRedisService tokenBlackListRedisService;
 
     @Value("${spring.mail.auth-code-expiration-millis}")
     private long authCodeExpirationMillis;
@@ -228,7 +231,7 @@ public class MemberService {
 
     public ApiResponse<String> logout(String accessToken, String email) {
         Long expiration = jwtUtil.getExpirationMilliSec(accessToken);
-        tokenRedisService.setBlackList(accessToken, expiration);
+        tokenBlackListRedisService.setBlackList(accessToken, expiration);
         if(tokenRedisService.hasKey(email)) {
             tokenRedisService.deleteValues(email);
         } else {
