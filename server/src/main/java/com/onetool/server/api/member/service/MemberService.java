@@ -5,10 +5,7 @@ import com.onetool.server.api.member.dto.*;
 import com.onetool.server.api.qna.dto.response.QnaBoardResponse;
 import com.onetool.server.global.auth.MemberAuthContext;
 import com.onetool.server.global.auth.jwt.JwtUtil;
-import com.onetool.server.global.exception.BaseException;
-import com.onetool.server.global.exception.BusinessLogicException;
-import com.onetool.server.global.exception.DuplicateMemberException;
-import com.onetool.server.global.exception.MemberNotFoundException;
+import com.onetool.server.global.exception.*;
 import com.onetool.server.global.exception.codes.ErrorCode;
 import com.onetool.server.global.redis.service.MailRedisService;
 import com.onetool.server.api.mail.MailService;
@@ -17,10 +14,12 @@ import com.onetool.server.api.member.repository.MemberRepository;
 import com.onetool.server.api.member.domain.Member;
 import com.onetool.server.api.order.OrderBlueprint;
 import com.onetool.server.api.qna.QnaBoard;
+import com.onetool.server.global.redis.service.TokenRedisService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -48,6 +47,8 @@ public class MemberService {
 
     private final MailService mailService;
     private final MailRedisService mailRedisService;
+
+    private final TokenRedisService tokenRedisService;
 
     @Value("${spring.mail.auth-code-expiration-millis}")
     private long authCodeExpirationMillis;
@@ -223,5 +224,16 @@ public class MemberService {
                 blueprint.getBlueprintName(),
                 blueprint.getCreatorName()
         );
+    }
+
+    public ApiResponse<String> logout(String accessToken, String email) {
+        Long expiration = jwtUtil.getExpirationMilliSec(accessToken);
+        tokenRedisService.setBlackList(accessToken, expiration);
+        if(tokenRedisService.hasKey(email)) {
+            tokenRedisService.deleteValues(email);
+        } else {
+            throw new IllegalLogoutMember(ErrorCode.ILLEGAL_LOGOUT_USER);
+        }
+        return ApiResponse.onSuccess("로그아웃이 완료되었습니다.");
     }
 }

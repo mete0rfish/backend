@@ -65,6 +65,7 @@ public enum ErrorCode implements BaseCode {
 
     //사용자 에러
     NON_EXIST_USER(HttpStatus.NOT_FOUND, "MEMBER-0001", "존재하지 않는 회원입니다"),
+    ILLEGAL_LOGOUT_USER(HttpStatus.BAD_REQUEST, "MEMBER-0002", "이미 로그아웃된 회원입니다."),
 
     //바인딩 에러
     BINDING_ERROR(HttpStatus.BAD_REQUEST, "BINDING-0000", "바인딩에 실패했습니다."),
