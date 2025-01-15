@@ -2,11 +2,14 @@ package com.onetool.server.api.member.controller;
 
 import com.onetool.server.api.member.dto.*;
 import com.onetool.server.api.member.service.MemberService;
+import com.onetool.server.global.auth.jwt.JwtUtil;
 import com.onetool.server.global.auth.login.PrincipalDetails;
 import com.onetool.server.global.exception.ApiResponse;
 import com.onetool.server.global.exception.MemberNotFoundException;
+import com.onetool.server.global.exception.codes.ErrorCode;
 import com.onetool.server.global.exception.codes.SuccessCode;
 import com.onetool.server.api.qna.dto.response.QnaBoardResponse;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.boot.web.server.Cookie;
@@ -26,9 +29,11 @@ import java.util.List;
 public class MemberController {
 
     private final MemberService memberService;
+    private final JwtUtil jwtUtil;
 
-    public MemberController(MemberService memberService) {
+    public MemberController(MemberService memberService, JwtUtil jwtUtil) {
         this.memberService = memberService;
+        this.jwtUtil = jwtUtil;
     }
 
     @PostMapping("/login")
@@ -40,6 +45,15 @@ public class MemberController {
         ResponseCookie refreshTokenCookie = createRefreshTokenCookie(tokens.get("refreshToken"));
         servletResponse.setHeader("Set-Cookie", refreshTokenCookie.toString());
         return ApiResponse.onSuccess(tokens.get("accessToken"));
+    }
+
+    @DeleteMapping("logout")
+    public ApiResponse<String> logout(
+            @AuthenticationPrincipal PrincipalDetails principalDetails,
+            HttpServletRequest servletRequest
+    ) {
+        String accessToken = jwtUtil.resolveToken(servletRequest);
+        return memberService.logout(accessToken, principalDetails.getUsername());
     }
 
     @PostMapping("/signup")
@@ -84,7 +98,7 @@ public class MemberController {
             @AuthenticationPrincipal PrincipalDetails principalDetails) {
 
         if (principalDetails == null) {
-            throw new MemberNotFoundException();
+            throw new MemberNotFoundException(ErrorCode.NON_EXIST_USER);
         }
 
         Long id = principalDetails.getContext().getId();
@@ -99,7 +113,7 @@ public class MemberController {
     ) {
 
         if (principalDetails == null) {
-            throw new MemberNotFoundException();
+            throw new MemberNotFoundException(ErrorCode.NON_EXIST_USER);
         }
 
 
@@ -114,7 +128,7 @@ public class MemberController {
             @AuthenticationPrincipal PrincipalDetails principalDetails) {
 
         if (principalDetails == null) {
-            throw new MemberNotFoundException();
+            throw new MemberNotFoundException(ErrorCode.NON_EXIST_USER);
         }
 
         Long id = principalDetails.getContext().getId();

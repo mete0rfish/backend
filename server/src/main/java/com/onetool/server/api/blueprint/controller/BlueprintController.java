@@ -2,6 +2,7 @@ package com.onetool.server.api.blueprint.controller;
 import com.onetool.server.api.blueprint.dto.BlueprintRequest;
 import com.onetool.server.api.blueprint.dto.BlueprintResponse;
 import com.onetool.server.api.blueprint.dto.BlueprintSortRequest;
+import com.onetool.server.global.exception.codes.ErrorCode;
 import org.springframework.data.domain.Pageable;
 import com.onetool.server.api.blueprint.service.BlueprintService;
 import com.onetool.server.global.auth.login.PrincipalDetails;
@@ -24,7 +25,7 @@ public class BlueprintController {
     public ApiResponse<String> createBlueprint(@RequestBody BlueprintRequest blueprintRequest,
                                                @AuthenticationPrincipal PrincipalDetails principalDetails) {
         if(principalDetails == null) {
-            throw new MemberNotFoundException();
+            throw new MemberNotFoundException(ErrorCode.NON_EXIST_USER);
         }
 
         blueprintService.createBlueprint(blueprintRequest);
@@ -35,7 +36,7 @@ public class BlueprintController {
     public ApiResponse<String> updateBlueprint(@RequestBody BlueprintResponse blueprintResponse,
                                                @AuthenticationPrincipal PrincipalDetails principalDetails) {
         if(principalDetails == null) {
-            throw new MemberNotFoundException();
+            throw new MemberNotFoundException(ErrorCode.NON_EXIST_USER);
         }
 
         blueprintService.updateBlueprint(blueprintResponse);
@@ -46,7 +47,7 @@ public class BlueprintController {
     public ApiResponse<String> deleteBlueprint(@PathVariable("id") Long id,
                                                @AuthenticationPrincipal PrincipalDetails principalDetails){
         if(principalDetails == null) {
-            throw new MemberNotFoundException();
+            throw new MemberNotFoundException(ErrorCode.NON_EXIST_USER);
         }
 
         blueprintService.deleteBlueprint(id);

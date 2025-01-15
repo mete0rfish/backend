@@ -31,6 +31,9 @@ public class RedisConfig {
     }
 
     @Bean
+    public RedisConnectionFactory redisConnectionFactory2() {return createRedis(2);}
+
+    @Bean
     public RedisTemplate<String, Object> mailRedisTemplate() {
         RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
         redisTemplate.setKeySerializer(new StringRedisSerializer());
@@ -45,6 +48,15 @@ public class RedisConfig {
         redisTemplate.setKeySerializer(new StringRedisSerializer());
         redisTemplate.setValueSerializer(new StringRedisSerializer());
         redisTemplate.setConnectionFactory(redisConnectionFactory1());
+        return redisTemplate;
+    }
+
+    @Bean
+    public RedisTemplate<String, Object> tokenBlackListRedisTemplate() {
+        RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
+        redisTemplate.setKeySerializer(new StringRedisSerializer());
+        redisTemplate.setValueSerializer(new StringRedisSerializer());
+        redisTemplate.setConnectionFactory(redisConnectionFactory2());
         return redisTemplate;
     }
 

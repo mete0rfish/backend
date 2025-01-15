@@ -1,5 +1,6 @@
 package com.onetool.server.global.redis.service;
 
+import com.onetool.server.global.auth.jwt.JwtUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -8,6 +9,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Service
@@ -21,13 +24,9 @@ public class TokenRedisService {
         this.tokenRedisTemplate = tokenRedisTemplate;
     }
 
-    public void setValuesWithTimeout(String s, String refreshToken, Long refreshTokenExpirationMillis) {
+    public void setValuesWithTimeout(String email, String refreshToken, Long refreshTokenExpirationMillis) {
         ValueOperations<String, Object> values = tokenRedisTemplate.opsForValue();
-        values.set(
-                s,
-                refreshToken,
-                Duration.ofSeconds(refreshTokenExpirationMillis)
-        );
+        values.set(email, refreshToken, Duration.ofSeconds(refreshTokenExpirationMillis));
     }
 
     @Transactional(readOnly = true)
@@ -39,8 +38,12 @@ public class TokenRedisService {
         return (String) values.get(key);
     }
 
-    public void deleteValues(String memberId) {
+    public void deleteValues(String email) {
         ValueOperations<String, Object> values = tokenRedisTemplate.opsForValue();
-        values.getAndDelete(memberId);
+        values.getAndDelete(email);
+    }
+
+    public boolean hasKey(String key) {
+        return Boolean.TRUE.equals(tokenRedisTemplate.hasKey(key));
     }
 }

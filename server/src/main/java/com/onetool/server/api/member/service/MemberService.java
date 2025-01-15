@@ -5,10 +5,7 @@ import com.onetool.server.api.member.dto.*;
 import com.onetool.server.api.qna.dto.response.QnaBoardResponse;
 import com.onetool.server.global.auth.MemberAuthContext;
 import com.onetool.server.global.auth.jwt.JwtUtil;
-import com.onetool.server.global.exception.BaseException;
-import com.onetool.server.global.exception.BusinessLogicException;
-import com.onetool.server.global.exception.DuplicateMemberException;
-import com.onetool.server.global.exception.MemberNotFoundException;
+import com.onetool.server.global.exception.*;
 import com.onetool.server.global.exception.codes.ErrorCode;
 import com.onetool.server.global.redis.service.MailRedisService;
 import com.onetool.server.api.mail.MailService;
@@ -17,10 +14,13 @@ import com.onetool.server.api.member.repository.MemberRepository;
 import com.onetool.server.api.member.domain.Member;
 import com.onetool.server.api.order.OrderBlueprint;
 import com.onetool.server.api.qna.QnaBoard;
+import com.onetool.server.global.redis.service.TokenBlackListRedisService;
+import com.onetool.server.global.redis.service.TokenRedisService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -49,6 +49,10 @@ public class MemberService {
     private final MailService mailService;
     private final MailRedisService mailRedisService;
 
+    private final TokenRedisService tokenRedisService;
+
+    private final TokenBlackListRedisService tokenBlackListRedisService;
+
     @Value("${spring.mail.auth-code-expiration-millis}")
     private long authCodeExpirationMillis;
 
@@ -67,7 +71,7 @@ public class MemberService {
         String email = request.getEmail();
         String password = request.getPassword();
 
-        Member member = memberRepository.findByEmail(email).orElseThrow(MemberNotFoundException::new);
+        Member member = memberRepository.findByEmail(email).orElseThrow();
         log.info("============== 로그인 유저 정보 ===============");
         log.info(member.toString());
 
@@ -90,8 +94,7 @@ public class MemberService {
         String name = request.name();
         String phoneNum = request.phone_num();
 
-        Member member = memberRepository.findByNameAndPhoneNum(name, phoneNum)
-                .orElseThrow(MemberNotFoundException::new);
+        Member member = memberRepository.findByNameAndPhoneNum(name, phoneNum).orElseThrow();
 
         return member.getEmail();
     }
@@ -138,8 +141,7 @@ public class MemberService {
 
     public boolean findLostPwd(MemberFindPwdRequest request) {
         String email = request.getEmail();
-        Member member = memberRepository.findByEmail(email)
-                .orElseThrow(MemberNotFoundException::new);
+        Member member = memberRepository.findByEmail(email).orElseThrow();
 
         String newPwd = createRandomPassword();
         member.setPassword(encoder.encode(newPwd));
@@ -155,8 +157,7 @@ public class MemberService {
 
     @Transactional
     public Member updateMember(Long id, MemberUpdateRequest request) {
-        Member member = memberRepository.findById(id)
-                .orElseThrow(MemberNotFoundException::new);
+        Member member = memberRepository.findById(id).orElseThrow();
 
         member.updateWith(request);
 
@@ -165,8 +166,7 @@ public class MemberService {
 
     @Transactional
     public void deleteMember(Long id) {
-        Member member = memberRepository.findById(id)
-                .orElseThrow(MemberNotFoundException::new);
+        Member member = memberRepository.findById(id).orElseThrow();
 
         memberRepository.delete(member);
     }
@@ -187,8 +187,7 @@ public class MemberService {
     }
 
     public MemberInfoResponse getMemberInfo(Long userId) {
-        Member member = memberRepository.findByIdAndIsDeleted(userId,false)
-                .orElseThrow(MemberNotFoundException::new);
+        Member member = memberRepository.findByIdAndIsDeleted(userId,false).orElseThrow();
 
         return MemberInfoResponse.from(member);
     }
@@ -205,8 +204,7 @@ public class MemberService {
     }
 
     public List<BlueprintDownloadResponse> getPurchasedBlueprints(final Long userId) {
-        final Member member = memberRepository.findById(userId)
-                .orElseThrow(MemberNotFoundException::new);
+        final Member member = memberRepository.findById(userId).orElseThrow();
 
         return member.getOrders().stream()
                 .flatMap(order -> order.getOrderItems().stream())
@@ -223,5 +221,16 @@ public class MemberService {
                 blueprint.getBlueprintName(),
                 blueprint.getCreatorName()
         );
+    }
+
+    public ApiResponse<String> logout(String accessToken, String email) {
+        Long expiration = jwtUtil.getExpirationMilliSec(accessToken);
+        tokenBlackListRedisService.setBlackList(accessToken, expiration);
+        if(tokenRedisService.hasKey(email)) {
+            tokenRedisService.deleteValues(email);
+        } else {
+            throw new IllegalLogoutMember(ErrorCode.ILLEGAL_LOGOUT_USER);
+        }
+        return ApiResponse.onSuccess("로그아웃이 완료되었습니다.");
     }
 }
