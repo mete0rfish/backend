@@ -71,7 +71,7 @@ public class MemberService {
         String email = request.getEmail();
         String password = request.getPassword();
 
-        Member member = memberRepository.findByEmail(email).orElseThrow(MemberNotFoundException::new);
+        Member member = memberRepository.findByEmail(email).orElseThrow();
         log.info("============== 로그인 유저 정보 ===============");
         log.info(member.toString());
 
@@ -94,8 +94,7 @@ public class MemberService {
         String name = request.name();
         String phoneNum = request.phone_num();
 
-        Member member = memberRepository.findByNameAndPhoneNum(name, phoneNum)
-                .orElseThrow(MemberNotFoundException::new);
+        Member member = memberRepository.findByNameAndPhoneNum(name, phoneNum).orElseThrow();
 
         return member.getEmail();
     }
@@ -142,8 +141,7 @@ public class MemberService {
 
     public boolean findLostPwd(MemberFindPwdRequest request) {
         String email = request.getEmail();
-        Member member = memberRepository.findByEmail(email)
-                .orElseThrow(MemberNotFoundException::new);
+        Member member = memberRepository.findByEmail(email).orElseThrow();
 
         String newPwd = createRandomPassword();
         member.setPassword(encoder.encode(newPwd));
@@ -159,8 +157,7 @@ public class MemberService {
 
     @Transactional
     public Member updateMember(Long id, MemberUpdateRequest request) {
-        Member member = memberRepository.findById(id)
-                .orElseThrow(MemberNotFoundException::new);
+        Member member = memberRepository.findById(id).orElseThrow();
 
         member.updateWith(request);
 
@@ -169,8 +166,7 @@ public class MemberService {
 
     @Transactional
     public void deleteMember(Long id) {
-        Member member = memberRepository.findById(id)
-                .orElseThrow(MemberNotFoundException::new);
+        Member member = memberRepository.findById(id).orElseThrow();
 
         memberRepository.delete(member);
     }
@@ -191,8 +187,7 @@ public class MemberService {
     }
 
     public MemberInfoResponse getMemberInfo(Long userId) {
-        Member member = memberRepository.findByIdAndIsDeleted(userId,false)
-                .orElseThrow(MemberNotFoundException::new);
+        Member member = memberRepository.findByIdAndIsDeleted(userId,false).orElseThrow();
 
         return MemberInfoResponse.from(member);
     }
@@ -209,8 +204,7 @@ public class MemberService {
     }
 
     public List<BlueprintDownloadResponse> getPurchasedBlueprints(final Long userId) {
-        final Member member = memberRepository.findById(userId)
-                .orElseThrow(MemberNotFoundException::new);
+        final Member member = memberRepository.findById(userId).orElseThrow();
 
         return member.getOrders().stream()
                 .flatMap(order -> order.getOrderItems().stream())
