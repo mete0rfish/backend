@@ -6,6 +6,7 @@ import com.onetool.server.global.auth.jwt.JwtUtil;
 import com.onetool.server.global.auth.login.PrincipalDetails;
 import com.onetool.server.global.exception.ApiResponse;
 import com.onetool.server.global.exception.MemberNotFoundException;
+import com.onetool.server.global.exception.codes.ErrorCode;
 import com.onetool.server.global.exception.codes.SuccessCode;
 import com.onetool.server.api.qna.dto.response.QnaBoardResponse;
 import jakarta.servlet.http.HttpServletRequest;
@@ -97,7 +98,7 @@ public class MemberController {
             @AuthenticationPrincipal PrincipalDetails principalDetails) {
 
         if (principalDetails == null) {
-            throw new MemberNotFoundException();
+            throw new MemberNotFoundException(ErrorCode.NON_EXIST_USER);
         }
 
         Long id = principalDetails.getContext().getId();
@@ -112,7 +113,7 @@ public class MemberController {
     ) {
 
         if (principalDetails == null) {
-            throw new MemberNotFoundException();
+            throw new MemberNotFoundException(ErrorCode.NON_EXIST_USER);
         }
 
 
@@ -127,7 +128,7 @@ public class MemberController {
             @AuthenticationPrincipal PrincipalDetails principalDetails) {
 
         if (principalDetails == null) {
-            throw new MemberNotFoundException();
+            throw new MemberNotFoundException(ErrorCode.NON_EXIST_USER);
         }
 
         Long id = principalDetails.getContext().getId();
