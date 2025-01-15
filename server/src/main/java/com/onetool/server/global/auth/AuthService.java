@@ -48,8 +48,8 @@ public class AuthService {
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
         MemberAuthContext memberAuthContext = principalDetails.getContext();
 
-        String memberIdString = memberAuthContext.getId().toString();
-        String refreshTokenInRedis = tokenRedisService.getValues(memberIdString);
+        String email = memberAuthContext.getEmail();
+        String refreshTokenInRedis = tokenRedisService.getValues(email);
 
         log.info("reissue() - refreshTokenInRedis: {}", refreshTokenInRedis);
 
@@ -58,13 +58,13 @@ public class AuthService {
         }
 
         if(!jwtUtil.validateToken(refreshTokenInRedis)) {
-            tokenRedisService.deleteValues(memberIdString);
+            tokenRedisService.deleteValues(email);
             return null;
         }
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        tokenRedisService.deleteValues(memberIdString);
+        tokenRedisService.deleteValues(email);
         return jwtUtil.createTokens(memberAuthContext);
     }
 
