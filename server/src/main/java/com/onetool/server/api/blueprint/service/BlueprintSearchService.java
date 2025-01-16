@@ -39,20 +39,14 @@ public class BlueprintSearchService {
         return BlueprintResponse.from(blueprint);
     }
 
-    public List<BlueprintResponse> sortBlueprints(
-            String categoryName,
-            String sortBy,
-            String sortOrder,
-            Pageable pageable
-    ) {
-        Sort sort = SortType.getSortBySortType(SortType.valueOf(sortBy.toUpperCase()), sortOrder);
+    public List<BlueprintResponse> sortBlueprints(BlueprintSortRequest request, Pageable pageable) {
+        Long categoryId = getCategoryId(request.categoryName());
+        Sort sort = SortType.getSortBySortType(SortType.valueOf(request.sortBy().toUpperCase()), request.sortOrder());
         Pageable sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort);
 
-        if (categoryName == null) {
+        if (categoryId == null) {
             return sortBlueprintsWithoutCategory(sortedPageable);
         }
-        FirstCategoryType categoryType = FirstCategoryType.findByType(categoryName);
-        Long categoryId = categoryType.getCategoryId();
 
         return sortBlueprintsWithCategory(categoryId, sortedPageable);
     }
@@ -116,5 +110,12 @@ public class BlueprintSearchService {
         return blueprints.stream()
                 .map(SearchResponse::from)
                 .collect(Collectors.toList());
+    }
+
+    private Long getCategoryId(String categoryName) {
+        if (categoryName == null) {
+            return null;
+        }
+        return FirstCategoryType.findByType(categoryName).getCategoryId();
     }
 }

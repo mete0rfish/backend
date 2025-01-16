@@ -1,6 +1,9 @@
 package com.onetool.server.api.category;
 
+import com.onetool.server.global.exception.CategoryNotFoundException;
 import lombok.Getter;
+
+import java.util.Arrays;
 
 @Getter
 public enum FirstCategoryType {
@@ -20,20 +23,16 @@ public enum FirstCategoryType {
     }
 
     public static FirstCategoryType findByCategoryId(Long categoryId) {
-        for (FirstCategoryType category : values()) {
-            if (category.getCategoryId().equals(categoryId)) {
-                return category;
-            }
-        }
-        throw new IllegalArgumentException("Invalid category ID: " + categoryId);
+        return Arrays.stream(values())
+                .filter(category -> category.getCategoryId().equals(categoryId))
+                .findFirst()
+                .orElseThrow(CategoryNotFoundException::new);
     }
 
     public static FirstCategoryType findByType(String type) {
-        for (FirstCategoryType category : values()) {
-            if (category.getType().equalsIgnoreCase(type)) {
-                return category;
-            }
-        }
-        throw new IllegalArgumentException("Invalid category type: " + type);
+        return Arrays.stream(values())
+                .filter(category -> category.getType().equalsIgnoreCase(type))
+                .findFirst()
+                .orElseThrow(CategoryNotFoundException::new);
     }
 }

@@ -1,7 +1,7 @@
 package com.onetool.server.api.blueprint.dto;
 
 public record BlueprintSortRequest(
-        Long categoryId,
+        String categoryName,
         String sortBy,
         String sortOrder
 ) {}

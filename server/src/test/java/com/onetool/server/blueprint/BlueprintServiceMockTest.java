@@ -219,7 +219,6 @@ public class BlueprintServiceMockTest {
                 .andExpect(content().string(objectMapper.writeValueAsString(ApiResponse.onSuccess("상품이 정상적으로 삭제 되었습니다."))));
     }
 
-
     @DisplayName("카테고리 없이 blueprint를 정렬한다.")
     @Test
     void blueprintWithoutCategorySortTest() throws Exception {
@@ -231,7 +230,8 @@ public class BlueprintServiceMockTest {
                 BlueprintResponse.builder().id(2L).blueprintName("골프장 레이아웃 평면도(1)").build()
         );
 
-        Mockito.when(blueprintSearchService.sortBlueprints(null, sortBy, sortOrder, pageable))
+        Mockito.when(blueprintSearchService.sortBlueprints(
+                        new BlueprintSortRequest(null, sortBy, sortOrder), pageable))
                 .thenReturn(mockResponse);
 
         // when & then
@@ -259,12 +259,14 @@ public class BlueprintServiceMockTest {
                 BlueprintResponse.builder().id(2L).blueprintName("골프장 레이아웃 평면도(1)").categoryId(1L).build()
         );
 
+        BlueprintSortRequest request = new BlueprintSortRequest(categoryName, sortBy, sortOrder);
+
         // 카테고리별 정렬 메서드 mock
-        Mockito.when(blueprintSearchService.sortBlueprints(categoryName, sortBy, sortOrder, pageable))
+        Mockito.when(blueprintSearchService.sortBlueprints(request, pageable))
                 .thenReturn(mockResponse);
 
         // when & then
-        mockMvc.perform(get("/blueprint/building/sort")
+        mockMvc.perform(get("/blueprint/{categoryName}/sort", categoryName)
                         .param("sortBy", sortBy)
                         .param("sortOrder", sortOrder)
                         .param("page", "0")

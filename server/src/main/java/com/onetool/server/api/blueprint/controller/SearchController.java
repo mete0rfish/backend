@@ -114,9 +114,8 @@ public class SearchController {
             @RequestParam(name = "sortOrder", required = false, defaultValue = "asc") String sortOrder,
             Pageable pageable
     ) {
-        List<BlueprintResponse> sortedItems = blueprintSearchService.sortBlueprints(categoryName, sortBy, sortOrder, pageable);
+        BlueprintSortRequest request = new BlueprintSortRequest(categoryName, sortBy, sortOrder);
+        List<BlueprintResponse> sortedItems = blueprintSearchService.sortBlueprints(request, pageable);
         return ApiResponse.onSuccess(sortedItems);
     }
-
-
 }

@@ -69,6 +69,11 @@ public class ExceptionAdvice {
         return ApiResponse.onFailure("403", "승인받지 않은 도면입니다.", null);
     }
 
+    @ExceptionHandler(CategoryNotFoundException.class)
+    public ApiResponse<?> CategoryNotFoundException (CategoryNotFoundException  e) {
+        return ApiResponse.onFailure("400", "올바르지 않은 카테고리입니다.", null);
+    }
+
     /**
      * 서버 에러
      * @param e
