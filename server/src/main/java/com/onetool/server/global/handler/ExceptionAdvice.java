@@ -71,7 +71,7 @@ public class ExceptionAdvice {
 
     @ExceptionHandler(CategoryNotFoundException.class)
     public ApiResponse<?> CategoryNotFoundException (CategoryNotFoundException  e) {
-        return ApiResponse.onFailure("400", "올바르지 않은 카테고리입니다.", null);
+        return ApiResponse.onFailure("404", "존재하지 않는 카테고리입니다.", null);
     }
 
     /**

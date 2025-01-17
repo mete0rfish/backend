@@ -1,6 +1,7 @@
 package com.onetool.server.api.category;
 
 import com.onetool.server.global.exception.CategoryNotFoundException;
+import com.onetool.server.global.exception.codes.ErrorCode;
 import lombok.Getter;
 
 import java.util.Arrays;
@@ -26,13 +27,13 @@ public enum FirstCategoryType {
         return Arrays.stream(values())
                 .filter(category -> category.getCategoryId().equals(categoryId))
                 .findFirst()
-                .orElseThrow(CategoryNotFoundException::new);
+                .orElseThrow(() -> new CategoryNotFoundException(ErrorCode.CATEGORY_NOT_FOUND));
     }
 
     public static FirstCategoryType findByType(String type) {
         return Arrays.stream(values())
                 .filter(category -> category.getType().equalsIgnoreCase(type))
                 .findFirst()
-                .orElseThrow(CategoryNotFoundException::new);
+                .orElseThrow(() -> new CategoryNotFoundException(ErrorCode.CATEGORY_NOT_FOUND));
     }
 }

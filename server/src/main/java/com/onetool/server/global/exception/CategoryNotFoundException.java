@@ -1,6 +1,9 @@
 package com.onetool.server.global.exception;
 
-public class CategoryNotFoundException extends RuntimeException {
-    public CategoryNotFoundException() {
+import com.onetool.server.global.exception.codes.BaseCode;
+
+public class CategoryNotFoundException extends BaseException {
+    public CategoryNotFoundException(BaseCode code) {
+        super(code);
     }
 }

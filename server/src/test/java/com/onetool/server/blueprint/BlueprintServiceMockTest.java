@@ -15,6 +15,8 @@ import com.onetool.server.global.auth.login.PrincipalDetails;
 import com.onetool.server.global.exception.ApiResponse;
 import com.onetool.server.api.member.controller.MemberController;
 import com.onetool.server.api.member.service.MemberService;
+import com.onetool.server.global.exception.CategoryNotFoundException;
+import com.onetool.server.global.exception.codes.ErrorCode;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -36,7 +38,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
@@ -47,7 +48,6 @@ import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.BDDMockito.given;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -243,6 +243,30 @@ public class BlueprintServiceMockTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.result[0].blueprintName").value("골프장 1인실 평면도(1)"))
                 .andExpect(jsonPath("$.result[1].blueprintName").value("골프장 레이아웃 평면도(1)"));
+    }
+
+    @DisplayName("잘못된 카테고리명을 받았을 때 예외가 발생한다.")
+    @Test
+    void blueprintWithInvalidCategorySortTest() throws Exception {
+        String invalidCategoryName = "invalidCategory";
+        String sortBy = "price";
+        String sortOrder = "asc";
+        Pageable pageable = PageRequest.of(0, 10);
+
+        BlueprintSortRequest request = new BlueprintSortRequest(invalidCategoryName, sortBy, sortOrder);
+
+        // 카테고리별 정렬 메서드 mock
+        Mockito.when(blueprintSearchService.sortBlueprints(request, pageable))
+                .thenThrow(new CategoryNotFoundException(ErrorCode.CATEGORY_NOT_FOUND));
+
+        // when & then
+        mockMvc.perform(get("/blueprint/{categoryName}/sort", invalidCategoryName)
+                        .param("sortBy", sortBy)
+                        .param("sortOrder", sortOrder)
+                        .param("page", "0")
+                        .param("size", "10"))
+                .andExpect(jsonPath("$.code").value(404))
+                .andExpect(jsonPath("$.message").value("존재하지 않는 카테고리입니다."));
     }
 
     @DisplayName("카테고리 별로 blueprint를 정렬한다.")
