@@ -60,13 +60,18 @@ public class ExceptionAdvice {
     }
 
     @ExceptionHandler(InvalidSortTypeException.class)
-    public ApiResponse<?> handleInvalidSortTypeException(InvalidSortTypeException e) {
+    public ApiResponse<?> InvalidSortTypeException(InvalidSortTypeException e) {
         return ApiResponse.onFailure("400", "올바르지 않은 정렬 방식입니다.", null);
     }
 
     @ExceptionHandler(BlueprintNotApprovedException.class)
     public ApiResponse<?> BlueprintNotApprovedException(BlueprintNotApprovedException e) {
         return ApiResponse.onFailure("403", "승인받지 않은 도면입니다.", null);
+    }
+
+    @ExceptionHandler(CategoryNotFoundException.class)
+    public ApiResponse<?> CategoryNotFoundException (CategoryNotFoundException  e) {
+        return ApiResponse.onFailure("404", "존재하지 않는 카테고리입니다.", null);
     }
 
     /**

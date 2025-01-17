@@ -39,18 +39,16 @@ public class BlueprintSearchService {
         return BlueprintResponse.from(blueprint);
     }
 
-    public List<BlueprintResponse> sortBlueprintsByCategory(BlueprintSortRequest blueprintSortRequest, Pageable pageable) {
-        SortType sortType = SortType.valueOf(blueprintSortRequest.sortBy().toUpperCase());
-        String sortOrder = blueprintSortRequest.sortOrder();
-        Sort sort = SortType.getSortBySortType(sortType, sortOrder);
-
+    public List<BlueprintResponse> sortBlueprints(BlueprintSortRequest request, Pageable pageable) {
+        Long categoryId = getCategoryId(request.categoryName());
+        Sort sort = SortType.getSortBySortType(SortType.valueOf(request.sortBy().toUpperCase()), request.sortOrder());
         Pageable sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort);
 
-        if (blueprintSortRequest.categoryId() == null) {
+        if (categoryId == null) {
             return sortBlueprintsWithoutCategory(sortedPageable);
         }
 
-        return sortBlueprintsWithCategory(blueprintSortRequest.categoryId(), sortedPageable);
+        return sortBlueprintsWithCategory(categoryId, sortedPageable);
     }
 
     private List<BlueprintResponse> sortBlueprintsWithoutCategory(Pageable sortedPageable) {
@@ -61,7 +59,9 @@ public class BlueprintSearchService {
     }
 
     private List<BlueprintResponse> sortBlueprintsWithCategory(Long categoryId, Pageable sortedPageable) {
-        Page<Blueprint> blueprintPage = blueprintRepository.findByCategoryIdAndStatus(categoryId, InspectionStatus.PASSED, sortedPageable);
+        FirstCategoryType category = FirstCategoryType.findByCategoryId(categoryId);
+        Page<Blueprint> blueprintPage = blueprintRepository.findAllByFirstCategory(
+                category.getType(), InspectionStatus.PASSED, sortedPageable);
         return blueprintPage.stream()
                 .map(BlueprintResponse::from)
                 .collect(Collectors.toList());
@@ -110,5 +110,12 @@ public class BlueprintSearchService {
         return blueprints.stream()
                 .map(SearchResponse::from)
                 .collect(Collectors.toList());
+    }
+
+    private Long getCategoryId(String categoryName) {
+        if (categoryName == null) {
+            return null;
+        }
+        return FirstCategoryType.findByType(categoryName).getCategoryId();
     }
 }
