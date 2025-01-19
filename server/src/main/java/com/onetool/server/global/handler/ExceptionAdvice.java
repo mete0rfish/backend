@@ -81,7 +81,7 @@ public class ExceptionAdvice {
      */
     @ExceptionHandler
     public ResponseEntity<Object> exception(Exception e) {
-        log.error(e.getMessage());
+        log.error(e.getMessage(), e);
         ErrorCode errorCode = ErrorCode._INTERNAL_SERVER_ERROR;
         ApiResponse<?> baseResponse = ApiResponse.onFailure(errorCode.getCode(), errorCode.getMessage(), null);
         return handleExceptionInternal(baseResponse);
@@ -94,6 +94,7 @@ public class ExceptionAdvice {
      */
     @ExceptionHandler(BaseException.class)
     public ResponseEntity<Object> onThrowException(BaseException generalException) {
+        log.error("BaseException", generalException);
         Reason.ReasonDto errorReasonHttpStatus = generalException.getErrorReasonHttpStatus();
         ApiResponse<?> baseResponse = ApiResponse.onFailure(errorReasonHttpStatus.getCode(), errorReasonHttpStatus.getMessage(), null);
         return handleExceptionInternal(baseResponse);
@@ -194,11 +195,11 @@ public class ExceptionAdvice {
      * @param e NoHandlerFoundException
      * @return ResponseEntity<ErrorResponse>
      */
-//    @ExceptionHandler(NoHandlerFoundException.class)
-//    protected ResponseEntity<Object> handleNoHandlerFoundExceptionException(NoHandlerFoundException e) {
-//        log.error("handleNoHandlerFoundExceptionException", e);
-//        return handleExceptionInternal(ErrorCode.NOT_FOUND_ERROR);
-//    }
+    @ExceptionHandler(NoHandlerFoundException.class)
+    protected ResponseEntity<Object> handleNoHandlerFoundExceptionException(NoHandlerFoundException e) {
+        log.error("handleNoHandlerFoundExceptionException", e);
+        return handleExceptionInternal(ErrorCode.NOT_FOUND_ERROR);
+    }
 
     private ResponseEntity<Object> handleExceptionInternal(ApiResponse<?> response) {
         return new ResponseEntity<>(response, HttpStatus.OK);
