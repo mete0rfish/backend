@@ -21,7 +21,7 @@ public class CartController {
      */
     @PostMapping("/api/cart/add/{blueprintId}")
     public ApiResponse<String> addBlueprintToCart(@AuthenticationPrincipal PrincipalDetails principal,
-                                             @PathVariable Long blueprintId){
+                                             @PathVariable(name = "blueprintId") Long blueprintId){
         return ApiResponse.onSuccess(cartService.addBlueprintToCart(principal.getContext(), blueprintId));
     }
 
@@ -32,7 +32,7 @@ public class CartController {
 
     @DeleteMapping("/api/cart/delete/{blueprintId}")
     public ApiResponse<String> deleteBlueprintInCart(@AuthenticationPrincipal PrincipalDetails principal,
-                                                @PathVariable Long blueprintId){
+                                                @PathVariable(name = "blueprintId") Long blueprintId){
         return ApiResponse.onSuccess(cartService.deleteBlueprintInCart(principal.getContext(), blueprintId));
     }
 }
