@@ -41,7 +41,7 @@ public class SecurityConfig {
     private final CustomOAuth2UserService customOAuth2UserService;
 
     private static final String[] AUTH_WHITELIST = {
-            "/users/**", "/login/**", "/blueprint/**", "/actuator/health", "/silent-refresh"
+            "/users/**", "/login/**", "/blueprint/**", "/actuator/health", "/silent-refresh", "/payments/**"
     };
 
     @Bean
@@ -101,6 +101,7 @@ public class SecurityConfig {
         configuration.addAllowedOrigin("http://onetool.co.kr");
         configuration.addAllowedOrigin("http://localhost:3000");
         configuration.addAllowedOrigin("https://accounts.google.com");
+        configuration.addAllowedOrigin("https://api.tosspayments.com");
         configuration.addAllowedMethod("*");
         configuration.addAllowedHeader("*");
         configuration.setAllowCredentials(true);
