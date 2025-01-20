@@ -12,10 +12,15 @@ import com.onetool.server.global.exception.BaseException;
 import com.onetool.server.api.member.domain.Member;
 import com.onetool.server.api.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 import static com.onetool.server.global.exception.codes.ErrorCode.*;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class CartServiceImpl implements CartService{
@@ -25,13 +30,17 @@ public class CartServiceImpl implements CartService{
     private final BlueprintRepository blueprintRepository;
     private final CartBlueprintRepository cartBlueprintRepository;
 
+    @Transactional(readOnly = true)
     public Object showCart(MemberAuthContext user){
-        Member member = findMemberWithCart(user.getId());
-        Cart cart = member.getCart();
-        if(cart.isCartEmpty()) return "장바구니에 상품이 없습니다.";
-        return CartResponse.CartItems.cartItems(cart.getTotalPrice(), cart.getCartItems());
+        Long cartId = cartRepository.findCartIdWithMemberByMemberId(user.getId()).orElseThrow().getId();
+        Long totalPrice = cartRepository.findTotalPriceByCartId(cartId);
+        List<CartBlueprint> cartBlueprints = cartRepository.findCartBlueprintsByCartId(cartId);
+
+        if(cartBlueprints.isEmpty()) return "장바구니에 상품이 없습니다.";
+        return CartResponse.CartItems.cartItems(totalPrice, cartBlueprints);
     }
 
+    @Transactional
     public String addBlueprintToCart(MemberAuthContext user,
                                      Long blueprintId){
 
@@ -39,12 +48,14 @@ public class CartServiceImpl implements CartService{
         Cart cart = member.getCart();
         Blueprint blueprint = findBlueprint(blueprintId);
         isBlueprintAlreadyInCart(cart, blueprint);
-        CartBlueprint newCartBlueprint = CartBlueprint.addBlueprintToCart(cart, blueprint);
-        cartBlueprintRepository.save(CartBlueprint.addBlueprintToCart(cart, blueprint));
+        CartBlueprint newCartBlueprint = CartBlueprint.of(cart, blueprint);
+
         updateCartAndSave(cart, newCartBlueprint, Action.ADD);
+        log.info("size: {}, totalPrice: {}", cart.getCartItems().size(), cart.getTotalPrice());
         return "장바구니에 추가됐습니다.";
     }
 
+    @Transactional
     public String deleteBlueprintInCart(MemberAuthContext user,
                                       Long blueprintId){
 
@@ -77,7 +88,8 @@ public class CartServiceImpl implements CartService{
                 .orElseThrow(() -> new BaseException(NO_BLUEPRINT_FOUND));
     }
 
-    private void updateCartAndSave(Cart cart, CartBlueprint cartBlueprint, Action action) {
+    @Transactional
+    protected void updateCartAndSave(Cart cart, CartBlueprint cartBlueprint, Action action) {
         if (action == Action.ADD) {
             cart.getCartItems().add(cartBlueprint);
         } else if (action == Action.REMOVE) {

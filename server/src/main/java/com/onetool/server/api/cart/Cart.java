@@ -25,7 +25,7 @@ public class Cart extends BaseEntity {
     @JoinColumn(name = "member_cart_id")
     private Member member;
 
-    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<CartBlueprint> cartItems = new ArrayList<>();
 
     private Cart(Member member){
