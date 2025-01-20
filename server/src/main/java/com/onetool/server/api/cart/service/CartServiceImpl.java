@@ -12,10 +12,14 @@ import com.onetool.server.global.exception.BaseException;
 import com.onetool.server.api.member.domain.Member;
 import com.onetool.server.api.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 import static com.onetool.server.global.exception.codes.ErrorCode.*;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class CartServiceImpl implements CartService{
@@ -26,10 +30,12 @@ public class CartServiceImpl implements CartService{
     private final CartBlueprintRepository cartBlueprintRepository;
 
     public Object showCart(MemberAuthContext user){
-        Member member = findMemberWithCart(user.getId());
-        Cart cart = member.getCart();
-        if(cart.isCartEmpty()) return "장바구니에 상품이 없습니다.";
-        return CartResponse.CartItems.cartItems(cart.getTotalPrice(), cart.getCartItems());
+        Long cartId = cartRepository.findCartIdWithMemberByMemberId(user.getId()).orElseThrow().getId();
+        Long totalPrice = cartRepository.findTotalPriceByCartId(cartId);
+        List<CartBlueprint> cartBlueprints = cartRepository.findCartBlueprintsByCartId(cartId);
+
+        if(cartBlueprints.isEmpty()) return "장바구니에 상품이 없습니다.";
+        return CartResponse.CartItems.cartItems(totalPrice, cartBlueprints);
     }
 
     public String addBlueprintToCart(MemberAuthContext user,
@@ -40,7 +46,8 @@ public class CartServiceImpl implements CartService{
         Blueprint blueprint = findBlueprint(blueprintId);
         isBlueprintAlreadyInCart(cart, blueprint);
         CartBlueprint newCartBlueprint = CartBlueprint.addBlueprintToCart(cart, blueprint);
-        cartBlueprintRepository.save(CartBlueprint.addBlueprintToCart(cart, blueprint));
+        cart.getCartItems().add(newCartBlueprint);
+
         updateCartAndSave(cart, newCartBlueprint, Action.ADD);
         return "장바구니에 추가됐습니다.";
     }
