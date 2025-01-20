@@ -14,6 +14,7 @@ import com.onetool.server.api.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -29,6 +30,7 @@ public class CartServiceImpl implements CartService{
     private final BlueprintRepository blueprintRepository;
     private final CartBlueprintRepository cartBlueprintRepository;
 
+    @Transactional(readOnly = true)
     public Object showCart(MemberAuthContext user){
         Long cartId = cartRepository.findCartIdWithMemberByMemberId(user.getId()).orElseThrow().getId();
         Long totalPrice = cartRepository.findTotalPriceByCartId(cartId);
@@ -38,6 +40,7 @@ public class CartServiceImpl implements CartService{
         return CartResponse.CartItems.cartItems(totalPrice, cartBlueprints);
     }
 
+    @Transactional
     public String addBlueprintToCart(MemberAuthContext user,
                                      Long blueprintId){
 
@@ -45,13 +48,14 @@ public class CartServiceImpl implements CartService{
         Cart cart = member.getCart();
         Blueprint blueprint = findBlueprint(blueprintId);
         isBlueprintAlreadyInCart(cart, blueprint);
-        CartBlueprint newCartBlueprint = CartBlueprint.addBlueprintToCart(cart, blueprint);
-        cart.getCartItems().add(newCartBlueprint);
+        CartBlueprint newCartBlueprint = CartBlueprint.of(cart, blueprint);
 
         updateCartAndSave(cart, newCartBlueprint, Action.ADD);
+        log.info("size: {}, totalPrice: {}", cart.getCartItems().size(), cart.getTotalPrice());
         return "장바구니에 추가됐습니다.";
     }
 
+    @Transactional
     public String deleteBlueprintInCart(MemberAuthContext user,
                                       Long blueprintId){
 
@@ -84,7 +88,8 @@ public class CartServiceImpl implements CartService{
                 .orElseThrow(() -> new BaseException(NO_BLUEPRINT_FOUND));
     }
 
-    private void updateCartAndSave(Cart cart, CartBlueprint cartBlueprint, Action action) {
+    @Transactional
+    protected void updateCartAndSave(Cart cart, CartBlueprint cartBlueprint, Action action) {
         if (action == Action.ADD) {
             cart.getCartItems().add(cartBlueprint);
         } else if (action == Action.REMOVE) {

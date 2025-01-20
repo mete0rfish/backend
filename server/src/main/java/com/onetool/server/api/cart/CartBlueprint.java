@@ -29,7 +29,7 @@ public class CartBlueprint extends BaseEntity {
         this.blueprint = blueprint;
     }
 
-    public static CartBlueprint addBlueprintToCart(Cart cart, Blueprint blueprint){
+    public static CartBlueprint of(Cart cart, Blueprint blueprint){
         return CartBlueprint.builder()
                 .cart(cart)
                 .blueprint(blueprint)
