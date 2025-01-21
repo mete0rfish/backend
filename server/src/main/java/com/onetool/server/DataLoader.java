@@ -34,7 +34,12 @@ public class DataLoader implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
+        if(memberRepository.count() == 0) {
+            createDummyData();
+        }
+    }
 
+    private void createDummyData() {
         Member member = memberRepository.save(
                 Member.builder()
                         .name("관리자1")
@@ -221,7 +226,6 @@ public class DataLoader implements CommandLineRunner {
                 BigInteger.valueOf(0),
                 InspectionStatus.PASSED
         );
-
     }
 
     private void createBlueprint(
