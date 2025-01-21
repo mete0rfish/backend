@@ -77,6 +77,8 @@ public enum ErrorCode implements BaseCode {
 
     //도면 에러
     NO_BLUEPRINT_FOUND(HttpStatus.NOT_FOUND, "BLUEPRINT-0000", "도면이 존재하지 않습니다."),
+    BLUEPRINT_FILE_NECESSARY(HttpStatus.BAD_REQUEST, "BLUEPRINT-0001", "도면 파일을 업로드해주세요."),
+    BLUEPRINT_FILE_EXTENSION_NOT_ALLOWED(HttpStatus.BAD_REQUEST, "BLUEPRINT-0002", "도면 파일 확장자가 올바르지 않습니다."),
 
     //카테고리 에러
     CATEGORY_NOT_FOUND(HttpStatus.NOT_FOUND, "CATEGORY-0000", "존재하지 않는 카테고리입니다."),
