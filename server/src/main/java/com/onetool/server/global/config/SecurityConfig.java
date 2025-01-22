@@ -112,18 +112,4 @@ public class SecurityConfig {
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
-
-//    @Bean
-//    public CookieSameSiteSupplier cookieSameSiteSupplier() {
-//        return CookieSameSiteSupplier.ofLax();
-//    }
-
-    @Bean
-    public ServletContextInitializer cookieInitializer() {
-        return servletContext -> {
-            servletContext.getSessionCookieConfig().setHttpOnly(true);
-            servletContext.getSessionCookieConfig().setSecure(true);
-            servletContext.getSessionCookieConfig().setPath("/");
-        };
-    }
 }
