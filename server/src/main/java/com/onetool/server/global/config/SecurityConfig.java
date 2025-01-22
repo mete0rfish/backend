@@ -11,6 +11,7 @@ import com.onetool.server.global.auth.login.service.CustomOAuth2UserService;
 import com.onetool.server.global.auth.login.service.CustomUserDetailsService;
 import lombok.AllArgsConstructor;
 import org.apache.catalina.filters.CorsFilter;
+import org.springframework.boot.web.servlet.ServletContextInitializer;
 import org.springframework.boot.web.servlet.server.CookieSameSiteSupplier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -112,8 +113,17 @@ public class SecurityConfig {
         return source;
     }
 
+//    @Bean
+//    public CookieSameSiteSupplier cookieSameSiteSupplier() {
+//        return CookieSameSiteSupplier.ofLax();
+//    }
+
     @Bean
-    public CookieSameSiteSupplier cookieSameSiteSupplier() {
-        return CookieSameSiteSupplier.ofLax();
+    public ServletContextInitializer cookieInitializer() {
+        return servletContext -> {
+            servletContext.getSessionCookieConfig().setHttpOnly(true);
+            servletContext.getSessionCookieConfig().setSecure(true);
+            servletContext.getSessionCookieConfig().setPath("/");
+        };
     }
 }
