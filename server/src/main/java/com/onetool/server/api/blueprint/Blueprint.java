@@ -1,7 +1,6 @@
 package com.onetool.server.api.blueprint;
 
 import com.onetool.server.api.blueprint.dto.BlueprintRequest;
-import com.onetool.server.api.blueprint.dto.BlueprintUploadRequest;
 import com.onetool.server.api.cart.CartBlueprint;
 import com.onetool.server.global.entity.BaseEntity;
 import com.onetool.server.api.order.OrderBlueprint;
@@ -74,9 +73,6 @@ public class Blueprint extends BaseEntity {
     @OneToMany(mappedBy = "blueprint")
     private List<CartBlueprint> cartBlueprints = new ArrayList<>();
 
-    @OneToMany(mappedBy = "blueprint")
-    private List<BlueprintFile> blueprintFiles = new ArrayList<>();
-
     @Column(name = "is_deleted", nullable = false)
     private boolean isDeleted = false;
 
@@ -125,17 +121,6 @@ public class Blueprint extends BaseEntity {
                 .saleExpiredDate(blueprintRequest.saleExpiredDate())
                 .creatorName(blueprintRequest.creatorName())
                 .downloadLink(blueprintRequest.downloadLink())
-                .build();
-    }
-
-    public static Blueprint fromUploadRequest(final BlueprintUploadRequest uploadRequest){
-        return Blueprint.builder()
-                .categoryId(uploadRequest.categoryId())
-                .standardPrice(uploadRequest.standardPrice())
-                .blueprintDetails(uploadRequest.blueprintDetails())
-                .extension(uploadRequest.extension())
-                .program(uploadRequest.program())
-                .creatorName(uploadRequest.creatorName())
                 .build();
     }
 
