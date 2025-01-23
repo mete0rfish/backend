@@ -76,12 +76,30 @@ public class Blueprint extends BaseEntity {
     @Column(name = "is_deleted", nullable = false)
     private boolean isDeleted = false;
 
+    @Column(name = "detail_image")
+    private String detailImage;
+
+
     @Builder
-    public Blueprint(Long id, String blueprintName, Long categoryId, Long standardPrice, String blueprintImg,
-                     String blueprintDetails, String extension, String program, BigInteger hits, Long salePrice,
-                     LocalDateTime saleExpiredDate, String creatorName, String downloadLink, String secondCategory,
-                     InspectionStatus inspectionStatus, List<OrderBlueprint> orderBlueprints,
-                     List<CartBlueprint> cartBlueprints, boolean isDeleted){
+    public Blueprint(Long id,
+                     String blueprintName,
+                     Long categoryId,
+                     Long standardPrice,
+                     String blueprintImg,
+                     String blueprintDetails,
+                     String extension,
+                     String program,
+                     BigInteger hits,
+                     Long salePrice,
+                     LocalDateTime saleExpiredDate,
+                     String creatorName,
+                     String downloadLink,
+                     String secondCategory,
+                     InspectionStatus inspectionStatus,
+                     List<OrderBlueprint> orderBlueprints,
+                     List<CartBlueprint> cartBlueprints,
+                     boolean isDeleted,
+                     String detailImage) {
         this.id = id;
         this.blueprintName = blueprintName;
         this.categoryId = categoryId;
@@ -100,6 +118,7 @@ public class Blueprint extends BaseEntity {
         this.orderBlueprints = orderBlueprints;
         this.cartBlueprints = cartBlueprints;
         this.isDeleted = isDeleted;
+        this.detailImage = detailImage;
     }
 
     public void approveBlueprint() {
@@ -121,6 +140,7 @@ public class Blueprint extends BaseEntity {
                 .saleExpiredDate(blueprintRequest.saleExpiredDate())
                 .creatorName(blueprintRequest.creatorName())
                 .downloadLink(blueprintRequest.downloadLink())
+                .detailImage(blueprintRequest.detailImage())
                 .build();
     }
 

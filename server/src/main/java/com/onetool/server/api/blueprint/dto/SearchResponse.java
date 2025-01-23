@@ -22,7 +22,8 @@ public record SearchResponse(
         LocalDateTime saleExpiredDate,
         String creatorName,
         String downloadLink,
-        String secondCategory
+        String secondCategory,
+        String detailImage
 ) {
 
     public static SearchResponse from(Blueprint blueprint) {
@@ -41,6 +42,7 @@ public record SearchResponse(
                 .creatorName(blueprint.getCreatorName())
                 .downloadLink(blueprint.getDownloadLink())
                 .secondCategory(blueprint.getSecondCategory())
+                .detailImage(blueprint.getDetailImage())
                 .build();
     }
 }
