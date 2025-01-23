@@ -21,8 +21,7 @@ public record BlueprintResponse(
         LocalDateTime saleExpiredDate,
         String creatorName,
         String downloadLink,
-        boolean isDeleted,
-        String detailImage
+        boolean isDeleted
 )  {
     @Builder
     public static BlueprintResponse from(Blueprint blueprint) {
@@ -40,8 +39,7 @@ public record BlueprintResponse(
                 blueprint.getSaleExpiredDate(),
                 blueprint.getCreatorName(),
                 blueprint.getDownloadLink(),
-                blueprint.getIsDeleted(),
-                blueprint.getDetailImage()
+                blueprint.getIsDeleted()
         );
     }
     public static BlueprintResponse items(Blueprint blueprint){
