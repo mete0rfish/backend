@@ -15,4 +15,7 @@ public interface QnaBoardRepository extends JpaRepository<QnaBoard, Long> {
 
     @Query("SELECT q FROM QnaBoard q LEFT JOIN FETCH q.qnaReplies WHERE q.id = :id")
     Optional<QnaBoard> findByIdWithReplies(@Param("id") Long id);
+
+    @Query("SELECT q FROM QnaBoard q WHERE q.member.id = :memberId")
+    List<QnaBoard> findByMemberId(@Param("memberId") Long memberId);
 }

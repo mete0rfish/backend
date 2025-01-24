@@ -20,7 +20,7 @@ public class QnaBoardResponse {
         public static QnaBoardBriefResponse from(QnaBoard qnaBoard){
             return QnaBoardBriefResponse.builder()
                     .title(qnaBoard.getTitle())
-                    .writer(qnaBoard.getTitle())
+                    .writer(qnaBoard.getMember().getName())
                     .postDate(qnaBoard.getCreatedAt().toLocalDate())
                     .views(qnaBoard.getViews())
                     .replies(qnaBoard.getQnaReplies().size())
