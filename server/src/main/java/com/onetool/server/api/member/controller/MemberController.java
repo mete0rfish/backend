@@ -111,6 +111,19 @@ public class MemberController {
         }
     }
 
+    // TODO : uri 수정 필요
+    @GetMapping("/myQna")
+    public ApiResponse<List<QnaBoardResponse.QnaBoardBriefResponse>> getMyQna(@AuthenticationPrincipal PrincipalDetails principalDetails) {
+        return ApiResponse.onSuccess(memberService.findQnaWrittenById(principalDetails.getContext()));
+    }
+
+    @GetMapping("/myPurchase")
+    public ApiResponse<List<BlueprintDownloadResponse>> getMyPurchases(@AuthenticationPrincipal PrincipalDetails principalDetails) {
+        Long userId = principalDetails.getContext().getId();
+        List<BlueprintDownloadResponse> blueprints = memberService.getPurchasedBlueprints(userId);
+        return ApiResponse.onSuccess(blueprints);
+    }
+
     private ResponseCookie createRefreshTokenCookie(String refreshToken) {
         return ResponseCookie.from("refreshToken", refreshToken)
                 .maxAge(7 * 24 * 60 * 60)
