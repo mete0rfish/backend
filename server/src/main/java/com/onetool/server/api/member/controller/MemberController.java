@@ -12,6 +12,7 @@ import com.onetool.server.api.qna.dto.response.QnaBoardResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.web.server.Cookie;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -24,6 +25,7 @@ import java.time.Duration;
 import java.util.Map;
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping("/users")
 public class MemberController {
@@ -114,6 +116,7 @@ public class MemberController {
     // TODO : uri 수정 필요
     @GetMapping("/myQna")
     public ApiResponse<List<QnaBoardResponse.QnaBoardBriefResponse>> getMyQna(@AuthenticationPrincipal PrincipalDetails principalDetails) {
+        log.info("context id: {}", principalDetails.getContext().getId());
         return ApiResponse.onSuccess(memberService.findQnaWrittenById(principalDetails.getContext()));
     }
 

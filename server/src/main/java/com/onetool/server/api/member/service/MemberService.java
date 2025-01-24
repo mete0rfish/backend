@@ -3,6 +3,7 @@ package com.onetool.server.api.member.service;
 import com.onetool.server.api.blueprint.Blueprint;
 import com.onetool.server.api.member.dto.*;
 import com.onetool.server.api.qna.dto.response.QnaBoardResponse;
+import com.onetool.server.api.qna.repository.QnaBoardRepository;
 import com.onetool.server.global.auth.MemberAuthContext;
 import com.onetool.server.global.auth.jwt.JwtUtil;
 import com.onetool.server.global.exception.*;
@@ -52,6 +53,8 @@ public class MemberService {
     private final TokenRedisService tokenRedisService;
 
     private final TokenBlackListRedisService tokenBlackListRedisService;
+
+    private final QnaBoardRepository qnaBoardRepository;
 
     @Value("${spring.mail.auth-code-expiration-millis}")
     private long authCodeExpirationMillis;
@@ -193,14 +196,15 @@ public class MemberService {
     }
 
     public List<QnaBoardResponse.QnaBoardBriefResponse> findQnaWrittenById(MemberAuthContext context){
-        Member member = findMemberWithQna(context.getId());
-        List<QnaBoard> qnaBoards = member.getQnaBoards();
+        if(!findMemberWithQna(context.getId())) {
+            throw new BaseException(ErrorCode.NON_EXIST_USER);
+        }
+        List<QnaBoard> qnaBoards = qnaBoardRepository.findByMemberId(context.getId());
         return QnaBoardResponse.QnaBoardBriefResponse.from(qnaBoards);
     }
 
-    private Member findMemberWithQna(Long id){
-        return memberRepository.findMemberWithQnaBoards(id)
-                .orElseThrow(() -> new BaseException(ErrorCode.NON_EXIST_USER));
+    private boolean findMemberWithQna(Long id){
+        return memberRepository.existsById(id);
     }
 
     public List<BlueprintDownloadResponse> getPurchasedBlueprints(final Long userId) {
