@@ -6,10 +6,13 @@ import com.onetool.server.api.member.service.MemberService;
 import com.onetool.server.global.exception.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
+@Slf4j
 @AllArgsConstructor
-@RestController("/users/email")
+@RestController
+@RequestMapping("/users/email")
 public class MemberEmailController {
 
     private final MemberService memberService;
@@ -31,7 +34,8 @@ public class MemberEmailController {
     }
 
     @PostMapping("/verification-requests")
-    public ApiResponse<?> sendMessage(@RequestParam("email") @Valid String email) {
+    public ApiResponse<?> sendMessage(@RequestParam("email") String email) {
+        log.info("request email: {}", email);
         memberService.sendCodeToEmail(email);
         return ApiResponse.onSuccess("이메일이 발송되었습니다.");
     }

@@ -92,13 +92,13 @@ public class ExceptionAdvice {
      * @param generalException
      * @return
      */
-    @ExceptionHandler(BaseException.class)
-    public ResponseEntity<Object> onThrowException(BaseException generalException) {
-        log.error("BaseException", generalException);
-        Reason.ReasonDto errorReasonHttpStatus = generalException.getErrorReasonHttpStatus();
-        ApiResponse<?> baseResponse = ApiResponse.onFailure(errorReasonHttpStatus.getCode(), errorReasonHttpStatus.getMessage(), null);
-        return handleExceptionInternal(baseResponse);
-    }
+//    @ExceptionHandler(BaseException.class)
+//    public ResponseEntity<Object> onThrowException(BaseException generalException) {
+//        log.error("BaseException", generalException);
+//        Reason.ReasonDto errorReasonHttpStatus = generalException.getErrorReasonHttpStatus();
+//        ApiResponse<?> baseResponse = ApiResponse.onFailure(errorReasonHttpStatus.getCode(), errorReasonHttpStatus.getMessage(), null);
+//        return handleExceptionInternal(baseResponse);
+//    }
 
     /**
      * [Exception] API 호출 시 'Header' 내에 데이터 값이 유효하지 않은 경우
