@@ -104,9 +104,9 @@ public class MemberService {
 
     public void sendCodeToEmail(String toEmail) {
         //this.checkDuplicatedEmail(toEmail);
-        String title = "[OneTool] 이메일 인증 번호";
+        String title = "[원툴] 회원가입 이메일 인증번호";
         String authCode = this.createCode();
-        mailService.sendEmail(toEmail, title, authCode);
+        mailService.sendEmail(toEmail, title, authCode, true);
         // 이메일 인증 요청 시 인증 번호 Redis에 저장 ( key = "AuthCode " + Email / value = AuthCode )
         mailRedisService.setValues(AUTH_CODE_PREFIX + toEmail,
                 authCode, Duration.ofMillis(this.authCodeExpirationMillis));
@@ -152,8 +152,9 @@ public class MemberService {
 
         mailService.sendEmail(
                 member.getEmail(),
-                "원툴 비밀번호 찾기",
-                newPwd
+                "[원툴] 임시 비밀번호 발급",
+                newPwd,
+                false
         );
         return true;
     }
