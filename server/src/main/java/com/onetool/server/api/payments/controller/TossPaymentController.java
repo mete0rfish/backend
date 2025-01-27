@@ -2,10 +2,8 @@ package com.onetool.server.api.payments.controller;
 
 import com.onetool.server.api.payments.domain.PaymentProperties;
 import com.onetool.server.api.payments.dto.PaymentErrorResponse;
-import com.onetool.server.api.payments.domain.TossPaymentMethod;
 import com.onetool.server.api.payments.dto.SaveAmountRequest;
-import com.onetool.server.api.payments.repository.PaymentRepository;
-import com.onetool.server.api.payments.service.PaymentService;
+import com.onetool.server.api.payments.service.TossPaymentService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
@@ -31,14 +29,14 @@ import java.util.Base64;
 
 @Slf4j
 @RestController
-public class PaymentController {
+public class TossPaymentController {
 
     private final PaymentProperties properties;
-    private final PaymentService paymentService;
+    private final TossPaymentService tossPaymentService;
 
-    public PaymentController(PaymentProperties properties, PaymentService paymentService) {
+    public TossPaymentController(PaymentProperties properties, TossPaymentService tossPaymentService) {
         this.properties = properties;
-        this.paymentService = paymentService;
+        this.tossPaymentService = tossPaymentService;
     }
 
     @PostMapping("/saveAmount")
@@ -65,7 +63,7 @@ public class PaymentController {
         JSONParser parser = new JSONParser();
         String authorizationHeader = createAuthorizationHeader();
         JSONObject response = sendPaymentConfirmation(requestData, authorizationHeader, parser);
-        paymentService.savePayment(response);
+        tossPaymentService.savePayment(response);
         return ResponseEntity.ok().body(response);
     }
 
