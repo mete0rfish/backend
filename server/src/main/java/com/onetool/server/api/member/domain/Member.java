@@ -28,7 +28,8 @@ import java.util.List;
 @SQLDelete(sql = "UPDATE member SET is_deleted = true WHERE id = ?")
 public class Member extends BaseEntity {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String password;
