@@ -1,5 +1,6 @@
 package com.onetool.server.api.order;
 
+import com.onetool.server.api.blueprint.Blueprint;
 import com.onetool.server.api.payments.domain.Payment;
 import com.onetool.server.global.entity.BaseEntity;
 import com.onetool.server.api.member.domain.Member;
@@ -24,6 +25,7 @@ public class Orders extends BaseEntity {
 
     private int totalCount;
 
+    @Setter
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<OrderBlueprint> orderItems = new ArrayList<>();
 
@@ -33,5 +35,4 @@ public class Orders extends BaseEntity {
 
     @OneToOne(mappedBy = "orders")
     private Payment payment;
-
 }

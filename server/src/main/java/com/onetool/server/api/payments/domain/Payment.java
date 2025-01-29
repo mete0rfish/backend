@@ -8,8 +8,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.Set;
-
 @Getter
 @Entity
 @NoArgsConstructor
@@ -24,6 +22,9 @@ public class Payment extends BaseEntity {
     private String accountNumber;
     private String bankName;
     private Long totalPrice;
+
+    @Enumerated(EnumType.STRING)
+    private PaymentStatus status;
 
 //    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
 //    @JoinColumn(name = "payment_blueprint_id")

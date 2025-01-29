@@ -5,25 +5,61 @@ import com.onetool.server.api.blueprint.dto.BlueprintResponse;
 import com.onetool.server.api.member.domain.Member;
 import com.onetool.server.api.member.dto.MemberSimpleInfoDto;
 import com.onetool.server.api.order.Orders;
+import com.onetool.server.api.order.dto.request.OrderRequest;
 import lombok.Builder;
+import lombok.extern.slf4j.Slf4j;
 
+import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 public class OrderResponse {
 
     @Builder
-    public record OrderPageMemberResponseDto(
+    public record MyPageOrderResponseDto(
+            String orderName,
+            Long orderId,
             Long totalPrice,
-            MemberSimpleInfoDto memberInfo,
-            List<BlueprintResponse> items
+            String status
     ){
-        public static OrderPageMemberResponseDto orderPage(Long totalPrice, Member member, List<Blueprint> diabetes){
-            return OrderPageMemberResponseDto.builder()
-                    .totalPrice(totalPrice)
-                    .memberInfo(MemberSimpleInfoDto.makeMemberSimpInfoDto(member))
-                    .items(diabetes.stream().map(BlueprintResponse::items).toList())
-                    .build();
+        public static List<MyPageOrderResponseDto> from(List<Orders> ordersList){
+            List<MyPageOrderResponseDto> dtos = new ArrayList<>();
+            if(isOrderEmpty(ordersList)) {
+               return dtos;
+            }
+
+            ordersList.forEach(orders -> {
+                dtos.add(
+                        MyPageOrderResponseDto.builder()
+                                .orderId(orders.getId())
+                                .orderName(createOrderName(orders))
+                                .totalPrice(orders.getTotalPrice())
+                                .build()
+                );
+            });
+            return dtos;
         }
+
+        private static String createOrderName(Orders orders) {
+            log.info("orderItem size: {}", orders.getOrderItems());
+            StringBuilder sb = new StringBuilder();
+            String firstBlueprintName = orders.getOrderItems().get(0).getBlueprint().getBlueprintName();
+            int blueprintCount = orders.getOrderItems().size();
+            sb.append(firstBlueprintName);
+
+            if(blueprintCount > 1) {
+                sb.append("외 ");
+                sb.append(blueprintCount - 1);
+                sb.append("개");
+            }
+
+            return sb.toString();
+        }
+
+        private static boolean isOrderEmpty(List<Orders> ordersList) {
+            return ordersList.isEmpty();
+        }
+
     }
 
     @Builder
