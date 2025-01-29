@@ -24,12 +24,12 @@ public class OrderController {
     @PostMapping
     public ApiResponse<String> createOrders(@AuthenticationPrincipal PrincipalDetails principal,
                                                           @RequestBody OrderRequest request){
-        orderService.makeOrder(principal.getContext(), request);
+        orderService.makeOrder(principal.getContext().getEmail(), request);
         return ApiResponse.onSuccess("주문 생성이 완료되었습니다.");
     }
 
     @GetMapping
     public ApiResponse<List<MyPageOrderResponseDto>> getOrders(@AuthenticationPrincipal PrincipalDetails principal){
-        return ApiResponse.onSuccess(orderService.getMyPageOrder(principal.getContext()));
+        return ApiResponse.onSuccess(orderService.getMyPageOrder(principal.getContext().getEmail()));
     }
 }

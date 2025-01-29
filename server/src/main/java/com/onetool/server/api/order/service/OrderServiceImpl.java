@@ -37,8 +37,8 @@ public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
 
     @Transactional
-    public Orders makeOrder(MemberAuthContext user, OrderRequest request) {
-        Member member = findMember(user.getEmail());
+    public Orders makeOrder(String userEmail, OrderRequest request) {
+        Member member = findMember(userEmail);
         return createOrders(request, member);
     }
 
@@ -85,8 +85,8 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Transactional
-    public List<OrderResponse.MyPageOrderResponseDto> getMyPageOrder(MemberAuthContext user) {
-        Member member = findMember(user.getEmail());
+    public List<OrderResponse.MyPageOrderResponseDto> getMyPageOrder(String userEmail) {
+        Member member = findMember(userEmail);
         List<Orders> ordersList = findOrdersByMemberId(member.getId());
         return OrderResponse.MyPageOrderResponseDto.from(ordersList);
     }
