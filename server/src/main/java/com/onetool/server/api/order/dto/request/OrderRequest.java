@@ -1,8 +1,11 @@
 package com.onetool.server.api.order.dto.request;
 
-import java.util.List;
+import lombok.Builder;
 
+import java.util.List;
+import java.util.Set;
+
+@Builder
 public record OrderRequest(
-        Long totalPrice,
-        List<OrderItem> orderList
+        Set<Long> blueprintIds
 ) {}

@@ -1,11 +1,9 @@
 package com.onetool.server.api.payments.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.onetool.server.api.payments.domain.TossPayment;
 import com.onetool.server.api.payments.domain.TossPaymentMethod;
 import com.onetool.server.api.payments.domain.TossPaymentStatus;
-import com.onetool.server.api.payments.repository.PaymentRepository;
+import com.onetool.server.api.payments.repository.TossPaymentRepository;
 import org.json.simple.JSONObject;
 import org.springframework.stereotype.Service;
 
@@ -13,12 +11,12 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 @Service
-public class PaymentService {
+public class TossPaymentService {
 
-    private final PaymentRepository paymentRepository;
+    private final TossPaymentRepository tossPaymentRepository;
 
-    public PaymentService(PaymentRepository paymentRepository) {
-        this.paymentRepository = paymentRepository;
+    public TossPaymentService(TossPaymentRepository tossPaymentRepository) {
+        this.tossPaymentRepository = tossPaymentRepository;
     }
 
     public void savePayment(JSONObject response) {
@@ -42,6 +40,6 @@ public class PaymentService {
                 .totalAmount(totalAmount)
                 .build();
 
-        paymentRepository.save(tossPayment);
+        tossPaymentRepository.save(tossPayment);
     }
 }
