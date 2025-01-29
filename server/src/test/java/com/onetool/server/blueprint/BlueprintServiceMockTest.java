@@ -134,7 +134,8 @@ public class BlueprintServiceMockTest {
                 LocalDateTime.now().plusDays(10),
                 "윤성원 작가",
                 "https://onetool.com/download",
-                false
+                false,
+                "detailImage URL"
         );
 
         // When
@@ -189,7 +190,8 @@ public class BlueprintServiceMockTest {
                 LocalDateTime.now().plusDays(10),
                 "윤성원 작가",
                 "https://onetool.com/download",
-                false
+                false,
+                "detailImage URL"
         );
 
         String accessToken = obtainAccessToken("admin@example.com", "1234");
