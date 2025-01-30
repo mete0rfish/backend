@@ -6,6 +6,7 @@ import java.util.Set;
 
 @Builder
 public record DepositRequest(
+        Long orderId,
         String accountName,
         String accountNumber,
         String bankName,

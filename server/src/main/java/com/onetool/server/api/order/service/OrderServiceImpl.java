@@ -10,6 +10,7 @@ import com.onetool.server.api.order.dto.response.OrderResponse;
 import com.onetool.server.api.order.repository.OrderRepository;
 import com.onetool.server.api.payments.dto.DepositResponse;
 import com.onetool.server.api.payments.repository.DepositRepository;
+import com.onetool.server.api.payments.service.DepositService;
 import com.onetool.server.global.auth.MemberAuthContext;
 import com.onetool.server.global.exception.BaseException;
 import com.onetool.server.api.member.domain.Member;
@@ -35,11 +36,13 @@ public class OrderServiceImpl implements OrderService {
     private final MemberRepository memberRepository;
     private final BlueprintRepository blueprintRepository;
     private final OrderRepository orderRepository;
+    private final DepositService depositService;
 
     @Transactional
-    public Orders makeOrder(String userEmail, OrderRequest request) {
+    public Long makeOrder(String userEmail, OrderRequest request) {
         Member member = findMember(userEmail);
-        return createOrders(request, member);
+        Orders orders = createOrders(request, member);
+        return orders.getId();
     }
 
     private Orders createOrders(OrderRequest request, Member member) {

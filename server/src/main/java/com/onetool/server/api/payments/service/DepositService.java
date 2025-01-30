@@ -8,6 +8,7 @@ import com.onetool.server.api.payments.dto.DepositRequest;
 import com.onetool.server.api.payments.dto.DepositResponse;
 import com.onetool.server.api.payments.repository.DepositRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,6 +18,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class DepositService {
@@ -27,6 +29,7 @@ public class DepositService {
     public List<DepositResponse> getDeposits(Long userId) {
         List<Orders> ordersList = orderRepository.findByUserId(userId);
         List<Payment> paymentList = getPaymentsByOredes(ordersList);
+        log.info("paymentList size: {}", paymentList.size());
         return createDepositResponseWithPayment(paymentList);
     }
 
@@ -44,6 +47,7 @@ public class DepositService {
         paymentList.forEach(payment -> {
             responses.add(
                     DepositResponse.builder()
+                            .id(payment.getId())
                             .accountName(payment.getAccountName())
                             .accountNumber(payment.getAccountNumber())
                             .blueprintIds(getOrdersBlueprintIds(payment.getOrders()))
@@ -82,6 +86,11 @@ public class DepositService {
                 .accountName(request.accountName())
                 .bankName(request.bankName())
                 .totalPrice(request.totalPrice())
+                .orders(findOrders(request.orderId()))
                 .build();
+    }
+
+    private Orders findOrders(Long orderId) {
+        return orderRepository.findById(orderId).orElseThrow();
     }
 }
