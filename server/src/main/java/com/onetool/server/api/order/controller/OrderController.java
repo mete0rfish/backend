@@ -22,10 +22,10 @@ public class OrderController {
     private final OrderServiceImpl orderService;
 
     @PostMapping
-    public ApiResponse<String> createOrders(@AuthenticationPrincipal PrincipalDetails principal,
+    public ApiResponse<Long> createOrders(@AuthenticationPrincipal PrincipalDetails principal,
                                                           @RequestBody OrderRequest request){
-        orderService.makeOrder(principal.getContext().getEmail(), request);
-        return ApiResponse.onSuccess("주문 생성이 완료되었습니다.");
+        Long orderId = orderService.makeOrder(principal.getContext().getEmail(), request);
+        return ApiResponse.onSuccess(orderId);
     }
 
     @GetMapping
