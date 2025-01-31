@@ -10,8 +10,7 @@ public record DepositResponse(
         String accountName,
         String accountNumber,
         String bankName,
-        Long totalPrice,
-        Set<Long> blueprintIds
+        Long totalPrice
 ) {
 
 }

@@ -7,16 +7,15 @@ import com.onetool.server.api.payments.domain.PaymentBlueprint;
 import com.onetool.server.api.payments.dto.DepositRequest;
 import com.onetool.server.api.payments.dto.DepositResponse;
 import com.onetool.server.api.payments.repository.DepositRepository;
+import com.onetool.server.global.exception.BaseException;
+import com.onetool.server.global.exception.codes.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -50,7 +49,6 @@ public class DepositService {
                             .id(payment.getId())
                             .accountName(payment.getAccountName())
                             .accountNumber(payment.getAccountNumber())
-                            .blueprintIds(getOrdersBlueprintIds(payment.getOrders()))
                             .bankName(payment.getBankName())
                             .totalPrice(payment.getTotalPrice())
                             .build());
@@ -58,26 +56,10 @@ public class DepositService {
         return responses;
     }
 
-    private Set<Long> getOrdersBlueprintIds(Orders orders) {
-        Set<Long> blueprintIds = new HashSet<>();
-        orders.getOrderItems().forEach((orderItem) -> {
-            blueprintIds.add(orderItem.getBlueprint().getId());
-        });
-        return blueprintIds;
-    }
-
     @Transactional
     public void createDeposit(DepositRequest request) {
         Payment payment = buildPayment(request);
         depositRepository.save(payment);
-    }
-
-    private Set<PaymentBlueprint> mapToPaymentBlueprints(Set<Long> blueprintIds) {
-        return blueprintIds.stream()
-                .map(blueprintId -> PaymentBlueprint.builder()
-                        .blueprint_id(blueprintId)
-                        .build())
-                .collect(Collectors.toSet());
     }
 
     private Payment buildPayment(DepositRequest request) {
@@ -91,6 +73,6 @@ public class DepositService {
     }
 
     private Orders findOrders(Long orderId) {
-        return orderRepository.findById(orderId).orElseThrow();
+        return orderRepository.findById(orderId).orElseThrow(() -> new BaseException(ErrorCode.ORDER_NOT_FOUND));
     }
 }
