@@ -89,9 +89,9 @@ public enum ErrorCode implements BaseCode {
     NO_QNA_CONTENT(HttpStatus.NO_CONTENT, "QNA-0000", "게시된 문의사항이 없습니다."),
     UNAVAILABLE_TO_MODIFY(HttpStatus.FORBIDDEN, "QNA-0001", "게시글에 대한 권한이 없습니다."),
     NO_QNA_REPLY(HttpStatus.NO_CONTENT, "QNA-0002", "유효한 댓글이 아닙니다."),
-    /*
-    *
-    * */
+
+    //결제 및 주문 에러
+    ORDER_NOT_FOUND(HttpStatus.NOT_FOUND, "ORDER-001", "주문이 존재하지 않습니다."),
 
     // 5xx : server error
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "SERVER-0000", "서버 에러");

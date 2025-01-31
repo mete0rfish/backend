@@ -7,6 +7,8 @@ import com.onetool.server.api.payments.domain.PaymentBlueprint;
 import com.onetool.server.api.payments.dto.DepositRequest;
 import com.onetool.server.api.payments.dto.DepositResponse;
 import com.onetool.server.api.payments.repository.DepositRepository;
+import com.onetool.server.global.exception.BaseException;
+import com.onetool.server.global.exception.codes.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -91,6 +93,6 @@ public class DepositService {
     }
 
     private Orders findOrders(Long orderId) {
-        return orderRepository.findById(orderId).orElseThrow();
+        return orderRepository.findById(orderId).orElseThrow(() -> new BaseException(ErrorCode.ORDER_NOT_FOUND));
     }
 }
