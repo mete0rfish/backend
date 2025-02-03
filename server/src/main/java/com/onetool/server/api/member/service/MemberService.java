@@ -21,7 +21,6 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -171,7 +170,6 @@ public class MemberService {
     @Transactional
     public void deleteMember(Long id) {
         Member member = memberRepository.findById(id).orElseThrow();
-
         memberRepository.delete(member);
     }
 
