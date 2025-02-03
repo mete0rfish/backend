@@ -16,7 +16,6 @@ public class OrderBlueprint extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    //도면관련 매핑은 좀 이따가
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "blueprint_id")
     private Blueprint blueprint;
@@ -25,5 +24,5 @@ public class OrderBlueprint extends BaseEntity {
     @JoinColumn(name = "orders_id")
     private Orders order;
 
-
+    private String downloadUrl;
 }

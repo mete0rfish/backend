@@ -35,4 +35,12 @@ public class Orders extends BaseEntity {
 
     @OneToOne(mappedBy = "orders")
     private Payment payment;
+
+    public List<String> getOrderItemsDownloadLinks() {
+        List<String> orderItemsDownloadLinks = new ArrayList<>();
+        this.orderItems.forEach(orderBlueprint ->
+                orderItemsDownloadLinks.add(
+                        orderBlueprint.getDownloadUrl()));
+        return orderItemsDownloadLinks;
+    }
 }
