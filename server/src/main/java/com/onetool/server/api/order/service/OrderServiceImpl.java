@@ -72,6 +72,7 @@ public class OrderServiceImpl implements OrderService {
                     OrderBlueprint.builder()
                             .blueprint(blueprint)
                             .order(orders)
+                            .downloadUrl(blueprint.getDownloadLink())
                             .build()
             )
         );

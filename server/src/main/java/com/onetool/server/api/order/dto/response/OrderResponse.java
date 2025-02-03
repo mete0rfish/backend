@@ -20,7 +20,8 @@ public class OrderResponse {
             String orderName,
             Long orderId,
             Long totalPrice,
-            String status
+            String status,
+            List<String> downloadUrl
     ){
         public static List<MyPageOrderResponseDto> from(List<Orders> ordersList){
             List<MyPageOrderResponseDto> dtos = new ArrayList<>();
@@ -34,6 +35,8 @@ public class OrderResponse {
                                 .orderId(orders.getId())
                                 .orderName(createOrderName(orders))
                                 .totalPrice(orders.getTotalPrice())
+                                .downloadUrl(orders.getOrderItemsDownloadLinks())
+                                .status(orders.getStatus().name())
                                 .build()
                 );
             });
