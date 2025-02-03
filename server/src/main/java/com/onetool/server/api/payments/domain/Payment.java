@@ -23,9 +23,6 @@ public class Payment extends BaseEntity {
     private String bankName;
     private Long totalPrice;
 
-    @Enumerated(EnumType.STRING)
-    private PaymentStatus status;
-
 //    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
 //    @JoinColumn(name = "payment_blueprint_id")
 //    private Set<PaymentBlueprint> numbers;

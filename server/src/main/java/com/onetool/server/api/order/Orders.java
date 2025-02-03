@@ -2,11 +2,14 @@ package com.onetool.server.api.order;
 
 import com.onetool.server.api.blueprint.Blueprint;
 import com.onetool.server.api.payments.domain.Payment;
+import com.onetool.server.api.payments.domain.PaymentStatus;
 import com.onetool.server.global.entity.BaseEntity;
 import com.onetool.server.api.member.domain.Member;
 import com.onetool.server.api.payments.TossPayments;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +19,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@DynamicInsert
 public class Orders extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,6 +28,10 @@ public class Orders extends BaseEntity {
     private Long totalPrice;
 
     private int totalCount;
+
+    @Enumerated(EnumType.STRING)
+    @ColumnDefault("'PAY_PENDING'")
+    private PaymentStatus status;
 
     @Setter
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
@@ -38,9 +46,13 @@ public class Orders extends BaseEntity {
 
     public List<String> getOrderItemsDownloadLinks() {
         List<String> orderItemsDownloadLinks = new ArrayList<>();
-        this.orderItems.forEach(orderBlueprint ->
-                orderItemsDownloadLinks.add(
-                        orderBlueprint.getDownloadUrl()));
+        if(this.getStatus() == PaymentStatus.PAY_DONE) {
+            this.orderItems.forEach(orderBlueprint ->
+                    orderItemsDownloadLinks.add(
+                            orderBlueprint.getDownloadUrl())
+
+            );
+        }
         return orderItemsDownloadLinks;
     }
 }

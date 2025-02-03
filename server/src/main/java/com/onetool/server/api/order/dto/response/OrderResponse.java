@@ -36,6 +36,7 @@ public class OrderResponse {
                                 .orderName(createOrderName(orders))
                                 .totalPrice(orders.getTotalPrice())
                                 .downloadUrl(orders.getOrderItemsDownloadLinks())
+                                .status(orders.getStatus().name())
                                 .build()
                 );
             });
