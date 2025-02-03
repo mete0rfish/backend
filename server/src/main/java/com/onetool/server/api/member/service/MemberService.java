@@ -78,6 +78,7 @@ public class MemberService {
         log.info(member.toString());
 
         if (!encoder.matches(password, member.getPassword())) {
+            log.error("비밀번호 불일치: "+ encoder.encode(member.getPassword()));
             throw new BadCredentialsException("비밀번호가 일치하지 않습니다.");
         }
 
@@ -137,7 +138,6 @@ public class MemberService {
     public boolean verifiedCode(String email, String authCode) {
         //this.checkDuplicatedEmail(email);
         String redisAuthCode = mailRedisService.getValues(AUTH_CODE_PREFIX + email);
-
         return mailRedisService.checkExistsValue(redisAuthCode) && redisAuthCode.equals(authCode);
     }
 
@@ -159,12 +159,10 @@ public class MemberService {
     }
 
     @Transactional
-    public Member updateMember(Long id, MemberUpdateRequest request) {
+    public void updateMember(Long id, MemberUpdateRequest request) {
         Member member = memberRepository.findById(id).orElseThrow();
-
-        member.updateWith(request);
-
-        return memberRepository.save(member);
+        member.updateWith(request, encoder);
+        memberRepository.save(member);
     }
 
     @Transactional

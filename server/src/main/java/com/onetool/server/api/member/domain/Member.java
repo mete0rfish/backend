@@ -14,17 +14,22 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.SQLDelete;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
+@Slf4j
 @SQLDelete(sql = "UPDATE member SET is_deleted = true WHERE id = ?")
 public class Member extends BaseEntity {
 
@@ -34,17 +39,22 @@ public class Member extends BaseEntity {
 
     private String password;
 
-    @NotNull @Size(min = 1, max = 100, message = "이메일은 1 ~ 100자 이여야 합니다.") @Email
+    @NotNull
+    @Size(min = 1, max = 100, message = "이메일은 1 ~ 100자 이여야 합니다.")
+    @Email
     @Column(unique = true)
     private String email;
 
-    @NotNull(message = "이름은 null 일 수 없습니다.") @Size(min = 1, max = 10, message = "이름은 1 ~ 10자 이여야 합니다.")
+    @NotNull(message = "이름은 null 일 수 없습니다.")
+    @Size(min = 1, max = 10, message = "이름은 1 ~ 10자 이여야 합니다.")
     private String name;
 
-    @Column(name = "birth_date") @Past
+    @Column(name = "birth_date")
+    @Past
     private LocalDate birthDate;
 
-    @Column(name = "phone_num") @Size(min = 10, max = 11)
+    @Column(name = "phone_num")
+    @Size(min = 10, max = 11)
     private String phoneNum;
 
     @Column(name = "user_role")
@@ -108,17 +118,15 @@ public class Member extends BaseEntity {
         this.isDeleted = isDeleted;
     }
 
-    public Member updateWith(MemberUpdateRequest request) {
-        if (request.getName() != null) {
-            this.name = request.getName();
-        }
-        if (request.getPhoneNum() != null) {
-            this.phoneNum = request.getPhoneNum();
-        }
-        if (request.getDevelopmentField() != null) {
-            this.field = request.getDevelopmentField();
-        }
-        return this;
+    @Transactional
+    public void updateWith(MemberUpdateRequest request, PasswordEncoder encoder) {
+        Optional.ofNullable(request.getName()).ifPresent(this::setName);
+        Optional.ofNullable(request.getPhoneNum()).ifPresent(this::setPhoneNum);
+        Optional.ofNullable(request.getDevelopmentField()).ifPresent(this::setField);
+        Optional.ofNullable(request.getNewPassword()).ifPresent(newPassword -> {
+            log.info("new password: {}", newPassword);
+            this.setPassword(encoder.encode(newPassword));
+        });
     }
 
     public boolean getIsDeleted() {
