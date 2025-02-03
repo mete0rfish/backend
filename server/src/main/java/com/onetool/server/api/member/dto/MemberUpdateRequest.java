@@ -11,7 +11,6 @@ public class MemberUpdateRequest {
     private String name;
     private String phoneNum;
     private String developmentField;
-    private String currentPassword;
     private String newPassword;
 
     @Builder
@@ -20,7 +19,6 @@ public class MemberUpdateRequest {
         this.name = name;
         this.phoneNum = phoneNum;
         this.developmentField = developmentField;
-        this.currentPassword = currentPassword;
         this.newPassword = newPassword;
     }
 }
