@@ -3,6 +3,7 @@ package com.onetool.server.global.handler;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.onetool.server.global.exception.*;
+import com.onetool.server.global.exception.base.BaseException;
 import com.onetool.server.global.exception.codes.ErrorCode;
 import com.onetool.server.global.exception.codes.reason.Reason;
 import lombok.extern.slf4j.Slf4j;
@@ -20,7 +21,6 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
 import java.io.IOException;
-import java.sql.SQLException;
 
 @Slf4j
 @RestControllerAdvice(annotations = {RestController.class})

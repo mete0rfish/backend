@@ -8,7 +8,7 @@ import com.onetool.server.api.cart.dto.CartResponse;
 import com.onetool.server.api.cart.repository.CartBlueprintRepository;
 import com.onetool.server.api.cart.repository.CartRepository;
 import com.onetool.server.global.auth.MemberAuthContext;
-import com.onetool.server.global.exception.BaseException;
+import com.onetool.server.global.exception.base.BaseException;
 import com.onetool.server.api.member.domain.Member;
 import com.onetool.server.api.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;

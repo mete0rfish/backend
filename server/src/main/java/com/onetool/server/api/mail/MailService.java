@@ -1,6 +1,6 @@
 package com.onetool.server.api.mail;
 
-import com.onetool.server.global.exception.BaseException;
+import com.onetool.server.global.exception.base.BaseException;
 import com.onetool.server.global.exception.BusinessLogicException;
 import com.onetool.server.global.exception.codes.ErrorCode;
 import jakarta.mail.MessagingException;
@@ -8,10 +8,8 @@ import jakarta.mail.internet.MimeMessage;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
-import org.springframework.mail.javamail.MimeMailMessage;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring6.SpringTemplateEngine;

@@ -7,6 +7,7 @@ import com.onetool.server.api.qna.repository.QnaBoardRepository;
 import com.onetool.server.global.auth.MemberAuthContext;
 import com.onetool.server.global.auth.jwt.JwtUtil;
 import com.onetool.server.global.exception.*;
+import com.onetool.server.global.exception.base.BaseException;
 import com.onetool.server.global.exception.codes.ErrorCode;
 import com.onetool.server.global.redis.service.MailRedisService;
 import com.onetool.server.api.mail.MailService;
