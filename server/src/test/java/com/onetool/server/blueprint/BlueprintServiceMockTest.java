@@ -259,7 +259,7 @@ public class BlueprintServiceMockTest {
 
         // 카테고리별 정렬 메서드 mock
         Mockito.when(blueprintSearchService.sortBlueprints(request, pageable))
-                .thenThrow(new CategoryNotFoundException(ErrorCode.CATEGORY_NOT_FOUND));
+                .thenThrow(new CategoryNotFoundException(request.categoryName()));
 
         // when & then
         mockMvc.perform(get("/blueprint/{categoryName}/sort", invalidCategoryName)

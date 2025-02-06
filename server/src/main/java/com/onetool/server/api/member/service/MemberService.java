@@ -7,6 +7,7 @@ import com.onetool.server.api.qna.repository.QnaBoardRepository;
 import com.onetool.server.global.auth.MemberAuthContext;
 import com.onetool.server.global.auth.jwt.JwtUtil;
 import com.onetool.server.global.exception.*;
+import com.onetool.server.global.exception.base.BaseException;
 import com.onetool.server.global.exception.codes.ErrorCode;
 import com.onetool.server.global.redis.service.MailRedisService;
 import com.onetool.server.api.mail.MailService;
@@ -21,6 +22,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.integration.IntegrationProperties;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -73,12 +75,12 @@ public class MemberService {
         String email = request.getEmail();
         String password = request.getPassword();
 
-        Member member = memberRepository.findByEmail(email).orElseThrow();
+        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new MemberNotFoundException(email));
         log.info("============== 로그인 유저 정보 ===============");
         log.info(member.toString());
 
         if (!encoder.matches(password, member.getPassword())) {
-            log.error("비밀번호 불일치: "+ encoder.encode(member.getPassword()));
+            log.error("비밀번호 불일치: " + encoder.encode(member.getPassword()));
             throw new BadCredentialsException("비밀번호가 일치하지 않습니다.");
         }
 
@@ -97,7 +99,7 @@ public class MemberService {
         String name = request.name();
         String phoneNum = request.phone_num();
 
-        Member member = memberRepository.findByNameAndPhoneNum(name, phoneNum).orElseThrow();
+        Member member = memberRepository.findByNameAndPhoneNum(name, phoneNum).orElseThrow(() -> new MemberNotFoundException(name));
 
         return member.getEmail();
     }
@@ -116,7 +118,7 @@ public class MemberService {
         Optional<Member> member = memberRepository.findByEmail(email);
         if (member.isPresent()) {
             log.debug("MemberServiceImpl.checkDuplicatedEmail exception occur email: {}", email);
-            throw new DuplicateMemberException();
+            throw new DuplicateMemberException(email);
         }
     }
 
@@ -131,7 +133,7 @@ public class MemberService {
             return builder.toString();
         } catch (NoSuchAlgorithmException e) {
             log.debug("MemberService.createCode() exception occur");
-            throw new BusinessLogicException();
+            throw new BusinessLogicException("잘못된 생성알고리즘", ErrorCode.AUTH_CODE_ERROR);
         }
     }
 
@@ -143,7 +145,7 @@ public class MemberService {
 
     public boolean findLostPwd(MemberFindPwdRequest request) {
         String email = request.getEmail();
-        Member member = memberRepository.findByEmail(email).orElseThrow();
+        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new MemberNotFoundException(email));
 
         String newPwd = createRandomPassword();
         member.setPassword(encoder.encode(newPwd));
@@ -160,14 +162,14 @@ public class MemberService {
 
     @Transactional
     public void updateMember(Long id, MemberUpdateRequest request) {
-        Member member = memberRepository.findById(id).orElseThrow();
+        Member member = memberRepository.findById(id).orElseThrow(() -> new MemberNotFoundException(id.toString()));
         member.updateWith(request, encoder);
         memberRepository.save(member);
     }
 
     @Transactional
     public void deleteMember(Long id) {
-        Member member = memberRepository.findById(id).orElseThrow();
+        Member member = memberRepository.findById(id).orElseThrow(() -> new MemberNotFoundException(id.toString()));
         memberRepository.delete(member);
     }
 
@@ -182,30 +184,30 @@ public class MemberService {
             return builder.toString();
         } catch (NoSuchAlgorithmException e) {
             log.debug("MemberService.createRandomPassword() exception occur");
-            throw new BusinessLogicException();
+            throw new BusinessLogicException("생성 알고리즘 문제", ErrorCode.RANDOM_PASSWORD_ERROR);
         }
     }
 
     public MemberInfoResponse getMemberInfo(Long userId) {
-        Member member = memberRepository.findByIdAndIsDeleted(userId,false).orElseThrow();
+        Member member = memberRepository.findByIdAndIsDeleted(userId, false).orElseThrow(() -> new MemberNotFoundException(userId.toString()));
 
         return MemberInfoResponse.from(member);
     }
 
-    public List<QnaBoardResponse.QnaBoardBriefResponse> findQnaWrittenById(MemberAuthContext context){
-        if(!findMemberWithQna(context.getId())) {
+    public List<QnaBoardResponse.QnaBoardBriefResponse> findQnaWrittenById(MemberAuthContext context) {
+        if (!findMemberWithQna(context.getId())) {
             throw new BaseException(ErrorCode.NON_EXIST_USER);
         }
         List<QnaBoard> qnaBoards = qnaBoardRepository.findByMemberId(context.getId());
         return QnaBoardResponse.QnaBoardBriefResponse.from(qnaBoards);
     }
 
-    private boolean findMemberWithQna(Long id){
+    private boolean findMemberWithQna(Long id) {
         return memberRepository.existsById(id);
     }
 
     public List<BlueprintDownloadResponse> getPurchasedBlueprints(final Long userId) {
-        final Member member = memberRepository.findById(userId).orElseThrow();
+        final Member member = memberRepository.findById(userId).orElseThrow(() -> new MemberNotFoundException(userId.toString()));
 
         return member.getOrders().stream()
                 .flatMap(order -> order.getOrderItems().stream())
@@ -227,7 +229,7 @@ public class MemberService {
     public ApiResponse<String> logout(String accessToken, String email) {
         Long expiration = jwtUtil.getExpirationMilliSec(accessToken);
         tokenBlackListRedisService.setBlackList(accessToken, expiration);
-        if(tokenRedisService.hasKey(email)) {
+        if (tokenRedisService.hasKey(email)) {
             tokenRedisService.deleteValues(email);
         } else {
             throw new IllegalLogoutMember(ErrorCode.ILLEGAL_LOGOUT_USER);

@@ -25,7 +25,7 @@ public class BlueprintService {
 
     public void updateBlueprint(BlueprintResponse blueprintResponse) {
         Blueprint existingBlueprint = blueprintRepository.findById(blueprintResponse.id())
-                .orElseThrow(BlueprintNotFoundException::new);
+                .orElseThrow(() -> new BlueprintNotFoundException(blueprintResponse.id().toString()));
 
         Blueprint updatedBlueprint = updateExistingBlueprint(existingBlueprint, blueprintResponse);
         blueprintRepository.save(updatedBlueprint);
@@ -33,7 +33,7 @@ public class BlueprintService {
 
     public void deleteBlueprint(Long id) {
         blueprintRepository.findById(id)
-                .orElseThrow(BlueprintNotFoundException::new);
+                .orElseThrow(() -> new BlueprintNotFoundException(id.toString()));
 
         blueprintRepository.deleteById(id);
     }

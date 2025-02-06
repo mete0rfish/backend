@@ -43,7 +43,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     public void saveUserInSecurityContext(String memberId, String token) {
         if (memberId == null) {
-            throw new InvalidTokenException();
+            throw new InvalidTokenException(token);
         }
 
         PrincipalDetails principalDetails = loadUserByUsername(memberId);

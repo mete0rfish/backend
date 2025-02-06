@@ -65,7 +65,7 @@ public class MemberController {
             @AuthenticationPrincipal PrincipalDetails principalDetails) {
 
         if (principalDetails == null) {
-            throw new MemberNotFoundException(ErrorCode.NON_EXIST_USER);
+            throw new MemberNotFoundException(null);
         }
 
         Long id = principalDetails.getContext().getId();
@@ -80,7 +80,7 @@ public class MemberController {
     ) {
 
         if (principalDetails == null) {
-            throw new MemberNotFoundException(ErrorCode.NON_EXIST_USER);
+            throw new MemberNotFoundException(null);
         }
 
         Long id = principalDetails.getContext().getId();
@@ -94,7 +94,7 @@ public class MemberController {
             @AuthenticationPrincipal PrincipalDetails principalDetails) {
 
         if (principalDetails == null) {
-            throw new MemberNotFoundException(ErrorCode.NON_EXIST_USER);
+            throw new MemberNotFoundException(null);
         }
 
         Long id = principalDetails.getContext().getId();

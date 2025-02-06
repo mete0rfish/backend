@@ -27,13 +27,13 @@ public enum FirstCategoryType {
         return Arrays.stream(values())
                 .filter(category -> category.getCategoryId().equals(categoryId))
                 .findFirst()
-                .orElseThrow(() -> new CategoryNotFoundException(ErrorCode.CATEGORY_NOT_FOUND));
+                .orElseThrow(() -> new CategoryNotFoundException(categoryId.toString()));
     }
 
     public static FirstCategoryType findByType(String type) {
         return Arrays.stream(values())
                 .filter(category -> category.getType().equalsIgnoreCase(type))
                 .findFirst()
-                .orElseThrow(() -> new CategoryNotFoundException(ErrorCode.CATEGORY_NOT_FOUND));
+                .orElseThrow(() -> new CategoryNotFoundException(type));
     }
 }

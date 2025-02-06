@@ -1,10 +1,10 @@
 package com.onetool.server.global.exception;
 
+import com.onetool.server.global.exception.base.BaseException;
 import com.onetool.server.global.exception.codes.ErrorCode;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.web.servlet.error.ErrorController;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;

@@ -30,10 +30,10 @@ public class BlueprintSearchService {
 
     public BlueprintResponse findApprovedBlueprintById(Long id) {
         Blueprint blueprint = blueprintRepository.findById(id)
-                .orElseThrow(BlueprintNotFoundException::new);
+                .orElseThrow(() -> new BlueprintNotFoundException(id.toString()));
 
         if (blueprint.getInspectionStatus() != InspectionStatus.PASSED) {
-            throw new BlueprintNotApprovedException();
+            throw new BlueprintNotApprovedException(id.toString());
         }
 
         return BlueprintResponse.from(blueprint);

@@ -3,7 +3,7 @@ package com.onetool.server.api.qna.service;
 import com.onetool.server.api.qna.QnaBoard;
 import com.onetool.server.api.qna.dto.request.QnaBoardRequest;
 import com.onetool.server.api.qna.dto.response.QnaBoardResponse;
-import com.onetool.server.global.exception.BaseException;
+import com.onetool.server.global.exception.base.BaseException;
 import com.onetool.server.api.member.domain.Member;
 import com.onetool.server.api.member.repository.MemberRepository;
 import com.onetool.server.api.qna.repository.QnaBoardRepository;
