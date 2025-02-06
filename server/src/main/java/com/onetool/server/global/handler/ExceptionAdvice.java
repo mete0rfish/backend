@@ -67,7 +67,7 @@ public class ExceptionAdvice {
 
     /**
      * 서버 에러
-     * @param e
+     * @param e Exception
      * @return ResponseEntity<ErrorResponse>
      */
     @ExceptionHandler
@@ -80,7 +80,7 @@ public class ExceptionAdvice {
 
     /**
      * 클라이언트 에러
-     * @param generalException
+     * @param generalException BaseException
      * @return ResponseEntity<ErrorResponse>
      */
     @ExceptionHandler(BaseException.class)
