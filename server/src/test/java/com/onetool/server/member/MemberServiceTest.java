@@ -3,6 +3,7 @@ package com.onetool.server.member;
 import com.onetool.server.api.member.domain.Member;
 import com.onetool.server.api.member.repository.MemberRepository;
 import com.onetool.server.api.member.service.MemberService;
+import com.onetool.server.global.exception.MemberNotFoundException;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.path.json.JsonPath;
@@ -186,7 +187,7 @@ public class MemberServiceTest {
         memberService.deleteMember(memberId);
 
         // then: 해당 회원의 isDeleted 값이 true로 변경되었는지 확인
-        Member deletedMember = memberRepository.findById(memberId).orElseThrow();
+        Member deletedMember = memberRepository.findById(memberId).orElseThrow(() -> new MemberNotFoundException(memberId.toString()));
         assertThat(deletedMember.getIsDeleted()).isTrue();
     }
 

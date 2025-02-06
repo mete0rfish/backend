@@ -26,7 +26,7 @@ public class AuthService {
     public void validate(String requestAccessTokenInHeader) {
         String requestAccessToken = requestAccessTokenInHeader.substring(7);
         if(!jwtUtil.validateToken(requestAccessToken)) {
-            throw new InvalidTokenException();
+            throw new InvalidTokenException(requestAccessToken);
         }
     }
 

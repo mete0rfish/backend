@@ -36,7 +36,7 @@ public class MailService {
         } catch (RuntimeException e) {
             log.error("MailService.sendEmail exception occur toEmail: {}, " +
                     "title: {}, text: {}", toEmail, title, text);
-            throw new BusinessLogicException();
+            throw new BusinessLogicException(toEmail, ErrorCode.EMAIL_ERROR);
         }
     }
 

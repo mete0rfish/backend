@@ -8,6 +8,7 @@ import com.onetool.server.api.order.dto.request.OrderRequest;
 import com.onetool.server.api.order.dto.response.OrderResponse;
 import com.onetool.server.api.order.repository.OrderRepository;
 import com.onetool.server.api.payments.service.DepositService;
+import com.onetool.server.global.exception.BlueprintNotFoundException;
 import com.onetool.server.global.exception.base.BaseException;
 import com.onetool.server.api.member.domain.Member;
 import com.onetool.server.api.member.repository.MemberRepository;
@@ -54,8 +55,8 @@ public class OrderServiceImpl implements OrderService {
         List<Blueprint> blueprints = new ArrayList<>();
         blueprintIds.forEach(blueprintId ->
                 blueprints.add(
-                        blueprintRepository.findById(blueprintId).orElseThrow())
-        );
+                        blueprintRepository.findById(blueprintId).orElseThrow(() -> new BlueprintNotFoundException(blueprintId.toString()))
+        ));
         return blueprints;
     }
 

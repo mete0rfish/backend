@@ -25,7 +25,7 @@ public class BlueprintController {
     public ApiResponse<String> createBlueprint(@RequestBody BlueprintRequest blueprintRequest,
                                                @AuthenticationPrincipal PrincipalDetails principalDetails) {
         if(principalDetails == null) {
-            throw new MemberNotFoundException(ErrorCode.NON_EXIST_USER);
+            throw new MemberNotFoundException(null);
         }
 
         blueprintService.createBlueprint(blueprintRequest);
@@ -36,7 +36,7 @@ public class BlueprintController {
     public ApiResponse<String> updateBlueprint(@RequestBody BlueprintResponse blueprintResponse,
                                                @AuthenticationPrincipal PrincipalDetails principalDetails) {
         if(principalDetails == null) {
-            throw new MemberNotFoundException(ErrorCode.NON_EXIST_USER);
+            throw new MemberNotFoundException(null);
         }
 
         blueprintService.updateBlueprint(blueprintResponse);
@@ -47,7 +47,7 @@ public class BlueprintController {
     public ApiResponse<String> deleteBlueprint(@PathVariable("id") Long id,
                                                @AuthenticationPrincipal PrincipalDetails principalDetails){
         if(principalDetails == null) {
-            throw new MemberNotFoundException(ErrorCode.NON_EXIST_USER);
+            throw new MemberNotFoundException(null);
         }
 
         blueprintService.deleteBlueprint(id);

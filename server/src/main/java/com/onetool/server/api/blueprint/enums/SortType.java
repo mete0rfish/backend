@@ -14,16 +14,14 @@ public enum SortType {
                 if (sortType == SortType.PRICE) {
                         return getPriceSort(direction);
                 }
-
                 if (sortType == SortType.CREATED_AT) {
                         return Sort.by(Sort.Order.by("createdAt").with(direction).nullsLast());
                 }
-
                 if (sortType == SortType.EXTENSION) {
                         return Sort.by(Sort.Order.by("extension").with(direction).nullsLast());
                 }
 
-                throw new InvalidSortTypeException();
+                throw new InvalidSortTypeException(sortType.name());
         }
 
         private static Sort.Direction getDirection(String sortOrder) {

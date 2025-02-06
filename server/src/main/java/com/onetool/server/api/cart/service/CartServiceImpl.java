@@ -8,9 +8,11 @@ import com.onetool.server.api.cart.dto.CartResponse;
 import com.onetool.server.api.cart.repository.CartBlueprintRepository;
 import com.onetool.server.api.cart.repository.CartRepository;
 import com.onetool.server.global.auth.MemberAuthContext;
+import com.onetool.server.global.exception.CartNotFoundException;
 import com.onetool.server.global.exception.base.BaseException;
 import com.onetool.server.api.member.domain.Member;
 import com.onetool.server.api.member.repository.MemberRepository;
+import com.onetool.server.global.exception.codes.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -32,7 +34,8 @@ public class CartServiceImpl implements CartService{
 
     @Transactional(readOnly = true)
     public Object showCart(MemberAuthContext user){
-        Long cartId = cartRepository.findCartIdWithMemberByMemberId(user.getId()).orElseThrow().getId();
+        Long userId = user.getId();
+        Long cartId = cartRepository.findCartIdWithMemberByMemberId(userId).orElseThrow(() -> new CartNotFoundException(userId.toString())).getId();
         Long totalPrice = cartRepository.findTotalPriceByCartId(cartId);
         List<CartBlueprint> cartBlueprints = cartRepository.findCartBlueprintsByCartId(cartId);
 
