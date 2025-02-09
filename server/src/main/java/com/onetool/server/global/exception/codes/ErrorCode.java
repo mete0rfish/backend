@@ -34,6 +34,8 @@ public enum ErrorCode implements BaseCode {
     // 유효하지 않은 타입
     INVALID_TYPE_VALUE(HttpStatus.BAD_REQUEST, "G003", " Invalid Type Value"),
 
+    DUPLICATE(HttpStatus.BAD_REQUEST, "G004", "Duplicate Key"),
+
     // Request Parameter 로 데이터가 전달되지 않을 경우
     MISSING_REQUEST_PARAMETER_ERROR(HttpStatus.BAD_REQUEST, "G004", "Missing Servlet RequestParameter Exception"),
 
@@ -65,6 +67,7 @@ public enum ErrorCode implements BaseCode {
 
     //사용자 에러
     NON_EXIST_USER(HttpStatus.NOT_FOUND, "MEMBER-0001", "존재하지 않는 회원입니다"),
+    ILLEGAL_LOGOUT_USER(HttpStatus.BAD_REQUEST, "MEMBER-0002", "이미 로그아웃된 회원입니다."),
 
     //바인딩 에러
     BINDING_ERROR(HttpStatus.BAD_REQUEST, "BINDING-0000", "바인딩에 실패했습니다."),
@@ -73,24 +76,39 @@ public enum ErrorCode implements BaseCode {
     EMAIL_NOT_FOUND(HttpStatus.NOT_FOUND, "LOGIN-0001", "이메일이 잘못됨"),
     BAD_REQUEST(HttpStatus.BAD_REQUEST, "COMMON-0000", "잘못된 요청입니다."),
     EXIST_EMAIL(HttpStatus.BAD_REQUEST, "COMMON-0002", "이미 존재하는 회원입니다."),
+    DUPLICATE_MEMBER(HttpStatus.BAD_REQUEST, "COMMON-0003", "기존 회원 정보와 중복됩니다."),
+    INVALID_TOKEN(HttpStatus.BAD_REQUEST, "COMMON-0004", "유효하지 않은 토큰입니다."),
 
     //도면 에러
     NO_BLUEPRINT_FOUND(HttpStatus.NOT_FOUND, "BLUEPRINT-0000", "도면이 존재하지 않습니다."),
+    INVALID_SORT_TYPE(HttpStatus.BAD_REQUEST, "BLUEPRINT-0001", "정렬 타입이 올바르지 않습니다."),
+    BLUEPRINT_NOT_APPROVED(HttpStatus.BAD_REQUEST, "BLUEPRINT-0002", "승인되지 않은 도면입니다."),
+
+    //카테고리 에러
+    CATEGORY_NOT_FOUND(HttpStatus.NOT_FOUND, "CATEGORY-0000", "존재하지 않는 카테고리입니다."),
 
     //장바구니 에러
     NO_ITEM_IN_CART(HttpStatus.NO_CONTENT, "CART-0000", "장바구니에 상품이 없습니다."),
     ALREADY_EXIST_BLUEPRINT_IN_CART(HttpStatus.BAD_REQUEST, "CART-0001", "장바구니에 존재하는 상품입니다."),
+    CART_BLUEPRINT_NOT_FOUND(HttpStatus.BAD_REQUEST, "CART-0002", "장바구니에 담긴 도면을 찾을 수 없습니다."),
+    CART_NOT_FOUND(HttpStatus.BAD_REQUEST, "CART-0003", "장바구니를 찾을 수 없습니다."),
 
     //Qna 에러
     NO_QNA_CONTENT(HttpStatus.NO_CONTENT, "QNA-0000", "게시된 문의사항이 없습니다."),
     UNAVAILABLE_TO_MODIFY(HttpStatus.FORBIDDEN, "QNA-0001", "게시글에 대한 권한이 없습니다."),
     NO_QNA_REPLY(HttpStatus.NO_CONTENT, "QNA-0002", "유효한 댓글이 아닙니다."),
-    /*
-    *
-    * */
+
+    //결제 및 주문 에러
+    ORDER_NOT_FOUND(HttpStatus.NOT_FOUND, "ORDER-001", "주문이 존재하지 않습니다."),
 
     // 5xx : server error
-    INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "SERVER-0000", "서버 에러");
+    INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "SERVER-0000", "서버 에러"),
+
+    // 이메일 관련
+    EMAIL_ERROR(HttpStatus.BAD_REQUEST, "EMAIL-0001", "이메일 전송 중 오류가 발생했습니다."),
+    AUTH_CODE_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "EMAIL-0002", "인증코드 생성 중 문제가 발생했습니다."),
+    RANDOM_PASSWORD_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "EMAIL-0003", "랜덤 패스워드 생성 중 문제가 발생했습니다.")
+    ;
 
     private final HttpStatus httpStatus;
     private final String code;

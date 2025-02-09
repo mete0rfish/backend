@@ -1,39 +1,40 @@
 package com.onetool.server.blueprint;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.onetool.server.blueprint.controller.BlueprintController;
-import com.onetool.server.blueprint.dto.SearchResponse;
-import com.onetool.server.blueprint.service.BlueprintService;
-import com.onetool.server.blueprint.dto.BlueprintRequest;
-import com.onetool.server.blueprint.dto.BlueprintResponse;
+import com.onetool.server.api.blueprint.controller.BlueprintController;
+import com.onetool.server.api.blueprint.controller.SearchController;
+import com.onetool.server.api.blueprint.dto.BlueprintSortRequest;
+import com.onetool.server.api.blueprint.service.BlueprintSearchService;
+import com.onetool.server.api.blueprint.service.BlueprintService;
+import com.onetool.server.api.blueprint.dto.BlueprintRequest;
+import com.onetool.server.api.blueprint.dto.BlueprintResponse;
 
 import com.onetool.server.global.auth.MemberAuthContext;
 import com.onetool.server.global.auth.jwt.JwtUtil;
 import com.onetool.server.global.auth.login.PrincipalDetails;
 import com.onetool.server.global.exception.ApiResponse;
-import com.onetool.server.member.controller.MemberController;
-import com.onetool.server.member.enums.UserRole;
-import com.onetool.server.member.service.MemberService;
-import org.apache.catalina.User;
+import com.onetool.server.api.member.controller.MemberController;
+import com.onetool.server.api.member.service.MemberService;
+import com.onetool.server.global.exception.CategoryNotFoundException;
+import com.onetool.server.global.exception.codes.ErrorCode;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.security.authentication.TestingAuthenticationToken;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
@@ -52,7 +53,7 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest({BlueprintController.class, MemberController.class})
+@WebMvcTest({BlueprintController.class, MemberController.class, SearchController.class})
 @AutoConfigureMockMvc
 @ActiveProfiles({"test"})
 public class BlueprintServiceMockTest {
@@ -60,13 +61,16 @@ public class BlueprintServiceMockTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private MemberService memberService;
-
-    @MockBean
     private JwtUtil jwtUtil;
 
     @MockBean
+    private MemberService memberService;
+
+    @MockBean
     private BlueprintService blueprintService;
+
+    @MockBean
+    private BlueprintSearchService blueprintSearchService;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -129,7 +133,9 @@ public class BlueprintServiceMockTest {
                 40000L,
                 LocalDateTime.now().plusDays(10),
                 "윤성원 작가",
-                "https://onetool.com/download"
+                "https://onetool.com/download",
+                false,
+                "detailImage URL"
         );
 
         // When
@@ -183,7 +189,9 @@ public class BlueprintServiceMockTest {
                 40000L,
                 LocalDateTime.now().plusDays(10),
                 "윤성원 작가",
-                "https://onetool.com/download"
+                "https://onetool.com/download",
+                false,
+                "detailImage URL"
         );
 
         String accessToken = obtainAccessToken("admin@example.com", "1234");
@@ -211,6 +219,90 @@ public class BlueprintServiceMockTest {
                         .header("Authorization", "Bearer " + accessToken))
                 .andExpect(status().isOk())
                 .andExpect(content().string(objectMapper.writeValueAsString(ApiResponse.onSuccess("상품이 정상적으로 삭제 되었습니다."))));
+    }
+
+    @DisplayName("카테고리 없이 blueprint를 정렬한다.")
+    @Test
+    void blueprintWithoutCategorySortTest() throws Exception {
+        String sortBy = "price";
+        String sortOrder = "asc";
+        Pageable pageable = PageRequest.of(0, 10);
+        List<BlueprintResponse> mockResponse = List.of(
+                BlueprintResponse.builder().id(1L).blueprintName("골프장 1인실 평면도(1)").build(),
+                BlueprintResponse.builder().id(2L).blueprintName("골프장 레이아웃 평면도(1)").build()
+        );
+
+        Mockito.when(blueprintSearchService.sortBlueprints(
+                        new BlueprintSortRequest(null, sortBy, sortOrder), pageable))
+                .thenReturn(mockResponse);
+
+        // when & then
+        mockMvc.perform(get("/blueprint/sort")
+                        .param("sortBy", sortBy)
+                        .param("sortOrder", sortOrder)
+                        .param("page", "0")
+                        .param("size", "10"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.result[0].blueprintName").value("골프장 1인실 평면도(1)"))
+                .andExpect(jsonPath("$.result[1].blueprintName").value("골프장 레이아웃 평면도(1)"));
+    }
+
+    @DisplayName("잘못된 카테고리명을 받았을 때 예외가 발생한다.")
+    @Test
+    void blueprintWithInvalidCategorySortTest() throws Exception {
+        String invalidCategoryName = "invalidCategory";
+        String sortBy = "price";
+        String sortOrder = "asc";
+        Pageable pageable = PageRequest.of(0, 10);
+
+        BlueprintSortRequest request = new BlueprintSortRequest(invalidCategoryName, sortBy, sortOrder);
+
+        // 카테고리별 정렬 메서드 mock
+        Mockito.when(blueprintSearchService.sortBlueprints(request, pageable))
+                .thenThrow(new CategoryNotFoundException(request.categoryName()));
+
+        // when & then
+        mockMvc.perform(get("/blueprint/{categoryName}/sort", invalidCategoryName)
+                        .param("sortBy", sortBy)
+                        .param("sortOrder", sortOrder)
+                        .param("page", "0")
+                        .param("size", "10"))
+                .andExpect(jsonPath("$.code").value(404))
+                .andExpect(jsonPath("$.message").value("존재하지 않는 카테고리입니다."));
+    }
+
+    @DisplayName("카테고리 별로 blueprint를 정렬한다.")
+    @Test
+    void blueprintWithCategorySortTest() throws Exception {
+        String categoryName = "building";
+        String sortBy = "price";
+        String sortOrder = "asc";
+        Pageable pageable = PageRequest.of(0, 10);
+
+        // Mock 응답
+        List<BlueprintResponse> mockResponse = List.of(
+                BlueprintResponse.builder().id(1L).blueprintName("골프장 1인실 평면도(1)").categoryId(1L).build(),
+                BlueprintResponse.builder().id(2L).blueprintName("골프장 레이아웃 평면도(1)").categoryId(1L).build()
+        );
+
+        BlueprintSortRequest request = new BlueprintSortRequest(categoryName, sortBy, sortOrder);
+
+        // 카테고리별 정렬 메서드 mock
+        Mockito.when(blueprintSearchService.sortBlueprints(request, pageable))
+                .thenReturn(mockResponse);
+
+        // when & then
+        mockMvc.perform(get("/blueprint/{categoryName}/sort", categoryName)
+                        .param("sortBy", sortBy)
+                        .param("sortOrder", sortOrder)
+                        .param("page", "0")
+                        .param("size", "10"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.result[0].blueprintName").value("골프장 1인실 평면도(1)"))
+                .andExpect(jsonPath("$.result[1].blueprintName").value("골프장 레이아웃 평면도(1)"))
+                .andExpect(jsonPath("$.result[0].categoryId").value(1L))
+                .andExpect(jsonPath("$.result[1].categoryId").value(1L))
+                .andExpect(jsonPath("$.result.length()").value(2));
     }
 
     @Test

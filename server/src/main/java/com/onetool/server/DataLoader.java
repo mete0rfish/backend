@@ -1,12 +1,13 @@
 package com.onetool.server;
 
-import com.onetool.server.blueprint.Blueprint;
-import com.onetool.server.blueprint.repository.BlueprintRepository;
-import com.onetool.server.category.FirstCategory;
-import com.onetool.server.category.FirstCategoryRepository;
-import com.onetool.server.member.domain.Member;
-import com.onetool.server.member.enums.UserRole;
-import com.onetool.server.member.repository.MemberRepository;
+import com.onetool.server.api.blueprint.Blueprint;
+import com.onetool.server.api.blueprint.InspectionStatus;
+import com.onetool.server.api.blueprint.repository.BlueprintRepository;
+import com.onetool.server.api.category.FirstCategory;
+import com.onetool.server.api.category.FirstCategoryRepository;
+import com.onetool.server.api.member.domain.Member;
+import com.onetool.server.api.member.enums.UserRole;
+import com.onetool.server.api.member.repository.MemberRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -14,7 +15,7 @@ import org.springframework.stereotype.Component;
 
 import java.math.BigInteger;
 
-@Profile("default")
+@Profile({"dev", "default"})
 @Component
 public class DataLoader implements CommandLineRunner {
 
@@ -33,7 +34,12 @@ public class DataLoader implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
+        if(memberRepository.count() == 0) {
+            createDummyData();
+        }
+    }
 
+    private void createDummyData() {
         Member member = memberRepository.save(
                 Member.builder()
                         .name("관리자1")
@@ -97,7 +103,8 @@ public class DataLoader implements CommandLineRunner {
                 "https://static.wixstatic.com/media/7f0bf6_d3bf447c412d4adbb2a6f194152e6cf6~mv2.png/v1/fill/w_1000,h_682,al_c,q_90,usm_0.66_1.00_0.01/7f0bf6_d3bf447c412d4adbb2a6f194152e6cf6~mv2.png",
                 buildingCategory.getId(),
                 "공공",
-                BigInteger.valueOf(0)
+                BigInteger.valueOf(0),
+                InspectionStatus.PASSED
         );
         createBlueprint(
                 "골프장 1인실 평면도(2)",
@@ -111,7 +118,8 @@ public class DataLoader implements CommandLineRunner {
                 "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSjJgbMbq-26Z5xmG29MddfVwxNzij9VIql8A&s",
                 buildingCategory.getId(),
                 "공공",
-                BigInteger.valueOf(0)
+                BigInteger.valueOf(0),
+                InspectionStatus.NONE
         );
         createBlueprint(
                 "골프장 레이아웃 평면도(1)",
@@ -125,7 +133,8 @@ public class DataLoader implements CommandLineRunner {
                 "https://d2v80xjmx68n4w.cloudfront.net/members/portfolios/wDxN41662466397.png?w=500",
                 buildingCategory.getId(),
                 "공공",
-                BigInteger.valueOf(0)
+                BigInteger.valueOf(0),
+                InspectionStatus.PASSED
         );
         createBlueprint(
                 "골프장 레이아웃 평면도(2)",
@@ -139,7 +148,8 @@ public class DataLoader implements CommandLineRunner {
                 "https://d2v80xjmx68n4w.cloudfront.net/members/portfolios/9gyy61718952150.jpg?w=500",
                 buildingCategory.getId(),
                 "공공",
-                BigInteger.valueOf(0)
+                BigInteger.valueOf(0),
+                InspectionStatus.PASSED
         );
         createBlueprint(
                 "골프장 레이아웃 평면도(3)",
@@ -153,7 +163,8 @@ public class DataLoader implements CommandLineRunner {
                 "https://i0.wp.com/916er.com/wp-content/uploads/KakaoTalk_20210616_091912636.png?resize=840%2C472&ssl=1",
                 buildingCategory.getId(),
                 "공공",
-                BigInteger.valueOf(0)
+                BigInteger.valueOf(0),
+                InspectionStatus.PASSED
         );
         createBlueprint(
                 "골프장 인테리어 평면도",
@@ -167,7 +178,8 @@ public class DataLoader implements CommandLineRunner {
                 "https://d2v80xjmx68n4w.cloudfront.net/members/portfolios/rXf2u1654730039.jpg?w=500",
                 interiorCategory.getId(),
                 "상업",
-                BigInteger.valueOf(0)
+                BigInteger.valueOf(0),
+                InspectionStatus.PASSED
         );
         createBlueprint(
                 "보라동 삼정 아파트",
@@ -181,7 +193,8 @@ public class DataLoader implements CommandLineRunner {
                 "https://mblogthumb-phinf.pstatic.net/MjAxOTA2MThfMzgg/MDAxNTYwODI2MjIzNTg3.J6ZwiB_n0W9nb81eMnBhhT1H2Nn4kLMqdCI1oCvMmq0g.Iim4ORXK0DqNWGFQQCyjxbLrKqSgCLFlXZUCkR-O9y4g.JPEG.nexuscon0318/%EC%82%BC%EC%A0%95%ED%8F%89%EB%A9%B4.jpg?type=w420",
                 interiorCategory.getId(),
                 "상업",
-                BigInteger.valueOf(0)
+                BigInteger.valueOf(0),
+                InspectionStatus.NONE
         );
         createBlueprint(
                 "스튜디오 평면도",
@@ -195,7 +208,8 @@ public class DataLoader implements CommandLineRunner {
                 "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQLEUeCyucb-aXWd3Vkw_vFR5e7DbsrLxJruw&s",
                 interiorCategory.getId(),
                 "상업",
-                BigInteger.valueOf(0)
+                BigInteger.valueOf(0),
+                InspectionStatus.PASSED
         );
         createBlueprint(
                 "유닛 2&4",
@@ -209,9 +223,9 @@ public class DataLoader implements CommandLineRunner {
                 "https://godomall.speedycdn.net/233e03d1d27f28fca50cf28c8e1f8429/goods/1000000582/image/detail/thumb/register_detail_578.jpg",
                 etcCategory.getId(),
                 "상업",
-                BigInteger.valueOf(0)
+                BigInteger.valueOf(0),
+                InspectionStatus.PASSED
         );
-
     }
 
     private void createBlueprint(
@@ -226,7 +240,8 @@ public class DataLoader implements CommandLineRunner {
             String blueprintImg,
             Long categoryId,
             String secondCategory,
-            BigInteger hits
+            BigInteger hits,
+            InspectionStatus inspectionStatus
     ) {
         Blueprint blueprint = Blueprint.builder()
                 .blueprintName(blueprintName)
@@ -241,6 +256,7 @@ public class DataLoader implements CommandLineRunner {
                 .categoryId(categoryId)
                 .secondCategory(secondCategory)
                 .hits(hits)
+                .inspectionStatus(inspectionStatus)
                 .build();
         blueprintRepository.save(blueprint);
     }

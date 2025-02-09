@@ -3,6 +3,10 @@ package com.onetool.server.global.handler;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.onetool.server.global.exception.*;
+import com.onetool.server.global.exception.base.BaseException;
+import com.onetool.server.global.exception.base.DuplicateException;
+import com.onetool.server.global.exception.base.NotFoundException;
+import com.onetool.server.global.exception.codes.BaseCode;
 import com.onetool.server.global.exception.codes.ErrorCode;
 import com.onetool.server.global.exception.codes.reason.Reason;
 import lombok.extern.slf4j.Slf4j;
@@ -20,7 +24,6 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
 import java.io.IOException;
-import java.sql.SQLException;
 
 @Slf4j
 @RestControllerAdvice(annotations = {RestController.class})
@@ -28,8 +31,8 @@ public class ExceptionAdvice {
 
     /**
      * 바인딩 에러 처리
-     * @param e
-     * @return
+     * @param e MethodArgumentNotValidException
+     * @return ResponseEntity<ErrorResponse>
      */
     @ExceptionHandler
     public ResponseEntity<Object> validation(MethodArgumentNotValidException e) {
@@ -38,45 +41,38 @@ public class ExceptionAdvice {
         return handleExceptionInternal(baseResponse);
     }
 
-    @ExceptionHandler(MemberNotFoundException.class)
-    public ApiResponse<?> handleNotFoundMemberException(MemberNotFoundException e) {
-        return ApiResponse.onFailure("404", "유저를 찾을 수 없습니다.", null);
+    /**
+     * 중복 예외 처리
+     * @param e DuplicateException
+     * @return ResponseEntity<ErrorResponse>
+     */
+    @ExceptionHandler
+    public ResponseEntity<Object> handleDuplicateException(DuplicateException e) {
+        Reason.ReasonDto errorReasonHttpStatus = e.getErrorReasonHttpStatus();
+        ApiResponse<?> baseResponse = ApiResponse.onFailure(errorReasonHttpStatus.getCode(), errorReasonHttpStatus.getMessage(), e.getMessage());
+        return handleExceptionInternal(baseResponse);
     }
 
-    @ExceptionHandler(DuplicateMemberException.class)
-    public ApiResponse<?> handleDuplicateMemberException(DuplicateMemberException e) {
-        return ApiResponse.onFailure("400", "이메일이 중복됩니다.", null);
-    }
-
-    @ExceptionHandler(AccessDeniedException.class)
-    public ApiResponse<?> handleAccessDeniedException(AccessDeniedException e) {
-        log.error(e.toString());
-        return ApiResponse.onFailure("400", "인증 중 문제가 발생했습니다.", null);
-    }
-
-    @ExceptionHandler(BlueprintNotFoundException.class)
-    public ApiResponse<?> handleBlueprintNotFoundException(BlueprintNotFoundException e) {
-        return ApiResponse.onFailure("404", "도면을 찾을 수 없습니다.", null);
-    }
-
-    @ExceptionHandler(InvalidSortTypeException.class)
-    public ApiResponse<?> handleInvalidSortTypeException(InvalidSortTypeException e) {
-        return ApiResponse.onFailure("400", "올바르지 않은 정렬 방식입니다.", null);
-    }
-
-    @ExceptionHandler(BlueprintNotApprovedException.class)
-    public ApiResponse<?> BlueprintNotApprovedException(BlueprintNotApprovedException e) {
-        return ApiResponse.onFailure("403", "승인받지 않은 도면입니다.", null);
+    /**
+     * 존재하지 않는 예외 처리
+     * @param e NotFoundException
+     * @return ResponseEntity<ErrorResponse>
+     */
+    @ExceptionHandler
+    public ResponseEntity<Object> handleNotFoundException(NotFoundException e) {
+        Reason.ReasonDto errorReasonHttpStatus = e.getErrorReasonHttpStatus();
+        ApiResponse<?> baseResponse = ApiResponse.onFailure(errorReasonHttpStatus.getCode(), errorReasonHttpStatus.getMessage(), e.getMessage());
+        return handleExceptionInternal(baseResponse);
     }
 
     /**
      * 서버 에러
-     * @param e
-     * @return
+     * @param e Exception
+     * @return ResponseEntity<ErrorResponse>
      */
     @ExceptionHandler
     public ResponseEntity<Object> exception(Exception e) {
-        log.error(e.getMessage());
+        log.error(e.getMessage(), e);
         ErrorCode errorCode = ErrorCode._INTERNAL_SERVER_ERROR;
         ApiResponse<?> baseResponse = ApiResponse.onFailure(errorCode.getCode(), errorCode.getMessage(), null);
         return handleExceptionInternal(baseResponse);
@@ -84,8 +80,8 @@ public class ExceptionAdvice {
 
     /**
      * 클라이언트 에러
-     * @param generalException
-     * @return
+     * @param generalException BaseException
+     * @return ResponseEntity<ErrorResponse>
      */
     @ExceptionHandler(BaseException.class)
     public ResponseEntity<Object> onThrowException(BaseException generalException) {
@@ -189,11 +185,11 @@ public class ExceptionAdvice {
      * @param e NoHandlerFoundException
      * @return ResponseEntity<ErrorResponse>
      */
-//    @ExceptionHandler(NoHandlerFoundException.class)
-//    protected ResponseEntity<Object> handleNoHandlerFoundExceptionException(NoHandlerFoundException e) {
-//        log.error("handleNoHandlerFoundExceptionException", e);
-//        return handleExceptionInternal(ErrorCode.NOT_FOUND_ERROR);
-//    }
+    @ExceptionHandler(NoHandlerFoundException.class)
+    protected ResponseEntity<Object> handleNoHandlerFoundExceptionException(NoHandlerFoundException e) {
+        log.error("handleNoHandlerFoundExceptionException", e);
+        return handleExceptionInternal(ErrorCode.NOT_FOUND_ERROR);
+    }
 
     private ResponseEntity<Object> handleExceptionInternal(ApiResponse<?> response) {
         return new ResponseEntity<>(response, HttpStatus.OK);
