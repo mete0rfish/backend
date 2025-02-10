@@ -16,6 +16,9 @@ jobs:
     steps:
       - name: Checkout Codes
         uses: actions/checkout@v4
+        with:
+          submodules: recursive  # 서브모듈 포함 체크아웃
+          token: ${{ secrets.PAT_TOKEN }}
 
       - name: Setup Java17
         uses: actions/setup-java@v4
