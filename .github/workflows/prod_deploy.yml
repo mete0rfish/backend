@@ -50,7 +50,7 @@ jobs:
       - name: Create Docker Image and Push Image
         run: |
           docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
-          docker build --platform linux/amd64 -t ${{ secrets.DOCKER_REPO }}/onetool-prod-server:v1 .
+          docker buildx build --platform linux/amd64,linux/arm64 -t ${{ secrets.DOCKER_REPO }}/onetool-prod-server:v1 --push .
 
       - name: Execute Container With Docker Image
         uses: appleboy/ssh-action@master
