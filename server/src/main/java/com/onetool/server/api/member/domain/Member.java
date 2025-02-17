@@ -31,7 +31,7 @@ import java.util.Optional;
 @Setter
 @NoArgsConstructor
 @Slf4j
-@SQLDelete(sql = "UPDATE member SET is_deleted = true WHERE id = ?")
+@SQLDelete(sql = "UPDATE Member SET is_deleted = true WHERE id = ?")
 @SQLRestriction("is_deleted = false")
 public class Member extends BaseEntity {
 

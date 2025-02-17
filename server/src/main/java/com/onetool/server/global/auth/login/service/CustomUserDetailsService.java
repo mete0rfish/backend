@@ -5,6 +5,7 @@ import com.onetool.server.global.exception.InvalidTokenException;
 import com.onetool.server.api.member.domain.Member;
 import com.onetool.server.api.member.repository.MemberRepository;
 import com.onetool.server.global.auth.login.PrincipalDetails;
+import com.onetool.server.global.exception.MemberNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
@@ -28,7 +29,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     public PrincipalDetails loadUserByUsername(String id) throws UsernameNotFoundException {
 
         Member member = memberRepository.findById(Long.parseLong(id))
-                .orElseThrow(() -> new UsernameNotFoundException("해당하는 유저가 없습니다."));
+                .orElseThrow(() -> new MemberNotFoundException("해당하는 유저가 없습니다."));
 
         MemberAuthContext context = MemberAuthContext.builder()
                 .id(member.getId())
