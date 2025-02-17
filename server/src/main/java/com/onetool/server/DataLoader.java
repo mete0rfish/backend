@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 
 import java.math.BigInteger;
 
-@Profile({"dev", "default"})
+@Profile({"dev", "default", "local"})
 @Component
 public class DataLoader implements CommandLineRunner {
 
