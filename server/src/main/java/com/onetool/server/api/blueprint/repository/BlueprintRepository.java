@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface BlueprintRepository extends JpaRepository<Blueprint, Long> {
@@ -20,7 +21,6 @@ public interface BlueprintRepository extends JpaRepository<Blueprint, Long> {
         FROM Blueprint b
         WHERE (b.blueprintName LIKE %:keyword% OR b.creatorName LIKE %:keyword%)
           AND b.inspectionStatus = :status
-          AND b.isDeleted = false
     """)
     Page<Blueprint> findAllNameAndCreatorContaining(@Param("keyword") String keyword,
                                                     @Param("status") InspectionStatus status,
@@ -44,18 +44,18 @@ public interface BlueprintRepository extends JpaRepository<Blueprint, Long> {
 
     @Query(value = "SELECT b FROM Blueprint b WHERE b.categoryId = " +
             "(SELECT f.id FROM FirstCategory f WHERE f.name = :first) " +
-            "AND b.inspectionStatus = :status AND b.isDeleted = false")
+            "AND b.inspectionStatus = :status")
     Page<Blueprint> findAllByFirstCategory(@Param("first") String category, @Param("status") InspectionStatus status, Pageable pageable);
 
     @Query(value = "SELECT b FROM Blueprint b WHERE b.secondCategory = :second " +
             "AND b.categoryId = (SELECT f.id FROM FirstCategory f WHERE f.name = :first) " +
-            "AND b.inspectionStatus = :status AND b.isDeleted = false")
+            "AND b.inspectionStatus = :status")
     Page<Blueprint> findAllBySecondCategory(@Param("first") String firstCategory, @Param("second") String secondCategory, @Param("status") InspectionStatus status, Pageable pageable);
 
-    @Query(value = "SELECT count(b) FROM Blueprint b WHERE b.isDeleted = false")
+    @Query(value = "SELECT count(b) FROM Blueprint b")
     Long countAllBlueprint();
 
-    @Query(value = "SELECT b FROM Blueprint b WHERE b.inspectionStatus = :status AND b.isDeleted = false")
+    @Query(value = "SELECT b FROM Blueprint b WHERE b.inspectionStatus = :status")
     Page<Blueprint> findByInspectionStatus(@Param("status") InspectionStatus status, Pageable pageable);
 
     @Query("SELECT b FROM Blueprint b WHERE b.categoryId = :categoryId AND b.inspectionStatus = :inspectionStatus")
@@ -64,4 +64,7 @@ public interface BlueprintRepository extends JpaRepository<Blueprint, Long> {
             @Param("inspectionStatus") InspectionStatus inspectionStatus,
             Pageable pageable
     );
+
+    @Query(value = "SELECT * FROM blueprint b WHERE b.id = :id", nativeQuery = true)
+    Optional<Blueprint> findDeletedById(@Param("id") Long id);
 }
