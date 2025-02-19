@@ -1,5 +1,6 @@
 package com.onetool.server.api.order.service;
 
+import com.onetool.server.api.order.Orders;
 import com.onetool.server.api.order.dto.request.OrderRequest;
 import com.onetool.server.api.order.dto.response.OrderResponse;
 import org.junit.jupiter.api.DisplayName;
@@ -17,10 +18,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-@ActiveProfiles({"test"})
+@ActiveProfiles({"test", "local"})
 class OrderServiceImplTest {
 
     private final static String ADMIN_EMAIL = "admin@example.com";
+    private final OrderRequest orderRequest = new OrderRequest(
+            new HashSet<>(List.of(1L, 2L, 3L))
+    );
 
     @Autowired
     private OrderServiceImpl orderServiceImpl;
@@ -28,14 +32,33 @@ class OrderServiceImplTest {
     @Test
     @DisplayName("주문 생성")
     void createOrderTest() {
-        OrderRequest orderRequest = new OrderRequest(
-                new HashSet<>(List.of(1L, 2L, 3L))
-        );
-        orderServiceImpl.makeOrder(ADMIN_EMAIL, orderRequest);
+        // given
 
+        // when
+        Long orderId = createOrder();
         List<OrderResponse. MyPageOrderResponseDto> response
                 = orderServiceImpl.getMyPageOrder(ADMIN_EMAIL);
 
+        // then
         assertThat(response.size()).isEqualTo(1);
+    }
+
+    @Test
+    @DisplayName("주문 삭제")
+    void deleteOrderTest() {
+        // given
+        Long orderId = createOrder();
+
+        // when
+        orderServiceImpl.deleteOrder(orderId);
+
+        // then
+        List<OrderResponse. MyPageOrderResponseDto> response
+                = orderServiceImpl.getMyPageOrder(ADMIN_EMAIL);
+        assertThat(response.size()).isEqualTo(0);
+    }
+
+    private Long createOrder() {
+        return orderServiceImpl.makeOrder(ADMIN_EMAIL, orderRequest);
     }
 }

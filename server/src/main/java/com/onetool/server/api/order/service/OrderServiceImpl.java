@@ -10,6 +10,7 @@ import com.onetool.server.api.order.dto.response.OrderResponse;
 import com.onetool.server.api.order.repository.OrderRepository;
 import com.onetool.server.api.payments.service.DepositService;
 import com.onetool.server.global.exception.BlueprintNotFoundException;
+import com.onetool.server.global.exception.OrderNotFoundException;
 import com.onetool.server.global.exception.base.BaseException;
 import com.onetool.server.api.member.domain.Member;
 import com.onetool.server.api.member.repository.MemberRepository;
@@ -75,8 +76,6 @@ public class OrderServiceImpl implements OrderService {
         return orderBlueprints;
     }
 
-
-
     private Long calcTotalPrice(List<Blueprint> blueprints) {
         return blueprints.stream().mapToLong(Blueprint::getStandardPrice).sum();
     }
@@ -90,5 +89,10 @@ public class OrderServiceImpl implements OrderService {
 
     private List<Orders> findOrdersByMemberId(Long memberId) {
         return new ArrayList<>(orderRepository.findByUserId(memberId));
+    }
+
+    public void deleteOrder(Long orderId) {
+        Orders orders = orderRepository.findById(orderId).orElseThrow(() -> new OrderNotFoundException(orderId));
+        orderRepository.delete(orders);
     }
 }
