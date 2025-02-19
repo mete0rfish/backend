@@ -37,6 +37,8 @@ import java.util.Optional;
 import java.util.Random;
 import java.util.stream.Collectors;
 
+import static com.onetool.server.global.exception.codes.ErrorCode.NON_EXIST_USER;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -235,5 +237,10 @@ public class MemberService {
             throw new IllegalLogoutMember(ErrorCode.ILLEGAL_LOGOUT_USER);
         }
         return ApiResponse.onSuccess("로그아웃이 완료되었습니다.");
+    }
+
+    public Member findMember(String email) {
+        return memberRepository.findByEmail(email)
+                .orElseThrow(() -> new BaseException(NON_EXIST_USER));
     }
 }
