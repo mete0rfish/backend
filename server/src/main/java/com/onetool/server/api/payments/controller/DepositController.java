@@ -13,23 +13,29 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/payments")
+@RequestMapping("/payments/deposit")
 public class DepositController {
 
     private final DepositService depositService;
 
-    @PostMapping("/deposit")
+    @PostMapping
     public ApiResponse<?> createPayment(@RequestBody DepositRequest request) {
         depositService.createDeposit(request);
         return ApiResponse.onSuccess("결제 항목 추가가 완료되었습니다.");
     }
 
-    @GetMapping("/deposit")
+    @GetMapping
     public ApiResponse<?> getPayment(
             @AuthenticationPrincipal PrincipalDetails principalDetails
     ) {
         Long userId = principalDetails.getContext().getId();
         List<DepositResponse> responses = depositService.getDeposits(userId);
         return ApiResponse.onSuccess(responses);
+    }
+
+    @DeleteMapping
+    public ApiResponse<?> deletePayment(@RequestBody Long paymentId) {
+        depositService.deleteDeposit(paymentId);
+        return ApiResponse.onSuccess(paymentId);
     }
 }

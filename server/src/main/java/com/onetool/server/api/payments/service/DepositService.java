@@ -6,6 +6,7 @@ import com.onetool.server.api.payments.domain.Payment;
 import com.onetool.server.api.payments.dto.DepositRequest;
 import com.onetool.server.api.payments.dto.DepositResponse;
 import com.onetool.server.api.payments.repository.DepositRepository;
+import com.onetool.server.global.exception.PaymentNotFoundException;
 import com.onetool.server.global.exception.base.BaseException;
 import com.onetool.server.global.exception.codes.ErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -56,9 +57,14 @@ public class DepositService {
     }
 
     @Transactional
-    public void createDeposit(DepositRequest request) {
+    public Long createDeposit(DepositRequest request) {
         Payment payment = buildPayment(request);
-        depositRepository.save(payment);
+        Payment savedPayment = depositRepository.save(payment);
+        return savedPayment.getId();
+    }
+
+    public Payment findById(Long id) {
+        return depositRepository.findById(id).orElseThrow(() -> new PaymentNotFoundException(id));
     }
 
     private Payment buildPayment(DepositRequest request) {
@@ -73,5 +79,13 @@ public class DepositService {
 
     private Orders findOrders(Long orderId) {
         return orderRepository.findById(orderId).orElseThrow(() -> new BaseException(ErrorCode.ORDER_NOT_FOUND));
+    }
+
+    public void deleteDeposit(Long paymentId) {
+        try {
+            depositRepository.deleteById(paymentId);
+        } catch(Exception e) {
+            throw new PaymentNotFoundException(paymentId);
+        }
     }
 }
