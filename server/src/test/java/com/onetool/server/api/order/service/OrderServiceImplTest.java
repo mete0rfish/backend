@@ -21,11 +21,6 @@ import static org.junit.jupiter.api.Assertions.*;
 @ActiveProfiles({"test", "local"})
 class OrderServiceImplTest {
 
-    private final static String ADMIN_EMAIL = "admin@example.com";
-    private final OrderRequest orderRequest = new OrderRequest(
-            new HashSet<>(List.of(1L, 2L, 3L))
-    );
-
     @Autowired
     private OrderServiceImpl orderServiceImpl;
 
@@ -37,7 +32,7 @@ class OrderServiceImplTest {
         // when
         Long orderId = createOrder();
         List<OrderResponse. MyPageOrderResponseDto> response
-                = orderServiceImpl.getMyPageOrder(ADMIN_EMAIL);
+                = orderServiceImpl.getMyPageOrder(OrderFixture.ADMIN_EMAIL);
 
         // then
         assertThat(response.size()).isEqualTo(1);
@@ -54,11 +49,11 @@ class OrderServiceImplTest {
 
         // then
         List<OrderResponse. MyPageOrderResponseDto> response
-                = orderServiceImpl.getMyPageOrder(ADMIN_EMAIL);
+                = orderServiceImpl.getMyPageOrder(OrderFixture.ADMIN_EMAIL);
         assertThat(response.size()).isEqualTo(0);
     }
 
     private Long createOrder() {
-        return orderServiceImpl.makeOrder(ADMIN_EMAIL, orderRequest);
+        return orderServiceImpl.makeOrder(OrderFixture.ADMIN_EMAIL, OrderFixture.ORDER_REQUEST);
     }
 }
