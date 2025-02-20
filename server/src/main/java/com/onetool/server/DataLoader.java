@@ -49,6 +49,18 @@ public class DataLoader implements CommandLineRunner {
                         .build()
         );
 
+        Member normalMember = memberRepository.save(
+                Member.builder()
+                        .name("홍길동")
+                        .password(passwordEncoder.encode("1234"))
+                        .email("user@example.com")
+                        .role(UserRole.ROLE_ADMIN)
+                        .phoneNum("01000000000")
+                        .field("백엔드")
+                        .isNative(true)
+                        .build()
+        );
+
         final FirstCategory buildingCategory = firstCategoryRepository.save(
                 FirstCategory.builder()
                         .id(1L)
