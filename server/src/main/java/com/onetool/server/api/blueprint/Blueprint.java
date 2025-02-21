@@ -11,6 +11,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 
 import java.math.BigInteger;
 import java.time.LocalDateTime;
@@ -20,7 +21,8 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@SQLDelete(sql = "UPDATE blueprint SET is_deleted = true WHERE id = ?")
+@SQLDelete(sql = "UPDATE Blueprint SET is_deleted = true WHERE id = ?")
+@SQLRestriction("is_deleted = false")
 public class Blueprint extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

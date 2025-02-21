@@ -7,12 +7,16 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 
 @Getter
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@SQLDelete(sql = "UPDATE payment SET is_deleted = true WHERE id = ?")
+@SQLRestriction("is_deleted = false")
 public class Payment extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,11 +27,10 @@ public class Payment extends BaseEntity {
     private String bankName;
     private Long totalPrice;
 
-//    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-//    @JoinColumn(name = "payment_blueprint_id")
-//    private Set<PaymentBlueprint> numbers;
-
     @OneToOne
     @JoinColumn(name = "orders_id")
     private Orders orders;
+
+    @Column(name = "is_deleted", nullable = false)
+    private boolean isDeleted = false;
 }

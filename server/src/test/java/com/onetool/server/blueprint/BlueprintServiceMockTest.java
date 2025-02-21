@@ -89,7 +89,6 @@ public class BlueprintServiceMockTest {
         MemberAuthContext authContext = new MemberAuthContext(1L, "admin", "ROLE_ADMIN", "admin@example.com", "1234");
         PrincipalDetails principalDetails = new PrincipalDetails(authContext);
 
-
         List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_ADMIN"));
         Authentication authentication = new TestingAuthenticationToken(principalDetails, null, authorities);
 

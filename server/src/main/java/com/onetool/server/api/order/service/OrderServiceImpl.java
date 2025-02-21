@@ -2,6 +2,7 @@ package com.onetool.server.api.order.service;
 
 import com.onetool.server.api.blueprint.Blueprint;
 import com.onetool.server.api.blueprint.repository.BlueprintRepository;
+import com.onetool.server.api.member.service.MemberService;
 import com.onetool.server.api.order.OrderBlueprint;
 import com.onetool.server.api.order.Orders;
 import com.onetool.server.api.order.dto.request.OrderRequest;
@@ -9,6 +10,7 @@ import com.onetool.server.api.order.dto.response.OrderResponse;
 import com.onetool.server.api.order.repository.OrderRepository;
 import com.onetool.server.api.payments.service.DepositService;
 import com.onetool.server.global.exception.BlueprintNotFoundException;
+import com.onetool.server.global.exception.OrderNotFoundException;
 import com.onetool.server.global.exception.base.BaseException;
 import com.onetool.server.api.member.domain.Member;
 import com.onetool.server.api.member.repository.MemberRepository;
@@ -28,14 +30,14 @@ import static com.onetool.server.global.exception.codes.ErrorCode.*;
 @Slf4j
 public class OrderServiceImpl implements OrderService {
 
-    private final MemberRepository memberRepository;
+    private final MemberService memberService;
     private final BlueprintRepository blueprintRepository;
     private final OrderRepository orderRepository;
     private final DepositService depositService;
 
     @Transactional
     public Long makeOrder(String userEmail, OrderRequest request) {
-        Member member = findMember(userEmail);
+        Member member = memberService.findMember(userEmail);
         Orders orders = createOrders(request, member);
         return orders.getId();
     }
@@ -74,23 +76,23 @@ public class OrderServiceImpl implements OrderService {
         return orderBlueprints;
     }
 
-    private Member findMember(String email) {
-        return memberRepository.findByEmail(email)
-                .orElseThrow(() -> new BaseException(NON_EXIST_USER));
-    }
-
     private Long calcTotalPrice(List<Blueprint> blueprints) {
         return blueprints.stream().mapToLong(Blueprint::getStandardPrice).sum();
     }
 
     @Transactional
     public List<OrderResponse.MyPageOrderResponseDto> getMyPageOrder(String userEmail) {
-        Member member = findMember(userEmail);
+        Member member = memberService.findMember(userEmail);
         List<Orders> ordersList = findOrdersByMemberId(member.getId());
         return OrderResponse.MyPageOrderResponseDto.from(ordersList);
     }
 
     private List<Orders> findOrdersByMemberId(Long memberId) {
         return new ArrayList<>(orderRepository.findByUserId(memberId));
+    }
+
+    public void deleteOrder(Long orderId) {
+        Orders orders = orderRepository.findById(orderId).orElseThrow(() -> new OrderNotFoundException(orderId));
+        orderRepository.delete(orders);
     }
 }

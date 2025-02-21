@@ -1,0 +1,68 @@
+name: Deploy to Production Server
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - name: Checkout Codes
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive  # 서브모듈 포함 체크아웃
+          token: ${{ secrets.PAT_TOKEN }}
+
+      - name: Setup Java17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
+
+      - name: Setup and Config Docker Buildx
+        uses: docker/setup-buildx-action@v2
+        with:
+          install: true
+          driver: docker-container
+          buildkitd-flags: --debug
+
+      - name: Gradle Dependency Cache
+        uses: actions/cache/restore@v4
+        with:
+          path: ~/.gradle/caches
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Build Spring Project
+        run: |
+          cd ./server/
+          chmod +x ./gradlew
+          ./gradlew clean build -x test
+
+      - name: Create Docker Image and Push Image
+        run: |
+          docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+          docker buildx build --platform linux/amd64,linux/arm64 -t ${{ secrets.DOCKER_REPO }}/onetool-prod-server:v1 --push .
+
+      - name: Execute Container With Docker Image
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.EC2_PROD_HOST }}
+          username: ${{ secrets.EC2_SSH_USER }}
+          key: ${{ secrets.PROD_PRIVATE_KEY }}
+          script: |
+            docker stop $(docker ps -q) && docker rm $(docker ps -qa)
+            docker pull ${{ secrets.DOCKER_REPO }}/onetool-prod-server:v1
+            docker-compose -f compose.yml up -d
+            docker image prune --force
