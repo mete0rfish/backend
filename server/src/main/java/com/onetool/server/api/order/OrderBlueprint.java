@@ -4,12 +4,16 @@ import com.onetool.server.api.blueprint.Blueprint;
 import com.onetool.server.global.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 
 @Builder
 @Entity (name = "order_blueprint")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
+@SQLDelete(sql = "UPDATE order_blueprint SET is_deleted = true WHERE id = ?")
+@SQLRestriction("is_deleted = false")
 public class OrderBlueprint extends BaseEntity {
 
     @Id
@@ -25,4 +29,7 @@ public class OrderBlueprint extends BaseEntity {
     private Orders order;
 
     private String downloadUrl;
+
+    @Column(name = "is_deleted", nullable = false)
+    private boolean isDeleted = false;
 }

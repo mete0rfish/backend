@@ -17,6 +17,7 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,7 +31,8 @@ import java.util.Optional;
 @Setter
 @NoArgsConstructor
 @Slf4j
-@SQLDelete(sql = "UPDATE member SET is_deleted = true WHERE id = ?")
+@SQLDelete(sql = "UPDATE Member SET is_deleted = true WHERE id = ?")
+@SQLRestriction("is_deleted = false")
 public class Member extends BaseEntity {
 
     @Id

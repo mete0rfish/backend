@@ -31,11 +31,23 @@ public class TestDataLoader implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
 
-        Member member = memberRepository.save(
+        Member admin = memberRepository.save(
                 Member.builder()
                         .name("홍길동")
                         .password(passwordEncoder.encode("1234"))
                         .email("admin@example.com")
+                        .role(UserRole.ROLE_ADMIN)
+                        .phoneNum("01000000000")
+                        .field("백엔드")
+                        .isNative(true)
+                        .build()
+        );
+
+        Member normalMember = memberRepository.save(
+                Member.builder()
+                        .name("홍길동")
+                        .password(passwordEncoder.encode("1234"))
+                        .email("user@example.com")
                         .role(UserRole.ROLE_ADMIN)
                         .phoneNum("01000000000")
                         .field("백엔드")

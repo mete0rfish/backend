@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 
 import java.math.BigInteger;
 
-@Profile({"dev", "default"})
+@Profile({"dev", "default", "local"})
 @Component
 public class DataLoader implements CommandLineRunner {
 
@@ -46,6 +46,18 @@ public class DataLoader implements CommandLineRunner {
                         .password(passwordEncoder.encode("1234"))
                         .email("admin@admin.com")
                         .role(UserRole.ROLE_ADMIN)
+                        .build()
+        );
+
+        Member normalMember = memberRepository.save(
+                Member.builder()
+                        .name("홍길동")
+                        .password(passwordEncoder.encode("1234"))
+                        .email("user@example.com")
+                        .role(UserRole.ROLE_ADMIN)
+                        .phoneNum("01000000000")
+                        .field("백엔드")
+                        .isNative(true)
                         .build()
         );
 

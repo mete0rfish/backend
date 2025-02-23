@@ -100,6 +100,7 @@ public enum ErrorCode implements BaseCode {
 
     //결제 및 주문 에러
     ORDER_NOT_FOUND(HttpStatus.NOT_FOUND, "ORDER-001", "주문이 존재하지 않습니다."),
+    DEPOSIT_NOT_FOUND(HttpStatus.NOT_FOUND, "PAYMENT-001", "결제가 존재하지 않습니다."),
 
     // 5xx : server error
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "SERVER-0000", "서버 에러"),

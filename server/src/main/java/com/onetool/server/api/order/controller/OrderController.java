@@ -23,14 +23,24 @@ public class OrderController {
     private final OrderServiceImpl orderService;
 
     @PostMapping
-    public ApiResponse<Long> createOrders(@AuthenticationPrincipal PrincipalDetails principal,
-                                                         @Valid @RequestBody OrderRequest request){
+    public ApiResponse<Long> createOrders(
+            @AuthenticationPrincipal PrincipalDetails principal,
+            @Valid @RequestBody OrderRequest request
+    ) {
         Long orderId = orderService.makeOrder(principal.getContext().getEmail(), request);
         return ApiResponse.onSuccess(orderId);
     }
 
     @GetMapping
-    public ApiResponse<List<MyPageOrderResponseDto>> getOrders(@AuthenticationPrincipal PrincipalDetails principal){
+    public ApiResponse<List<MyPageOrderResponseDto>> getOrders(@AuthenticationPrincipal PrincipalDetails principal) {
         return ApiResponse.onSuccess(orderService.getMyPageOrder(principal.getContext().getEmail()));
+    }
+
+    @DeleteMapping
+    public ApiResponse<Long> deleteOrders(
+            @RequestBody Long orderId
+    ) {
+        orderService.deleteOrder(orderId);
+        return ApiResponse.onSuccess(orderId);
     }
 }

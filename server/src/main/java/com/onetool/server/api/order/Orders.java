@@ -10,6 +10,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +22,8 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @DynamicInsert
+@SQLDelete(sql = "UPDATE Orders SET is_deleted = true WHERE id = ?")
+@SQLRestriction("is_deleted = false")
 public class Orders extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -43,6 +47,9 @@ public class Orders extends BaseEntity {
 
     @OneToOne(mappedBy = "orders")
     private Payment payment;
+
+    @Column(name = "is_deleted", nullable = false)
+    private boolean isDeleted = false;
 
     public List<String> getOrderItemsDownloadLinks() {
         List<String> orderItemsDownloadLinks = new ArrayList<>();
