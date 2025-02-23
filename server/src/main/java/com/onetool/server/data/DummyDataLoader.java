@@ -17,7 +17,7 @@ import java.math.BigInteger;
 public class DummyDataLoader implements CommandLineRunner {
 
     private final static boolean EXECUTE_FLAG = false;
-    private final static int DUMMY_DATA_COUNT = 100_000;
+    private final static int DUMMY_DATA_COUNT = 1_000_000;
 
     private final static String[] BLUEPRINT_NAME_LIST = {"골프장 ", "당구장 ", "학교 ", "영화관 ", "도서관 ", "학교 ", "상가 ", "전시관", "역사관 ", "식당 "};
     private final static String BLUEPRINT_DETAIL = "도면에 대한 상세 정보 내역입니다.";
