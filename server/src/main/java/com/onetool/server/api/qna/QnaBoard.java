@@ -1,8 +1,10 @@
 package com.onetool.server.api.qna;
 
+import com.onetool.server.api.qna.dto.request.PostQnaBoardRequest;
 import com.onetool.server.global.entity.BaseEntity;
 import com.onetool.server.api.member.domain.Member;
 import com.onetool.server.api.qna.dto.request.QnaBoardRequest;
+import com.onetool.server.global.exception.MemberNotFoundException;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -44,29 +46,33 @@ public class QnaBoard extends BaseEntity {
     private Member member;
 
     @Builder
-    private QnaBoard(String title, String content) {
+    public QnaBoard(String title, String content) {
         this.title = title;
         this.content = content;
         this.views = 0L;
     }
 
-    public static QnaBoard createQnaBoard(QnaBoardRequest.PostQnaBoard request){
-        return new QnaBoard(request.title(),
-                request.content());
-
-    }
-
-    public void updateQnaBoard(QnaBoardRequest.PostQnaBoard request){
+    public void updateQnaBoard(PostQnaBoardRequest request){
         this.title = request.title();
         this.content = request.content();
     }
 
-    public void post(Member member){
+    //todo 예외처리 클래스 새로 생성할 예정 .......
+    public boolean validateMemberCanModify(Member member) {
+        if (!this.member.getEmail().equals(member.getEmail())) {
+            throw new MemberNotFoundException(member.getEmail());
+        }
+
+        return true;
+    }
+
+    //연관관계 맺고 끊는 함수들
+    public void assignMember(Member member){
         this.member = member;
         member.getQnaBoards().add(this);
     }
 
-    public void delete(Member member){
+    public void unassignMember(Member member){
         member.getQnaBoards().remove(this);
         this.member = null;
     }
