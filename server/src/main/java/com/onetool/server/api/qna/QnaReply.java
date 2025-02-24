@@ -4,6 +4,7 @@ import com.onetool.server.api.qna.dto.request.PostQnaReplyRequest;
 import com.onetool.server.global.entity.BaseEntity;
 import com.onetool.server.api.member.domain.Member;
 import com.onetool.server.api.qna.dto.request.QnaReplyRequest;
+import com.onetool.server.global.exception.base.BaseException;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -11,6 +12,8 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import static com.onetool.server.global.exception.codes.ErrorCode.UNAVAILABLE_TO_MODIFY;
 
 @Entity
 @Table(name = "qna_reply")
@@ -47,6 +50,18 @@ public class QnaReply extends BaseEntity {
                 .build();
     }
 
+    public void validateMemberWithReply(Member member){
+        if(!this.getMember().getEmail().equals(member.getEmail())){
+            throw new BaseException(UNAVAILABLE_TO_MODIFY);
+        }
+    }
+
+    public void updateReply(String content){
+        this.content = content;
+    }
+
+    //---------------연관관계 매핑---------------
+
     public void assignBoard(QnaBoard qnaBoard){
         this.qnaBoard = qnaBoard;
         qnaBoard.getQnaReplies().add(this);
@@ -65,7 +80,4 @@ public class QnaReply extends BaseEntity {
         this.qnaBoard = null;
     }
 
-    public void updateReply(String content){
-        this.content = content;
-    }
 }

@@ -10,8 +10,14 @@ import java.security.Principal;
 
 public interface QnaReplyService {
     void saveReply(Member member, QnaBoard qnaBoard, QnaReply qnaReply);
-    void deleteReply(Principal principal, Long qnaId, QnaReplyRequest.ModifyQnaReply request);
+
+    void deleteReply(Member member, QnaBoard board, QnaReply qnaReply);
+
     void updateReply(Principal principal, Long qnaId, QnaReplyRequest.ModifyQnaReply request);
+
     Member findMember(Principal principal);
-     QnaBoard findQnaBoard(Long id);
+
+    QnaBoard findQnaBoard(Long id);
+
+    QnaReply findQnaReply(Long id);
 }

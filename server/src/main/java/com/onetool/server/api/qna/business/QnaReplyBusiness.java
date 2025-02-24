@@ -5,6 +5,7 @@ import com.onetool.server.api.qna.QnaBoard;
 import com.onetool.server.api.qna.QnaReply;
 import com.onetool.server.api.qna.controller.QnaReplyController;
 import com.onetool.server.api.qna.converter.QnaReplyConverter;
+import com.onetool.server.api.qna.dto.request.ModifyQnaReplyRequest;
 import com.onetool.server.api.qna.dto.request.PostQnaReplyRequest;
 import com.onetool.server.api.qna.service.QnaReplyService;
 import com.onetool.server.global.annotation.Business;
@@ -28,5 +29,14 @@ public class QnaReplyBusiness {
 
         qnaReplyService.saveReply(member,qnaBoard,qnaReply);
 
+    }
+
+    @Transactional
+    public void deleteQnaReply(Principal principal, Long qnaId, ModifyQnaReplyRequest request) {
+        Member member = qnaReplyService.findMember(principal);
+        QnaBoard qnaBoard = qnaReplyService.findQnaBoard(qnaId);
+        QnaReply qnaReply = qnaReplyService.findQnaReply(request.replyId());
+
+        qnaReplyService.deleteReply(member, qnaBoard, qnaReply);
     }
 }

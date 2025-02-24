@@ -26,6 +26,7 @@ public class QnaReplyServiceImpl implements QnaReplyService {
     private final QnaReplyRepository qnaReplyRepository;
 
     public void saveReply(Member member, QnaBoard qnaBoard, QnaReply qnaReply) {
+
         validateQnaReplyIsNull(qnaReply);
 
         qnaReply.assignBoard(qnaBoard);
@@ -33,13 +34,11 @@ public class QnaReplyServiceImpl implements QnaReplyService {
         qnaReplyRepository.save(qnaReply);
     }
 
-    public void deleteReply(
-            Principal principal,
-            Long qnaId,
-            QnaReplyRequest.ModifyQnaReply request) {
+    public void deleteReply(Member member, QnaBoard qnaBoard, QnaReply qnaReply) {
 
-        QnaReply qnaReply = findQnaReply(request.replyId());
-        findMemberWithReply(qnaReply, principal.getName());
+        validateQnaReplyIsNull(qnaReply);
+
+        qnaReply.validateMemberWithReply(member);
         qnaReply.unassignMemberAndQnaBoard();
     }
 
@@ -49,13 +48,14 @@ public class QnaReplyServiceImpl implements QnaReplyService {
             QnaReplyRequest.ModifyQnaReply request) {
 
         QnaReply qnaReply = findQnaReply(request.replyId());
-        findMemberWithReply(qnaReply, principal.getName());
+        qnaReply.validateMemberWithReply("수정예정");
         qnaReply.updateReply(request.content());
     }
 
-    public void findMemberWithReply(QnaReply qnaReply, String userEmail) {
-        if (qnaReply.getMember().getEmail().equals(userEmail))
-            throw new BaseException(UNAVAILABLE_TO_MODIFY);
+    public QnaReply findQnaReply(Long id) {
+        return qnaReplyRepository
+                .findByIdWithBoardAndMember(id)
+                .orElseThrow(() -> new BaseException(NO_QNA_REPLY));
     }
 
     public Member findMember(Principal principal) {
@@ -68,12 +68,6 @@ public class QnaReplyServiceImpl implements QnaReplyService {
         return qnaBoardRepository
                 .findByIdWithReplies(id)
                 .orElseThrow(() -> new BaseException(NON_EXIST_USER));
-    }
-
-    public QnaReply findQnaReply(Long id) {
-        return qnaReplyRepository
-                .findByIdWithBoardAndMember(id)
-                .orElseThrow(() -> new BaseException(NO_QNA_REPLY));
     }
 
     private void validateQnaReplyIsNull(QnaReply qnaReply) {

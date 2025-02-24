@@ -1,6 +1,7 @@
 package com.onetool.server.api.qna.controller;
 
 import com.onetool.server.api.qna.business.QnaReplyBusiness;
+import com.onetool.server.api.qna.dto.request.ModifyQnaReplyRequest;
 import com.onetool.server.api.qna.dto.request.PostQnaReplyRequest;
 import com.onetool.server.api.qna.dto.request.QnaReplyRequest;
 import com.onetool.server.api.qna.service.QnaReplyService;
@@ -21,26 +22,31 @@ public class QnaReplyController {
     private final QnaReplyBusiness qnaReplyBusiness;
 
     @PostMapping("/reply")
-    public ApiResponse<String> addReply(Principal principal,
-                                   @PathVariable Long qnaId,
-                                   @Valid @RequestBody PostQnaReplyRequest request){
+    public ApiResponse<String> addReply(
+            Principal principal,
+            @PathVariable Long qnaId,
+            @Valid @RequestBody PostQnaReplyRequest request) {
 
-        qnaReplyBusiness.postQnaReply(principal,qnaId,request);
+        qnaReplyBusiness.postQnaReply(principal, qnaId, request);
         return ApiResponse.onSuccess("댓글이 등록됐습니다.");
     }
 
     @DeleteMapping("/reply")
-    public ApiResponse<String> deleteReply(Principal principal,
-                                      @PathVariable Long qnaId,
-                                      @Valid @RequestBody QnaReplyRequest.ModifyQnaReply request){
-        qnaReplyService.deleteReply(principal, qnaId, request);
+    public ApiResponse<String> deleteReply(
+            Principal principal,
+            @PathVariable Long qnaId,
+            @Valid @RequestBody ModifyQnaReplyRequest request) {
+
+        qnaReplyBusiness.deleteQnaReply(principal,qnaId,request);
         return ApiResponse.onSuccess("댓글이 삭제됐습니다.");
     }
 
     @PatchMapping("/reply")
-    public ApiResponse<String> updateReply(Principal principal,
-                                      @PathVariable Long qnaId,
-                                      @Valid @RequestBody QnaReplyRequest.ModifyQnaReply request){
+    public ApiResponse<String> updateReply(
+            Principal principal,
+            @PathVariable Long qnaId,
+            @Valid @RequestBody QnaReplyRequest.ModifyQnaReply request) {
+
         qnaReplyService.updateReply(principal, qnaId, request);
         return ApiResponse.onSuccess("댓글이 수정됐습니다.");
     }
