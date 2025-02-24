@@ -1,5 +1,6 @@
 package com.onetool.server.api.qna;
 
+import com.onetool.server.api.qna.dto.request.PostQnaReplyRequest;
 import com.onetool.server.global.entity.BaseEntity;
 import com.onetool.server.api.member.domain.Member;
 import com.onetool.server.api.qna.dto.request.QnaReplyRequest;
@@ -40,24 +41,24 @@ public class QnaReply extends BaseEntity {
         this.content = content;
     }
 
-    public static QnaReply createReply(QnaReplyRequest.PostQnaReply request){
+    public  QnaReply createReply(PostQnaReplyRequest request){
         return QnaReply.builder()
                 .content(request.content())
                 .build();
     }
 
-    public void addReplyToBoard(QnaBoard qnaBoard){
+    public void assignBoard(QnaBoard qnaBoard){
         this.qnaBoard = qnaBoard;
         qnaBoard.getQnaReplies().add(this);
     }
 
-    public void addReplyToWriter(Member member){
+    public void assignMember(Member member){
         this.member = member;
         this.writer = member.getName();
         member.getQnaReplies().add(this);
     }
 
-    public void deleteReply(){
+    public void unassignMemberAndQnaBoard(){
         member.getQnaReplies().remove(this);
         qnaBoard.getQnaReplies().remove(this);
         this.member = null;

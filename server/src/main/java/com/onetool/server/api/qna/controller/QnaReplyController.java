@@ -1,5 +1,7 @@
 package com.onetool.server.api.qna.controller;
 
+import com.onetool.server.api.qna.business.QnaReplyBusiness;
+import com.onetool.server.api.qna.dto.request.PostQnaReplyRequest;
 import com.onetool.server.api.qna.dto.request.QnaReplyRequest;
 import com.onetool.server.api.qna.service.QnaReplyService;
 import com.onetool.server.global.exception.ApiResponse;
@@ -16,12 +18,14 @@ import java.security.Principal;
 public class QnaReplyController {
 
     private final QnaReplyService qnaReplyService;
+    private final QnaReplyBusiness qnaReplyBusiness;
 
     @PostMapping("/reply")
     public ApiResponse<String> addReply(Principal principal,
                                    @PathVariable Long qnaId,
-                                   @Valid @RequestBody QnaReplyRequest.PostQnaReply request){
-        qnaReplyService.postReply(principal, qnaId, request);
+                                   @Valid @RequestBody PostQnaReplyRequest request){
+
+        qnaReplyBusiness.postQnaReply(principal,qnaId,request);
         return ApiResponse.onSuccess("댓글이 등록됐습니다.");
     }
 
