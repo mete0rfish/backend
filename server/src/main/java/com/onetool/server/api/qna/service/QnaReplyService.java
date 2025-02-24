@@ -13,7 +13,7 @@ public interface QnaReplyService {
 
     void deleteReply(Member member, QnaBoard board, QnaReply qnaReply);
 
-    void updateReply(Principal principal, Long qnaId, QnaReplyRequest.ModifyQnaReply request);
+    void updateReply(Member member, String content, QnaReply qnaReply);
 
     Member findMember(Principal principal);
 

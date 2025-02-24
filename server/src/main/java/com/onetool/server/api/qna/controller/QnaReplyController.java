@@ -45,9 +45,9 @@ public class QnaReplyController {
     public ApiResponse<String> updateReply(
             Principal principal,
             @PathVariable Long qnaId,
-            @Valid @RequestBody QnaReplyRequest.ModifyQnaReply request) {
+            @Valid @RequestBody ModifyQnaReplyRequest request) {
 
-        qnaReplyService.updateReply(principal, qnaId, request);
+        qnaReplyBusiness.updateQnaReply(principal,qnaId,request);
         return ApiResponse.onSuccess("댓글이 수정됐습니다.");
     }
 }

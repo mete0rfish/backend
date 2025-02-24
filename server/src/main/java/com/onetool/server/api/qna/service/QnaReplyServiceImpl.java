@@ -42,14 +42,12 @@ public class QnaReplyServiceImpl implements QnaReplyService {
         qnaReply.unassignMemberAndQnaBoard();
     }
 
-    public void updateReply(
-            Principal principal,
-            Long qnaId,
-            QnaReplyRequest.ModifyQnaReply request) {
+    public void updateReply(Member member, String content, QnaReply qnaReply) {
 
-        QnaReply qnaReply = findQnaReply(request.replyId());
-        qnaReply.validateMemberWithReply("수정예정");
-        qnaReply.updateReply(request.content());
+        validateQnaReplyIsNull(qnaReply);
+        qnaReply.validateMemberWithReply(member);
+
+        qnaReply.updateReply(content);
     }
 
     public QnaReply findQnaReply(Long id) {

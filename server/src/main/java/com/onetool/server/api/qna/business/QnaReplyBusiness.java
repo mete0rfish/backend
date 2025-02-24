@@ -39,4 +39,11 @@ public class QnaReplyBusiness {
 
         qnaReplyService.deleteReply(member, qnaBoard, qnaReply);
     }
+
+    public void updateQnaReply(Principal principal, Long qnaId, ModifyQnaReplyRequest request) {
+        Member member = qnaReplyService.findMember(principal);
+        QnaReply qnaReply = qnaReplyService.findQnaReply(request.replyId());
+
+        qnaReplyService.updateReply(member,request.content(), qnaReply);
+    }
 }

@@ -50,14 +50,14 @@ public class QnaReply extends BaseEntity {
                 .build();
     }
 
+    public void updateReply(String content){
+        this.content = content;
+    }
+
     public void validateMemberWithReply(Member member){
         if(!this.getMember().getEmail().equals(member.getEmail())){
             throw new BaseException(UNAVAILABLE_TO_MODIFY);
         }
-    }
-
-    public void updateReply(String content){
-        this.content = content;
     }
 
     //---------------연관관계 매핑---------------
