@@ -1,6 +1,7 @@
 package com.onetool.server.api.qna.business;
 
 import com.onetool.server.api.member.domain.Member;
+import com.onetool.server.api.member.service.MemberService;
 import com.onetool.server.api.qna.QnaBoard;
 import com.onetool.server.api.qna.converter.QnaBoardConverter;
 import com.onetool.server.api.qna.dto.request.PostQnaBoardRequest;
@@ -19,18 +20,20 @@ import java.util.List;
 public class QnaBoardBusiness {
 
     private final QnaBoardService qnaBoardService;
+    private final MemberService memberService;
+
     private final QnaBoardConverter qnaBoardConverter;
 
     public List<QnaBoardBriefResponse> getQnaBoardBriefList() {
 
-        List<QnaBoard> qnaBoards = qnaBoardService.getAllQnaBoards();
+        List<QnaBoard> qnaBoards = qnaBoardService.findAllQnaBoards();
         return qnaBoardConverter.fromQnaBoardListToBriefResponseList(qnaBoards);
     }
 
     @Transactional
     public void createQnaBoard(Principal principal, PostQnaBoardRequest request) {
 
-        Member member = qnaBoardService.getMemberByPrincipal(principal);
+        Member member = memberService.findMember(principal.getName());
         QnaBoard qnaBoard = qnaBoardConverter.fromRequestToQnaBoard(request);
         qnaBoardService.saveQnaBoard(member, qnaBoard);
     }
@@ -38,8 +41,8 @@ public class QnaBoardBusiness {
     @Transactional
     public QnaBoardDetailResponse getQnaBoardDetail(Principal principal, Long qnaId) {
 
-        Member member = qnaBoardService.getMemberByPrincipal(principal);
-        QnaBoard qnaBoard = qnaBoardService.getQnaBoardById(qnaId);
+        Member member = memberService.findMember(principal.getName());
+        QnaBoard qnaBoard = qnaBoardService.findQnaBoardById(qnaId);
         boolean authorization = qnaBoard.validateMemberCanModify(member);
 
         return qnaBoardConverter.fromQnaBoardToDetailResponse(qnaBoard, authorization);
@@ -48,18 +51,18 @@ public class QnaBoardBusiness {
     @Transactional
     public void removeQnaBoard(Principal principal, Long qnaId) {
 
-        Member member = qnaBoardService.getMemberByPrincipal(principal);
-        QnaBoard qnaBoard = qnaBoardService.getQnaBoardById(qnaId);
+        Member member = memberService.findMember(principal.getName());
+        QnaBoard qnaBoard = qnaBoardService.findQnaBoardById(qnaId);
         qnaBoard.validateMemberCanRemoveOrUpdate(member);
 
-        qnaBoardService.removeQnaBoard(qnaBoard, member);
+        qnaBoardService.deleteQnaBoard(qnaBoard, member);
     }
 
     @Transactional
     public void editQnaBoard(Principal principal, Long qnaId, PostQnaBoardRequest request) {
 
-        Member member = qnaBoardService.getMemberByPrincipal(principal);
-        QnaBoard qnaBoard = qnaBoardService.getQnaBoardById(qnaId);
+        Member member = memberService.findMember(principal.getName());
+        QnaBoard qnaBoard = qnaBoardService.findQnaBoardById(qnaId);
         qnaBoard.validateMemberCanRemoveOrUpdate(member);
 
         qnaBoardService.updateQnaBoard(qnaBoard, request);
