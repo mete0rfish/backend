@@ -3,7 +3,6 @@ package com.onetool.server.api.qna.business;
 import com.onetool.server.api.member.domain.Member;
 import com.onetool.server.api.member.service.MemberService;
 import com.onetool.server.api.qna.QnaBoard;
-import com.onetool.server.api.qna.converter.QnaBoardConverter;
 import com.onetool.server.api.qna.dto.request.PostQnaBoardRequest;
 import com.onetool.server.api.qna.dto.response.QnaBoardBriefResponse;
 import com.onetool.server.api.qna.dto.response.QnaBoardDetailResponse;
@@ -22,19 +21,18 @@ public class QnaBoardBusiness {
     private final QnaBoardService qnaBoardService;
     private final MemberService memberService;
 
-    private final QnaBoardConverter qnaBoardConverter;
 
     public List<QnaBoardBriefResponse> getQnaBoardBriefList() {
 
         List<QnaBoard> qnaBoards = qnaBoardService.findAllQnaBoards();
-        return qnaBoardConverter.fromQnaBoardListToBriefResponseList(qnaBoards);
+        return QnaBoardBriefResponse.fromQnaBoardListToBriefResponseList(qnaBoards);
     }
 
     @Transactional
     public void createQnaBoard(Principal principal, PostQnaBoardRequest request) {
 
         Member member = memberService.findMember(principal.getName());
-        QnaBoard qnaBoard = qnaBoardConverter.fromRequestToQnaBoard(request);
+        QnaBoard qnaBoard = request.toQnaBoard();
         qnaBoardService.saveQnaBoard(member, qnaBoard);
     }
 
@@ -45,7 +43,7 @@ public class QnaBoardBusiness {
         QnaBoard qnaBoard = qnaBoardService.findQnaBoardById(qnaId);
         boolean authorization = qnaBoard.isMyQnaBoard(member);
 
-        return qnaBoardConverter.fromQnaBoardToDetailResponse(qnaBoard, authorization);
+        return QnaBoardDetailResponse.fromQnaBoardToDetailResponse(qnaBoard, authorization);
     }
 
     @Transactional
