@@ -3,7 +3,6 @@ package com.onetool.server.api.qna.controller;
 import com.onetool.server.api.qna.business.QnaReplyBusiness;
 import com.onetool.server.api.qna.dto.request.ModifyQnaReplyRequest;
 import com.onetool.server.api.qna.dto.request.PostQnaReplyRequest;
-import com.onetool.server.api.qna.dto.request.QnaReplyRequest;
 import com.onetool.server.api.qna.service.QnaReplyService;
 import com.onetool.server.global.exception.ApiResponse;
 import jakarta.validation.Valid;
@@ -27,7 +26,7 @@ public class QnaReplyController {
             @PathVariable Long qnaId,
             @Valid @RequestBody PostQnaReplyRequest request) {
 
-        qnaReplyBusiness.postQnaReply(principal, qnaId, request);
+        qnaReplyBusiness.createQnaReply(principal, qnaId, request);
         return ApiResponse.onSuccess("댓글이 등록됐습니다.");
     }
 
@@ -37,7 +36,7 @@ public class QnaReplyController {
             @PathVariable Long qnaId,
             @Valid @RequestBody ModifyQnaReplyRequest request) {
 
-        qnaReplyBusiness.deleteQnaReply(principal,qnaId,request);
+        qnaReplyBusiness.removeQnaReply(principal,qnaId,request);
         return ApiResponse.onSuccess("댓글이 삭제됐습니다.");
     }
 

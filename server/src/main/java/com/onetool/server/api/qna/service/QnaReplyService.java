@@ -24,7 +24,7 @@ public class QnaReplyService {
     private final QnaBoardRepository qnaBoardRepository;
     private final QnaReplyRepository qnaReplyRepository;
 
-    public void saveReply(Member member, QnaBoard qnaBoard, QnaReply qnaReply) {
+    public void saveQnaReply(Member member, QnaBoard qnaBoard, QnaReply qnaReply) {
 
         validateQnaReplyIsNull(qnaReply);
 
@@ -33,35 +33,35 @@ public class QnaReplyService {
         qnaReplyRepository.save(qnaReply);
     }
 
-    public void deleteReply(Member member, QnaBoard qnaBoard, QnaReply qnaReply) {
+    public void deleteQnaReply(Member member, QnaBoard qnaBoard, QnaReply qnaReply) {
 
         validateQnaReplyIsNull(qnaReply);
 
-        qnaReply.validateMemberWithReply(member);
+        qnaReply.validateMemberCanModifyAndDelete(member);
         qnaReply.unassignMemberAndQnaBoard();
     }
 
-    public void updateReply(Member member, String content, QnaReply qnaReply) {
+    public void updateQnaReply(Member member, String content, QnaReply qnaReply) {
 
         validateQnaReplyIsNull(qnaReply);
-        qnaReply.validateMemberWithReply(member);
+        qnaReply.validateMemberCanModifyAndDelete(member);
 
         qnaReply.updateReply(content);
     }
 
-    public QnaReply findQnaReply(Long id) {
+    public QnaReply getQnaReplyById(Long id) {
         return qnaReplyRepository
                 .findByIdWithBoardAndMember(id)
                 .orElseThrow(() -> new BaseException(NO_QNA_REPLY));
     }
 
-    public Member findMember(Principal principal) {
+    public Member getMemberByIdFromQnaReply(Principal principal) {
         return memberRepository
                 .findByEmail(principal.getName())
                 .orElseThrow(() -> new BaseException(NON_EXIST_USER));
     }
 
-    public QnaBoard findQnaBoard(Long id) {
+    public QnaBoard getQnaBoardByIdFromQnaReply(Long id) {
         return qnaBoardRepository
                 .findByIdWithReplies(id)
                 .orElseThrow(() -> new BaseException(NON_EXIST_USER));
@@ -69,7 +69,7 @@ public class QnaReplyService {
 
     private void validateQnaReplyIsNull(QnaReply qnaReply) {
         if (qnaReply == null) {
-            throw new QnaNullPointException("qnaReply는 null입니다. 함수명: saveReply");
+            throw new QnaNullPointException("qnaReply는 null입니다. 함수명: validateQnaReplyIsNull");
         }
     }
 }

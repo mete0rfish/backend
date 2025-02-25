@@ -3,7 +3,6 @@ package com.onetool.server.api.qna.business;
 import com.onetool.server.api.member.domain.Member;
 import com.onetool.server.api.qna.QnaBoard;
 import com.onetool.server.api.qna.QnaReply;
-import com.onetool.server.api.qna.controller.QnaReplyController;
 import com.onetool.server.api.qna.converter.QnaReplyConverter;
 import com.onetool.server.api.qna.dto.request.ModifyQnaReplyRequest;
 import com.onetool.server.api.qna.dto.request.PostQnaReplyRequest;
@@ -22,28 +21,28 @@ public class QnaReplyBusiness {
     private final QnaReplyConverter qnaReplyConverter;
 
     @Transactional
-    public void postQnaReply(Principal principal, Long qnaId, PostQnaReplyRequest request) {
-        Member member = qnaReplyService.findMember(principal);
-        QnaBoard qnaBoard = qnaReplyService.findQnaBoard(qnaId);
+    public void createQnaReply(Principal principal, Long qnaId, PostQnaReplyRequest request) {
+        Member member = qnaReplyService.getMemberByIdFromQnaReply(principal);
+        QnaBoard qnaBoard = qnaReplyService.getQnaBoardByIdFromQnaReply(qnaId);
         QnaReply qnaReply = qnaReplyConverter.fromRequestTooQnaReply(request);
 
-        qnaReplyService.saveReply(member,qnaBoard,qnaReply);
+        qnaReplyService.saveQnaReply(member,qnaBoard,qnaReply);
 
     }
 
     @Transactional
-    public void deleteQnaReply(Principal principal, Long qnaId, ModifyQnaReplyRequest request) {
-        Member member = qnaReplyService.findMember(principal);
-        QnaBoard qnaBoard = qnaReplyService.findQnaBoard(qnaId);
-        QnaReply qnaReply = qnaReplyService.findQnaReply(request.replyId());
+    public void removeQnaReply(Principal principal, Long qnaId, ModifyQnaReplyRequest request) {
+        Member member = qnaReplyService.getMemberByIdFromQnaReply(principal);
+        QnaBoard qnaBoard = qnaReplyService.getQnaBoardByIdFromQnaReply(qnaId);
+        QnaReply qnaReply = qnaReplyService.getQnaReplyById(request.replyId());
 
-        qnaReplyService.deleteReply(member, qnaBoard, qnaReply);
+        qnaReplyService.deleteQnaReply(member, qnaBoard, qnaReply);
     }
 
     public void updateQnaReply(Principal principal, Long qnaId, ModifyQnaReplyRequest request) {
-        Member member = qnaReplyService.findMember(principal);
-        QnaReply qnaReply = qnaReplyService.findQnaReply(request.replyId());
+        Member member = qnaReplyService.getMemberByIdFromQnaReply(principal);
+        QnaReply qnaReply = qnaReplyService.getQnaReplyById(request.replyId());
 
-        qnaReplyService.updateReply(member,request.content(), qnaReply);
+        qnaReplyService.updateQnaReply(member,request.content(), qnaReply);
     }
 }
