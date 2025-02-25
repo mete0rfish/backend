@@ -42,15 +42,22 @@ public interface BlueprintRepository extends JpaRepository<Blueprint, Long> {
     """)
     List<Blueprint> findWithCartBlueprints(@Param("blueprints") List<Blueprint> blueprints);
 
-    @Query(value = "SELECT b FROM Blueprint b WHERE b.categoryId = " +
-            "(SELECT f.id FROM FirstCategory f WHERE f.name = :first) " +
-            "AND b.inspectionStatus = :status")
-    Page<Blueprint> findAllByFirstCategory(@Param("first") String category, @Param("status") InspectionStatus status, Pageable pageable);
+    @Query(value = """
+            SELECT b FROM Blueprint b WHERE b.categoryId = :first
+            AND b.inspectionStatus = :status
+            """)
+    Page<Blueprint> findAllByFirstCategory(@Param("first") Long categoryId, @Param("status") InspectionStatus status, Pageable pageable);
 
-    @Query(value = "SELECT b FROM Blueprint b WHERE b.secondCategory = :second " +
-            "AND b.categoryId = (SELECT f.id FROM FirstCategory f WHERE f.name = :first) " +
-            "AND b.inspectionStatus = :status")
-    Page<Blueprint> findAllBySecondCategory(@Param("first") String firstCategory, @Param("second") String secondCategory, @Param("status") InspectionStatus status, Pageable pageable);
+    @Query(value = """
+        SELECT b FROM Blueprint b
+        WHERE
+            b.categoryId = :first
+            AND b.secondCategory = :second
+            AND b.inspectionStatus = :status
+       """,
+            countQuery = "SELECT count(b.id) FROM Blueprint b WHERE b.inspectionStatus = :status"
+    )
+    Page<Blueprint> findAllBySecondCategory(@Param("first") Long firstCategoryId, @Param("second") String secondCategory, @Param("status") InspectionStatus status, Pageable pageable);
 
     @Query(value = "SELECT count(b) FROM Blueprint b")
     Long countAllBlueprint();

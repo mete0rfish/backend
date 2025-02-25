@@ -1,4 +1,4 @@
-package com.onetool.server;
+package com.onetool.server.data;
 
 import com.onetool.server.api.blueprint.Blueprint;
 import com.onetool.server.api.blueprint.InspectionStatus;
