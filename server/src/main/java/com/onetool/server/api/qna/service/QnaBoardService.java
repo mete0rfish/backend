@@ -1,7 +1,8 @@
 package com.onetool.server.api.qna.service;
 
 import com.onetool.server.api.qna.QnaBoard;
-import com.onetool.server.global.exception.ErrorException;
+import com.onetool.server.api.qna.dto.request.PostQnaBoardRequest;
+import com.onetool.server.global.exception.QnaNullPointException;
 import com.onetool.server.global.exception.base.BaseException;
 import com.onetool.server.api.member.domain.Member;
 import com.onetool.server.api.member.repository.MemberRepository;
@@ -19,13 +20,13 @@ import static com.onetool.server.global.exception.codes.ErrorCode.NO_QNA_CONTENT
 
 @Service
 @RequiredArgsConstructor
-public class QnaBoardService  {
+public class QnaBoardService {
 
     private final QnaBoardRepository qnaBoardRepository;
     private final MemberRepository memberRepository;
 
     @Transactional(readOnly = true)
-    public List<QnaBoard> findAllQnaBoardList() {
+    public List<QnaBoard> getAllQnaBoards() {
         List<QnaBoard> qnaBoards = qnaBoardRepository
                 .findAllQnaBoardsOrderedByCreatedAt();
 
@@ -35,45 +36,48 @@ public class QnaBoardService  {
     }
 
     @Transactional(readOnly = true)
-    public QnaBoard findQnaBoard(Long qnaId) {
+    public QnaBoard getQnaBoardById(Long qnaId) {
         return qnaBoardRepository
                 .findByIdWithReplies(qnaId)
                 .orElseThrow(() -> new BaseException(NO_QNA_CONTENT));
     }
 
     @Transactional(readOnly = true)
-    public Member findMember(Principal principal) {
+    public Member getMemberByPrincipal(Principal principal) {
         return memberRepository
                 .findByEmail(principal.getName())
                 .orElseThrow(() -> new BaseException(NON_EXIST_USER));
     }
 
     @Transactional
-    public void postQna(Member member, QnaBoard qnaBoard) {
+    public void saveQnaBoard(Member member, QnaBoard qnaBoard) {
         Optional.ofNullable(qnaBoard)
-                .orElseThrow(() -> new ErrorException("qnaBoard는 null입니다. 함수명 : postQna"))
+                .orElseThrow(() -> new QnaNullPointException("qnaBoard는 null입니다. 함수명 : saveQnaBoard"))
                 .assignMember(member);
         qnaBoardRepository.save(qnaBoard);
     }
 
     @Transactional
-    public void deleteQna(QnaBoard qnaBoard, Member member) {
+    public void removeQnaBoard(QnaBoard qnaBoard, Member member) {
         Optional.ofNullable(qnaBoard)
-                .orElseThrow(() -> new ErrorException("qnaBoard는 null입니다. 함수명 : postQna"))
+                .orElseThrow(() -> new QnaNullPointException("qnaBoard는 null입니다. 함수명 : removeQnaBoard"))
                 .unassignMember(member);
 
         qnaBoardRepository.delete(qnaBoard);
     }
 
     @Transactional
-    public void updateQna(QnaBoard qnaBoard) {
-        Optional.ofNullable(qnaBoard)
-                .orElseThrow(() -> new ErrorException("qnaBoard는 null입니다. 함수명 : updateQna"));
+    public void updateQnaBoard(QnaBoard qnaBoard, PostQnaBoardRequest request) {
+        if (qnaBoard == null) {
+            throw new QnaNullPointException("qnaBoard는 null입니다. 함수명 : updateQnaBoard");
+        }
+
+        qnaBoard.update(request.title(), request.content());
     }
 
 
     public void hasErrorWithNoContent(List<QnaBoard> data) {
-        if (data.isEmpty())
+        if(data.isEmpty())
             throw new BaseException(NO_QNA_CONTENT);
     }
 }
