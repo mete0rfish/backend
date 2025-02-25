@@ -43,7 +43,7 @@ public class QnaBoardBusiness {
 
         Member member = memberService.findMember(principal.getName());
         QnaBoard qnaBoard = qnaBoardService.findQnaBoardById(qnaId);
-        boolean authorization = qnaBoard.validateMemberCanModify(member);
+        boolean authorization = qnaBoard.isMyQnaBoard(member);
 
         return qnaBoardConverter.fromQnaBoardToDetailResponse(qnaBoard, authorization);
     }

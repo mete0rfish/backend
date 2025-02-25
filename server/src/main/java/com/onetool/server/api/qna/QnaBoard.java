@@ -56,7 +56,7 @@ public class QnaBoard extends BaseEntity {
     }
 
     //todo 예외처리 클래스 새로 생성할 예정 .......
-    public boolean validateMemberCanModify(Member member) {
+    public boolean isMyQnaBoard(Member member) {
         return this.member.getEmail().equals(member.getEmail());
     }
 
