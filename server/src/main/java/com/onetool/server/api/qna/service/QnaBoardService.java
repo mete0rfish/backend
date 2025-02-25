@@ -5,17 +5,14 @@ import com.onetool.server.api.qna.dto.request.PostQnaBoardRequest;
 import com.onetool.server.global.exception.QnaNullPointException;
 import com.onetool.server.global.exception.base.BaseException;
 import com.onetool.server.api.member.domain.Member;
-import com.onetool.server.api.member.repository.MemberRepository;
 import com.onetool.server.api.qna.repository.QnaBoardRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 
-import static com.onetool.server.global.exception.codes.ErrorCode.NON_EXIST_USER;
 import static com.onetool.server.global.exception.codes.ErrorCode.NO_QNA_CONTENT;
 
 @Service
@@ -23,10 +20,9 @@ import static com.onetool.server.global.exception.codes.ErrorCode.NO_QNA_CONTENT
 public class QnaBoardService {
 
     private final QnaBoardRepository qnaBoardRepository;
-    private final MemberRepository memberRepository;
 
     @Transactional(readOnly = true)
-    public List<QnaBoard> getAllQnaBoards() {
+    public List<QnaBoard> findAllQnaBoards() {
         List<QnaBoard> qnaBoards = qnaBoardRepository
                 .findAllQnaBoardsOrderedByCreatedAt();
 
@@ -36,17 +32,10 @@ public class QnaBoardService {
     }
 
     @Transactional(readOnly = true)
-    public QnaBoard getQnaBoardById(Long qnaId) {
+    public QnaBoard findQnaBoardById(Long qnaId) {
         return qnaBoardRepository
                 .findByIdWithReplies(qnaId)
                 .orElseThrow(() -> new BaseException(NO_QNA_CONTENT));
-    }
-
-    @Transactional(readOnly = true)
-    public Member getMemberByPrincipal(Principal principal) {
-        return memberRepository
-                .findByEmail(principal.getName())
-                .orElseThrow(() -> new BaseException(NON_EXIST_USER));
     }
 
     @Transactional
@@ -58,7 +47,7 @@ public class QnaBoardService {
     }
 
     @Transactional
-    public void removeQnaBoard(QnaBoard qnaBoard, Member member) {
+    public void deleteQnaBoard(QnaBoard qnaBoard, Member member) {
         Optional.ofNullable(qnaBoard)
                 .orElseThrow(() -> new QnaNullPointException("qnaBoard는 null입니다. 함수명 : removeQnaBoard"))
                 .unassignMember(member);
@@ -74,7 +63,6 @@ public class QnaBoardService {
 
         qnaBoard.update(request.title(), request.content());
     }
-
 
     public void hasErrorWithNoContent(List<QnaBoard> data) {
         if(data.isEmpty())
