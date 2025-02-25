@@ -4,7 +4,6 @@ import com.onetool.server.api.member.domain.Member;
 import com.onetool.server.api.member.service.MemberService;
 import com.onetool.server.api.qna.QnaBoard;
 import com.onetool.server.api.qna.QnaReply;
-import com.onetool.server.api.qna.converter.QnaReplyConverter;
 import com.onetool.server.api.qna.dto.request.ModifyQnaReplyRequest;
 import com.onetool.server.api.qna.dto.request.PostQnaReplyRequest;
 import com.onetool.server.api.qna.service.QnaBoardService;
