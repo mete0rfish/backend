@@ -17,7 +17,6 @@ import java.security.Principal;
 @RequestMapping("/qna/{qnaId}")
 public class QnaReplyController {
 
-    private final QnaReplyService qnaReplyService;
     private final QnaReplyBusiness qnaReplyBusiness;
 
     @PostMapping("/reply")
