@@ -1,10 +1,8 @@
 package com.onetool.server.api.qna;
 
-import com.onetool.server.api.qna.dto.request.PostQnaBoardRequest;
 import com.onetool.server.global.entity.BaseEntity;
 import com.onetool.server.api.member.domain.Member;
-import com.onetool.server.api.qna.dto.request.QnaBoardRequest;
-import com.onetool.server.global.exception.MemberNotFoundException;
+import com.onetool.server.global.exception.UnAvailableModifyeException;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -52,18 +50,20 @@ public class QnaBoard extends BaseEntity {
         this.views = 0L;
     }
 
-    public void updateQnaBoard(PostQnaBoardRequest request){
-        this.title = request.title();
-        this.content = request.content();
+    public void update(String title, String content) {
+        this.title = title;
+        this.content = content;
     }
 
     //todo 예외처리 클래스 새로 생성할 예정 .......
     public boolean validateMemberCanModify(Member member) {
-        if (!this.member.getEmail().equals(member.getEmail())) {
-            throw new MemberNotFoundException(member.getEmail());
-        }
+        return this.member.getEmail().equals(member.getEmail());
+    }
 
-        return true;
+    public void validateMemberCanRemoveOrUpdate(Member member) {
+        if(!this.member.getEmail().equals(member.getEmail())){
+            throw new UnAvailableModifyeException("해당 유저는 삭제 및 수정 권한이 없습니다.");
+        }
     }
 
     //연관관계 맺고 끊는 함수들

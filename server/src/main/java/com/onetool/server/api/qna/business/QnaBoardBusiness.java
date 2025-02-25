@@ -6,8 +6,6 @@ import com.onetool.server.api.qna.converter.QnaBoardConverter;
 import com.onetool.server.api.qna.dto.request.PostQnaBoardRequest;
 import com.onetool.server.api.qna.dto.response.QnaBoardBriefResponse;
 import com.onetool.server.api.qna.dto.response.QnaBoardDetailResponse;
-import com.onetool.server.api.qna.dto.response.QnaBoardResponse;
-import com.onetool.server.api.qna.dto.response.QnaReplyResponse;
 import com.onetool.server.api.qna.service.QnaBoardService;
 import com.onetool.server.global.annotation.Business;
 import jakarta.transaction.Transactional;
@@ -23,49 +21,48 @@ public class QnaBoardBusiness {
     private final QnaBoardService qnaBoardService;
     private final QnaBoardConverter qnaBoardConverter;
 
-    public List<QnaBoardBriefResponse> getQnaBoardBriefList(){
+    public List<QnaBoardBriefResponse> getQnaBoardBriefList() {
 
-        List<QnaBoard> qnaBoards = qnaBoardService.findAllQnaBoardList();
+        List<QnaBoard> qnaBoards = qnaBoardService.getAllQnaBoards();
         return qnaBoardConverter.fromQnaBoardListToBriefResponseList(qnaBoards);
     }
 
     @Transactional
-    public void postQnaBoard(Principal principal, PostQnaBoardRequest request){
+    public void createQnaBoard(Principal principal, PostQnaBoardRequest request) {
 
-        Member member = qnaBoardService.findMember(principal);
+        Member member = qnaBoardService.getMemberByPrincipal(principal);
         QnaBoard qnaBoard = qnaBoardConverter.fromRequestToQnaBoard(request);
-        qnaBoardService.postQna(member,qnaBoard);
+        qnaBoardService.saveQnaBoard(member, qnaBoard);
     }
 
     @Transactional
-    public QnaBoardDetailResponse getOneQnaBoardDetail(Principal principal, Long qnaId){
+    public QnaBoardDetailResponse getQnaBoardDetail(Principal principal, Long qnaId) {
 
-        Member member = qnaBoardService.findMember(principal);
-        QnaBoard qnaBoard = qnaBoardService.findQnaBoard(qnaId);
+        Member member = qnaBoardService.getMemberByPrincipal(principal);
+        QnaBoard qnaBoard = qnaBoardService.getQnaBoardById(qnaId);
         boolean authorization = qnaBoard.validateMemberCanModify(member);
 
-        return qnaBoardConverter.fromQnaBoardToDetailResponse(qnaBoard,authorization);
+        return qnaBoardConverter.fromQnaBoardToDetailResponse(qnaBoard, authorization);
     }
 
     @Transactional
-    public void deleteQnaBoard(Principal principal, Long qnaId){
+    public void removeQnaBoard(Principal principal, Long qnaId) {
 
-        Member member = qnaBoardService.findMember(principal);
-        QnaBoard qnaBoard = qnaBoardService.findQnaBoard(qnaId);
-        qnaBoard.validateMemberCanModify(member);
+        Member member = qnaBoardService.getMemberByPrincipal(principal);
+        QnaBoard qnaBoard = qnaBoardService.getQnaBoardById(qnaId);
+        qnaBoard.validateMemberCanRemoveOrUpdate(member);
 
-        qnaBoardService.deleteQna(qnaBoard ,member);
+        qnaBoardService.removeQnaBoard(qnaBoard, member);
     }
 
     @Transactional
-    public void updateQnaBoard(Principal principal, Long qnaId, PostQnaBoardRequest request) {
+    public void editQnaBoard(Principal principal, Long qnaId, PostQnaBoardRequest request) {
 
-        Member member = qnaBoardService.findMember(principal);
-        QnaBoard qnaBoard = qnaBoardService.findQnaBoard(qnaId);
-        qnaBoard.validateMemberCanModify(member);
-        qnaBoard.updateQnaBoard(request); //todo 업데이트 하는 과정을 converter의 역할로 부여해야 할까요??
-        //todo service에 부여화는게 나을까요??
-        qnaBoardService.updateQna(qnaBoard);
+        Member member = qnaBoardService.getMemberByPrincipal(principal);
+        QnaBoard qnaBoard = qnaBoardService.getQnaBoardById(qnaId);
+        qnaBoard.validateMemberCanRemoveOrUpdate(member);
+
+        qnaBoardService.updateQnaBoard(qnaBoard, request);
     }
 
 }
