@@ -98,7 +98,7 @@ public class SearchController {
     public ApiResponse<Page<SearchResponse>> searchAllBlueprint(
             @PageableDefault(size = 5, sort = "id", direction = Sort.Direction.DESC) Pageable pageable
     ) {
-        Page<SearchResponse> responses = blueprintSearchService.findAll(pageable);
+        Page<SearchResponse> responses = blueprintSearchBusiness.getSearchResponsePage(pageable);
         return ApiResponse.onSuccess(responses);
     }
 

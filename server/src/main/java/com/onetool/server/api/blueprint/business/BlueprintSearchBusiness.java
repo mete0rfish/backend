@@ -24,7 +24,7 @@ public class BlueprintSearchBusiness {
         Page<Blueprint> blueprintPage = blueprintSearchService.findBlueprintPageByKeywordAndInspection(keyword, pageable);
         List<Blueprint> withOrderBlueprints = blueprintSearchService.findAllBlueprintByBlueprintPage(blueprintPage);
         List<Blueprint> withCartBlueprints = blueprintSearchService.findAllBlueprintByOrderBlueprints(withOrderBlueprints);
-        List<SearchResponse> searchResponseList = SearchResponse.fromBlueprintsToSearchResponseList(withCartBlueprints);
+        List<SearchResponse> searchResponseList = SearchResponse.toSearchResponseList(withCartBlueprints);
 
         return new PageImpl<>(searchResponseList, pageable, blueprintPage.getTotalElements());
     }
@@ -35,7 +35,15 @@ public class BlueprintSearchBusiness {
                 ? blueprintSearchService.findAllBlueprintByFirstCategory(firstCategory.getCategoryId(), pageable)
                 : blueprintSearchService.findAllBlueprintBySecondCategory(firstCategory.getCategoryId(), secondCategory, pageable);
 
-        List<SearchResponse> searchResponseList = SearchResponse.fromBlueprintsToSearchResponseList(blueprintPage.getContent());
+        List<SearchResponse> searchResponseList = SearchResponse.toSearchResponseList(blueprintPage.getContent());
+
+        return new PageImpl<>(searchResponseList, pageable, blueprintPage.getTotalElements());
+    }
+
+    @Transactional
+    public Page<SearchResponse> getSearchResponsePage(Pageable pageable) {
+        Page<Blueprint> blueprintPage = blueprintSearchService.findAllBlueprint(pageable);
+        List<SearchResponse> searchResponseList = SearchResponse.toSearchResponseList(blueprintPage.getContent());
 
         return new PageImpl<>(searchResponseList, pageable, blueprintPage.getTotalElements());
     }

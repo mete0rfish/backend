@@ -18,7 +18,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -92,10 +91,13 @@ public class BlueprintSearchService {
         return blueprintRepository.findWithOrderBlueprints(blueprints);
     }
 
-    public Page<SearchResponse> findAll(Pageable pageable) {
-        Page<Blueprint> result = blueprintRepository.findByInspectionStatus(InspectionStatus.PASSED, pageable);
-        List<SearchResponse> list = SearchResponse.fromBlueprintsToSearchResponseList(result.getContent());
-        return new PageImpl<>(list, pageable, result.getTotalElements());
+    public Page<Blueprint> findAllBlueprint(Pageable pageable) {
+        if (pageable == null) {
+            throw new IllegalArgumentException("pageblae이 NULL 입니다. 함수명 : findAllBlueprint");
+        }
+
+        Page<Blueprint> blueprintPage = blueprintRepository.findByInspectionStatus(InspectionStatus.PASSED, pageable);
+        return blueprintPage;
     }
 
     public Page<Blueprint> findAllBlueprintByFirstCategory(Long firstCategoryId, Pageable pageable) {

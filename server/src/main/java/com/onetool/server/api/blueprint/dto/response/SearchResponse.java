@@ -27,7 +27,7 @@ public record SearchResponse(
         String detailImage
 ) {
 
-    public static List<SearchResponse> fromBlueprintsToSearchResponseList(List<Blueprint> blueprintList){
+    public static List<SearchResponse> toSearchResponseList(List<Blueprint> blueprintList){
         return blueprintList.stream()
                 .map(SearchResponse::from)
                 .collect(Collectors.toList());
