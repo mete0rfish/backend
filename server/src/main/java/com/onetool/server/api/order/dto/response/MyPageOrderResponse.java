@@ -15,10 +15,10 @@ public record MyPageOrderResponse(
         Long totalPrice,
         String status,
         List<String> downloadUrl
-){
-    public static List<MyPageOrderResponse> from(List<Orders> ordersList){
+) {
+    public static List<MyPageOrderResponse> from(List<Orders> ordersList) {
         List<MyPageOrderResponse> dtos = new ArrayList<>();
-        if(isOrderEmpty(ordersList)) {
+        if (isOrderEmpty(ordersList)) {
             return dtos;
         }
 
@@ -43,7 +43,7 @@ public record MyPageOrderResponse(
         int blueprintCount = orders.getOrderItems().size();
         sb.append(firstBlueprintName);
 
-        if(blueprintCount > 1) {
+        if (blueprintCount > 1) {
             sb.append("외 ");
             sb.append(blueprintCount - 1);
             sb.append("개");
@@ -55,5 +55,4 @@ public record MyPageOrderResponse(
     private static boolean isOrderEmpty(List<Orders> ordersList) {
         return ordersList.isEmpty();
     }
-
 }

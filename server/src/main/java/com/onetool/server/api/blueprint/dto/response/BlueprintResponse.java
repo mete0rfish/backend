@@ -1,4 +1,5 @@
 package com.onetool.server.api.blueprint.dto.response;
+
 import com.onetool.server.api.blueprint.Blueprint;
 import lombok.Builder;
 import org.springframework.data.domain.Page;
@@ -26,7 +27,7 @@ public record BlueprintResponse(
         String downloadLink,
         boolean isDeleted,
         String detailImage
-)  {
+) {
 
     @Builder
     public static BlueprintResponse from(Blueprint blueprint) {
@@ -55,7 +56,7 @@ public record BlueprintResponse(
                 .collect(Collectors.toList());
     }
 
-    public static BlueprintResponse items(Blueprint blueprint){
+    public static BlueprintResponse items(Blueprint blueprint) {
         return BlueprintResponse.builder()
                 .id(blueprint.getId())
                 .creatorName(blueprint.getCreatorName())
