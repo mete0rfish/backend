@@ -26,9 +26,8 @@ public class BlueprintSearchBusiness {
         Page<Blueprint> blueprintPage = blueprintSearchService.findAllBlueprintPage(keyword, pageable);
         List<Blueprint> withOrderBlueprints = blueprintSearchService.findAllBlueprintByBlueprintPage(blueprintPage);
         List<Blueprint> withCartBlueprints = blueprintSearchService.findAllBlueprintByBlueprintList(withOrderBlueprints);
-        List<SearchResponse> searchResponseList = SearchResponse.toSearchResponseList(withCartBlueprints);
 
-        return new PageImpl<>(searchResponseList, pageable, blueprintPage.getTotalElements());
+        return getSearchResponsePage(pageable, withCartBlueprints, blueprintPage);
     }
 
     @Transactional
@@ -37,17 +36,14 @@ public class BlueprintSearchBusiness {
                 ? blueprintSearchService.findAllBlueprintPage(firstCategory.getCategoryId(), pageable)
                 : blueprintSearchService.findAllBlueprintPage(firstCategory.getCategoryId(), secondCategory, pageable);
 
-        List<SearchResponse> searchResponseList = SearchResponse.toSearchResponseList(blueprintPage.getContent());
-
-        return new PageImpl<>(searchResponseList, pageable, blueprintPage.getTotalElements());
+        return getSearchResponsePage(pageable, blueprintPage.getContent(), blueprintPage);
     }
 
     @Transactional
     public Page<SearchResponse> getSearchResponsePage(Pageable pageable) {
         Page<Blueprint> blueprintPage = blueprintSearchService.findAllBlueprintPage(pageable);
-        List<SearchResponse> searchResponseList = SearchResponse.toSearchResponseList(blueprintPage.getContent());
 
-        return new PageImpl<>(searchResponseList, pageable, blueprintPage.getTotalElements());
+        return getSearchResponsePage(pageable, blueprintPage.getContent(), blueprintPage);
     }
 
     @Transactional
@@ -69,6 +65,12 @@ public class BlueprintSearchBusiness {
                 : blueprintSearchService.findAllBlueprintPage(category.getCategoryId(), sortedPageable);
 
         return BlueprintResponse.toBlueprintResponseList(blueprintPage.getContent());
+    }
+
+    private PageImpl<SearchResponse> getSearchResponsePage(Pageable pageable, List<Blueprint> withCartBlueprints, Page<Blueprint> blueprintPage) {
+        List<SearchResponse> searchResponseList = SearchResponse.toSearchResponseList(withCartBlueprints);
+
+        return new PageImpl<>(searchResponseList, pageable, blueprintPage.getTotalElements());
     }
 
     private Long getCategoryId(String categoryName) {
