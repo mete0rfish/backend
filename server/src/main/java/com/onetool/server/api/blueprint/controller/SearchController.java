@@ -1,11 +1,13 @@
 package com.onetool.server.api.blueprint.controller;
 
+import com.onetool.server.api.blueprint.business.BlueprintSearchBusiness;
 import com.onetool.server.api.blueprint.dto.response.BlueprintResponse;
 import com.onetool.server.api.blueprint.dto.response.BlueprintSortRequest;
 import com.onetool.server.api.blueprint.dto.response.SearchResponse;
 import com.onetool.server.api.blueprint.service.BlueprintSearchService;
 import com.onetool.server.api.category.FirstCategoryType;
 import com.onetool.server.global.exception.ApiResponse;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,13 +24,11 @@ import java.util.List;
 
 @Slf4j
 @RestController
+@RequiredArgsConstructor
 public class SearchController {
 
     private final BlueprintSearchService blueprintSearchService;
-
-    public SearchController(BlueprintSearchService blueprintSearchService) {
-        this.blueprintSearchService = blueprintSearchService;
-    }
+    private final BlueprintSearchBusiness blueprintSearchBusiness;
 
     @GetMapping("/blueprint")
     public ApiResponse<Page<SearchResponse>> searchWithKeyword(
@@ -37,7 +37,7 @@ public class SearchController {
     ) {
         String decodedKeyword = URLDecoder.decode(keyword, StandardCharsets.UTF_8);
         log.info("Decoded keyword: {}", decodedKeyword);
-        Page<SearchResponse> response = blueprintSearchService.searchNameAndCreatorWithKeyword(decodedKeyword, pageable);
+        Page<SearchResponse> response = blueprintSearchBusiness.getSearchResponsePageWithKeyWordAndCreator(decodedKeyword, pageable);
         return ApiResponse.onSuccess(response);
     }
 
@@ -67,6 +67,7 @@ public class SearchController {
         Page<SearchResponse> responses = blueprintSearchService.findAllByCategory(FirstCategoryType.CATEGORY_INTERIOR, category, pageable);
         return ApiResponse.onSuccess(responses);
     }
+
     @GetMapping("/blueprint/machine")
     public ApiResponse<Page<SearchResponse>> searchMachineCategory(
             @PageableDefault(size = 5, sort = "id", direction = Sort.Direction.DESC)Pageable pageable,

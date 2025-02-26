@@ -9,6 +9,8 @@ import com.onetool.server.api.blueprint.enums.SortType;
 import com.onetool.server.api.blueprint.repository.BlueprintRepository;
 import com.onetool.server.api.category.FirstCategoryType;
 import com.onetool.server.global.exception.BlueprintNotApprovedException;
+import com.onetool.server.global.exception.BlueprintNullPointException;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.*;
 import com.onetool.server.global.exception.BlueprintNotFoundException;
@@ -16,17 +18,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
 @Service
 @Transactional(readOnly = true)
+@RequiredArgsConstructor
 public class BlueprintSearchService {
-    private final BlueprintRepository blueprintRepository;
 
-    public BlueprintSearchService(BlueprintRepository blueprintRepository) {
-        this.blueprintRepository = blueprintRepository;
-    }
+    private final BlueprintRepository blueprintRepository;
 
     public BlueprintResponse findApprovedBlueprintById(Long id) {
         Blueprint blueprint = blueprintRepository.findById(id)
@@ -67,13 +68,28 @@ public class BlueprintSearchService {
                 .collect(Collectors.toList());
     }
 
-    public Page<SearchResponse> searchNameAndCreatorWithKeyword(String keyword, Pageable pageable) {
-        Page<Blueprint> page = blueprintRepository.findAllNameAndCreatorContaining(keyword, InspectionStatus.PASSED, pageable);
-        List<Blueprint> withOrderBlueprints = blueprintRepository.findWithOrderBlueprints(page.getContent());
-        List<Blueprint> withCartBlueprints = blueprintRepository.findWithCartBlueprints(withOrderBlueprints);
+    public Page<Blueprint> findBlueprintPageByKeywordAndInspection(String keyword, Pageable pageable) {
+        if (keyword == null || pageable == null) {
+            throw new IllegalArgumentException("keyword 또는 pageable이 NULL입니다. 함수 명 : findBlueprintPageByKeywordAndInspection");
+        }
 
-        List<SearchResponse> list = convertToSearchResponseList(withCartBlueprints);
-        return new PageImpl<>(list, pageable, page.getTotalElements());
+        return blueprintRepository.findAllNameAndCreatorContaining(keyword, InspectionStatus.PASSED, pageable);
+    }
+
+    public List<Blueprint> findAllBlueprintByBlueprintPage(Page<Blueprint> blueprintPage) {
+        if (blueprintPage == null) {
+            throw new BlueprintNullPointException("blueprintPage가 NULL입니다. 함수 명 : findAllBlueprintByBlueprintPage");
+        }
+
+        return blueprintRepository.findWithOrderBlueprints(blueprintPage.getContent());
+    }
+
+    public List<Blueprint> findAllBlueprintByOrderBlueprints(List<Blueprint> blueprints) {
+        if (blueprints == null) {
+            throw new BlueprintNullPointException("blueprints가 NULL입니다. 함수 명 : findAllBlueprintByOrderBlueprints");
+        }
+
+        return blueprintRepository.findWithOrderBlueprints(blueprints);
     }
 
     public Page<SearchResponse> findAllByCategory(FirstCategoryType firstCategory, String secondCategory, Pageable pageable) {
@@ -85,7 +101,7 @@ public class BlueprintSearchService {
 
     public Page<SearchResponse> findAll(Pageable pageable) {
         Page<Blueprint> result = blueprintRepository.findByInspectionStatus(InspectionStatus.PASSED, pageable);
-        List<SearchResponse> list = convertToSearchResponseList(result.getContent());
+        List<SearchResponse> list = SearchResponse.fromBlueprintsToSearchResponseList(result.getContent());
         return new PageImpl<>(list, pageable, result.getTotalElements());
     }
 
@@ -104,12 +120,6 @@ public class BlueprintSearchService {
                 .map(SearchResponse::from)
                 .collect(Collectors.toList());
         return new PageImpl<>(list, pageable, result.getTotalElements());
-    }
-
-    private List<SearchResponse> convertToSearchResponseList(List<Blueprint> blueprints) {
-        return blueprints.stream()
-                .map(SearchResponse::from)
-                .collect(Collectors.toList());
     }
 
     private Long getCategoryId(String categoryName) {
