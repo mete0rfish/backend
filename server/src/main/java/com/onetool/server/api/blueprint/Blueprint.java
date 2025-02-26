@@ -1,6 +1,7 @@
 package com.onetool.server.api.blueprint;
 
 import com.onetool.server.api.blueprint.dto.request.BlueprintRequest;
+import com.onetool.server.api.blueprint.dto.response.BlueprintResponse;
 import com.onetool.server.api.cart.CartBlueprint;
 import com.onetool.server.global.entity.BaseEntity;
 import com.onetool.server.api.order.OrderBlueprint;
@@ -31,10 +32,10 @@ public class Blueprint extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Column(name="blueprint_name")
+    @Column(name = "blueprint_name")
     private String blueprintName;
 
-    @Column(name="category_id")
+    @Column(name = "category_id")
     private Long categoryId;
 
     @Column(name = "standard_price")
@@ -126,9 +127,27 @@ public class Blueprint extends BaseEntity {
         this.detailImage = detailImage;
     }
 
+    public void updateBlueprint(BlueprintResponse blueprintResponse) {
+        this.blueprintName = blueprintResponse.blueprintName();
+        this.categoryId = blueprintResponse.categoryId();
+        this.standardPrice = blueprintResponse.standardPrice();
+        this.blueprintImg = blueprintResponse.blueprintImg();
+        this.blueprintDetails = blueprintResponse.blueprintDetails();
+        this.extension = blueprintResponse.extension();
+        this.program = blueprintResponse.program();
+        this.hits = blueprintResponse.hits();
+        this.salePrice = blueprintResponse.salePrice();
+        this.saleExpiredDate = blueprintResponse.saleExpiredDate();
+        this.creatorName = blueprintResponse.creatorName();
+        this.downloadLink = blueprintResponse.downloadLink();
+        this.isDeleted = blueprintResponse.isDeleted();
+        this.detailImage = blueprintResponse.detailImage();
+    }
+
     public void approveBlueprint() {
         this.inspectionStatus = InspectionStatus.PASSED;
     }
+
 
     public static Blueprint fromRequest(final BlueprintRequest blueprintRequest) {
         return Blueprint.builder()
