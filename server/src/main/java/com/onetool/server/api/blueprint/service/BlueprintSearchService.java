@@ -2,13 +2,7 @@ package com.onetool.server.api.blueprint.service;
 
 import com.onetool.server.api.blueprint.Blueprint;
 import com.onetool.server.api.blueprint.InspectionStatus;
-import com.onetool.server.api.blueprint.dto.response.BlueprintResponse;
-import com.onetool.server.api.blueprint.dto.response.BlueprintSortRequest;
-import com.onetool.server.api.blueprint.dto.response.SearchResponse;
-import com.onetool.server.api.blueprint.enums.SortType;
 import com.onetool.server.api.blueprint.repository.BlueprintRepository;
-import com.onetool.server.api.category.FirstCategoryType;
-import com.onetool.server.global.exception.BlueprintNotApprovedException;
 import com.onetool.server.global.exception.BlueprintNullPointException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -33,18 +26,6 @@ public class BlueprintSearchService {
                 .orElseThrow(() -> new BlueprintNotFoundException(id.toString()));
     }
 
-    public Page<Blueprint> findAllBlueprintPage(Pageable sortedPageable) {
-        return blueprintRepository.findByInspectionStatus(InspectionStatus.PASSED, sortedPageable);
-    }
-
-    public Page<Blueprint> findBlueprintPageByKeywordAndInspection(String keyword, Pageable pageable) {
-        if (keyword == null || pageable == null) {
-            throw new IllegalArgumentException("keyword 또는 pageable이 NULL입니다. 함수 명 : findBlueprintPageByKeywordAndInspection");
-        }
-
-        return blueprintRepository.findAllNameAndCreatorContaining(keyword, InspectionStatus.PASSED, pageable);
-    }
-
     public List<Blueprint> findAllBlueprintByBlueprintPage(Page<Blueprint> blueprintPage) {
         if (blueprintPage == null) {
             throw new BlueprintNullPointException("blueprintPage가 NULL입니다. 함수 명 : findAllBlueprintByBlueprintPage");
@@ -53,7 +34,7 @@ public class BlueprintSearchService {
         return blueprintRepository.findWithOrderBlueprints(blueprintPage.getContent());
     }
 
-    public List<Blueprint> findAllBlueprintByOrderBlueprints(List<Blueprint> blueprints) {
+    public List<Blueprint> findAllBlueprintByBlueprintList(List<Blueprint> blueprints) {
         if (blueprints == null) {
             throw new BlueprintNullPointException("blueprints가 NULL입니다. 함수 명 : findAllBlueprintByOrderBlueprints");
         }
@@ -61,16 +42,15 @@ public class BlueprintSearchService {
         return blueprintRepository.findWithOrderBlueprints(blueprints);
     }
 
-    public Page<Blueprint> findAllBlueprint(Pageable pageable) {
+    public Page<Blueprint> findAllBlueprintPage(Pageable pageable) {
         if (pageable == null) {
             throw new IllegalArgumentException("pageblae이 NULL 입니다. 함수명 : findAllBlueprint");
         }
 
-        Page<Blueprint> blueprintPage = blueprintRepository.findByInspectionStatus(InspectionStatus.PASSED, pageable);
-        return blueprintPage;
+        return blueprintRepository.findByInspectionStatus(InspectionStatus.PASSED, pageable);
     }
 
-    public Page<Blueprint> findAllBlueprintByFirstCategory(Long firstCategoryId, Pageable pageable) {
+    public Page<Blueprint> findAllBlueprintPage(Long firstCategoryId, Pageable pageable) {
         if (firstCategoryId == null || pageable == null) {
             throw new IllegalArgumentException("firstCategoryId 또는 pageable이 NULL입니다. 함수 명 : findAllBlueprintByFirstCategory");
         }
@@ -78,12 +58,20 @@ public class BlueprintSearchService {
         return blueprintRepository.findAllByFirstCategory(firstCategoryId, InspectionStatus.PASSED, pageable);
     }
 
-    public Page<Blueprint> findAllBlueprintBySecondCategory(Long firstCategoryId, String secondCategory, Pageable pageable) {
+    public Page<Blueprint> findAllBlueprintPage(Long firstCategoryId, String secondCategory, Pageable pageable) {
         if (firstCategoryId == null || secondCategory == null || pageable == null) {
             throw new IllegalArgumentException("firstCategoryId, secondCategory 또는 pageable이 NULL입니다. 함수 명 : findAllBlueprintBySecondCategory");
         }
 
         return blueprintRepository.findAllBySecondCategory(firstCategoryId, secondCategory, InspectionStatus.PASSED, pageable);
+    }
+
+    public Page<Blueprint> findAllBlueprintPage(String keyword, Pageable pageable) {
+        if (keyword == null || pageable == null) {
+            throw new IllegalArgumentException("keyword 또는 pageable이 NULL입니다. 함수 명 : findBlueprintPageByKeywordAndInspection");
+        }
+
+        return blueprintRepository.findAllNameAndCreatorContaining(keyword, InspectionStatus.PASSED, pageable);
     }
 
 }

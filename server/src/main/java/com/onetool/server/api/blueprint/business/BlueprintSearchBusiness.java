@@ -5,7 +5,6 @@ import com.onetool.server.api.blueprint.InspectionStatus;
 import com.onetool.server.api.blueprint.dto.response.BlueprintResponse;
 import com.onetool.server.api.blueprint.dto.response.BlueprintSortRequest;
 import com.onetool.server.api.blueprint.dto.response.SearchResponse;
-import com.onetool.server.api.blueprint.enums.SortType;
 import com.onetool.server.api.blueprint.service.BlueprintSearchService;
 import com.onetool.server.api.category.FirstCategoryType;
 import com.onetool.server.global.annotation.Business;
@@ -23,20 +22,20 @@ public class BlueprintSearchBusiness {
     private final BlueprintSearchService blueprintSearchService;
 
     @Transactional
-    public Page<SearchResponse> getSearchResponsePageWithKeyWordAndCreator(String keyword, Pageable pageable) {
-        Page<Blueprint> blueprintPage = blueprintSearchService.findBlueprintPageByKeywordAndInspection(keyword, pageable);
+    public Page<SearchResponse> getSearchResponsePage(String keyword, Pageable pageable) {
+        Page<Blueprint> blueprintPage = blueprintSearchService.findAllBlueprintPage(keyword, pageable);
         List<Blueprint> withOrderBlueprints = blueprintSearchService.findAllBlueprintByBlueprintPage(blueprintPage);
-        List<Blueprint> withCartBlueprints = blueprintSearchService.findAllBlueprintByOrderBlueprints(withOrderBlueprints);
+        List<Blueprint> withCartBlueprints = blueprintSearchService.findAllBlueprintByBlueprintList(withOrderBlueprints);
         List<SearchResponse> searchResponseList = SearchResponse.toSearchResponseList(withCartBlueprints);
 
         return new PageImpl<>(searchResponseList, pageable, blueprintPage.getTotalElements());
     }
 
     @Transactional
-    public Page<SearchResponse> getSearchResponsePageAllCategory(FirstCategoryType firstCategory, String secondCategory, Pageable pageable) {
+    public Page<SearchResponse> getSearchResponsePage(FirstCategoryType firstCategory, String secondCategory, Pageable pageable) {
         Page<Blueprint> blueprintPage = (secondCategory == null)
-                ? blueprintSearchService.findAllBlueprintByFirstCategory(firstCategory.getCategoryId(), pageable)
-                : blueprintSearchService.findAllBlueprintBySecondCategory(firstCategory.getCategoryId(), secondCategory, pageable);
+                ? blueprintSearchService.findAllBlueprintPage(firstCategory.getCategoryId(), pageable)
+                : blueprintSearchService.findAllBlueprintPage(firstCategory.getCategoryId(), secondCategory, pageable);
 
         List<SearchResponse> searchResponseList = SearchResponse.toSearchResponseList(blueprintPage.getContent());
 
@@ -45,7 +44,7 @@ public class BlueprintSearchBusiness {
 
     @Transactional
     public Page<SearchResponse> getSearchResponsePage(Pageable pageable) {
-        Page<Blueprint> blueprintPage = blueprintSearchService.findAllBlueprint(pageable);
+        Page<Blueprint> blueprintPage = blueprintSearchService.findAllBlueprintPage(pageable);
         List<SearchResponse> searchResponseList = SearchResponse.toSearchResponseList(blueprintPage.getContent());
 
         return new PageImpl<>(searchResponseList, pageable, blueprintPage.getTotalElements());
@@ -67,7 +66,7 @@ public class BlueprintSearchBusiness {
         FirstCategoryType category = (categoryId != null) ? FirstCategoryType.findByCategoryId(categoryId) : null;
         Page<Blueprint> blueprintPage = (category == null)
                 ? blueprintSearchService.findAllBlueprintPage(sortedPageable)
-                : blueprintSearchService.findAllBlueprintByFirstCategory(category.getCategoryId(), sortedPageable);
+                : blueprintSearchService.findAllBlueprintPage(category.getCategoryId(), sortedPageable);
 
         return BlueprintResponse.toBlueprintResponseList(blueprintPage.getContent());
     }
