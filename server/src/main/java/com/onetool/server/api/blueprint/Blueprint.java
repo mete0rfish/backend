@@ -19,6 +19,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Table(indexes = {
+        @Index(name = "idx_blueprint_second_category", columnList = "categoryId, secondCategory, inspectionStatus, isDeleted, id DESC")
+})
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @SQLDelete(sql = "UPDATE Blueprint SET is_deleted = true WHERE id = ?")

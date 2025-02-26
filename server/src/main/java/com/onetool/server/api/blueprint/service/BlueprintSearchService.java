@@ -61,7 +61,7 @@ public class BlueprintSearchService {
     private List<BlueprintResponse> sortBlueprintsWithCategory(Long categoryId, Pageable sortedPageable) {
         FirstCategoryType category = FirstCategoryType.findByCategoryId(categoryId);
         Page<Blueprint> blueprintPage = blueprintRepository.findAllByFirstCategory(
-                category.getType(), InspectionStatus.PASSED, sortedPageable);
+                category.getCategoryId(), InspectionStatus.PASSED, sortedPageable);
         return blueprintPage.stream()
                 .map(BlueprintResponse::from)
                 .collect(Collectors.toList());
@@ -90,7 +90,7 @@ public class BlueprintSearchService {
     }
 
     private Page<SearchResponse> findAllByFirstCategory(FirstCategoryType category, Pageable pageable) {
-        Page<Blueprint> result = blueprintRepository.findAllByFirstCategory(category.getType(), InspectionStatus.PASSED, pageable);
+        Page<Blueprint> result = blueprintRepository.findAllByFirstCategory(category.getCategoryId(), InspectionStatus.PASSED, pageable);
         List<SearchResponse> list = result.getContent().stream()
                 .map(SearchResponse::from)
                 .collect(Collectors.toList());
@@ -99,7 +99,7 @@ public class BlueprintSearchService {
 
     private Page<SearchResponse> findAllBySecondCategory(FirstCategoryType firstCategory, String secondCategory, Pageable pageable) {
         Page<Blueprint> result = blueprintRepository.findAllBySecondCategory(
-                firstCategory.getType(), secondCategory, InspectionStatus.PASSED, pageable);
+                firstCategory.getCategoryId(), secondCategory, InspectionStatus.PASSED, pageable);
         List<SearchResponse> list = result.getContent().stream()
                 .map(SearchResponse::from)
                 .collect(Collectors.toList());
