@@ -1,13 +1,12 @@
-package com.onetool.server.api.blueprint.dto;
+package com.onetool.server.api.blueprint.dto.request;
+
 import com.onetool.server.api.blueprint.Blueprint;
 import lombok.Builder;
-
 
 import java.math.BigInteger;
 import java.time.LocalDateTime;
 
-@Builder
-public record BlueprintResponse(
+public record BlueprintRequest(
         Long id,
         String blueprintName,
         Long categoryId,
@@ -25,8 +24,8 @@ public record BlueprintResponse(
         String detailImage
 )  {
     @Builder
-    public static BlueprintResponse from(Blueprint blueprint) {
-        return new BlueprintResponse(
+    public static BlueprintRequest from(Blueprint blueprint) {
+        return new BlueprintRequest(
                 blueprint.getId(),
                 blueprint.getBlueprintName(),
                 blueprint.getCategoryId(),
@@ -43,16 +42,5 @@ public record BlueprintResponse(
                 blueprint.getIsDeleted(),
                 blueprint.getDetailImage()
         );
-    }
-    public static BlueprintResponse items(Blueprint blueprint){
-        return BlueprintResponse.builder()
-                .id(blueprint.getId())
-                .creatorName(blueprint.getCreatorName())
-                .blueprintName(blueprint.getBlueprintName())
-                .standardPrice(blueprint.getStandardPrice())
-                .salePrice(blueprint.getSalePrice())
-                .blueprintImg(blueprint.getBlueprintImg())
-                .isDeleted(blueprint.getIsDeleted())
-                .build();
     }
 }

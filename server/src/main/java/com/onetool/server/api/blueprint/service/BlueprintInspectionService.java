@@ -1,7 +1,7 @@
 package com.onetool.server.api.blueprint.service;
 
 import com.onetool.server.api.blueprint.Blueprint;
-import com.onetool.server.api.blueprint.dto.BlueprintResponse;
+import com.onetool.server.api.blueprint.dto.response.BlueprintResponse;
 import com.onetool.server.api.blueprint.repository.BlueprintRepository;
 import com.onetool.server.api.blueprint.InspectionStatus;
 import lombok.RequiredArgsConstructor;

@@ -1,6 +1,6 @@
 package com.onetool.server.api.order.dto.response;
 
-import com.onetool.server.api.blueprint.dto.BlueprintResponse;
+import com.onetool.server.api.blueprint.dto.response.BlueprintResponse;
 import com.onetool.server.api.order.Orders;
 import lombok.Builder;
 

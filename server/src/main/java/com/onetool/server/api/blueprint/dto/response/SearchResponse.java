@@ -1,7 +1,6 @@
-package com.onetool.server.api.blueprint.dto;
+package com.onetool.server.api.blueprint.dto.response;
 
 import com.onetool.server.api.blueprint.Blueprint;
-import jakarta.persistence.Column;
 import lombok.Builder;
 
 import java.math.BigInteger;

@@ -1,6 +1,6 @@
 package com.onetool.server.api.blueprint;
 
-import com.onetool.server.api.blueprint.dto.BlueprintRequest;
+import com.onetool.server.api.blueprint.dto.request.BlueprintRequest;
 import com.onetool.server.api.cart.CartBlueprint;
 import com.onetool.server.global.entity.BaseEntity;
 import com.onetool.server.api.order.OrderBlueprint;

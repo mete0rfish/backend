@@ -1,11 +1,7 @@
 package com.onetool.server.api.order.dto.response;
 
-import com.onetool.server.api.blueprint.Blueprint;
-import com.onetool.server.api.blueprint.dto.BlueprintResponse;
-import com.onetool.server.api.member.domain.Member;
-import com.onetool.server.api.member.dto.MemberSimpleInfoDto;
+import com.onetool.server.api.blueprint.dto.response.BlueprintResponse;
 import com.onetool.server.api.order.Orders;
-import com.onetool.server.api.order.dto.request.OrderRequest;
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 
