@@ -1,10 +1,13 @@
 package com.onetool.server.api.blueprint.business;
 
 import com.onetool.server.api.blueprint.Blueprint;
+import com.onetool.server.api.blueprint.InspectionStatus;
+import com.onetool.server.api.blueprint.dto.response.BlueprintResponse;
 import com.onetool.server.api.blueprint.dto.response.SearchResponse;
 import com.onetool.server.api.blueprint.service.BlueprintSearchService;
 import com.onetool.server.api.category.FirstCategoryType;
 import com.onetool.server.global.annotation.Business;
+import com.onetool.server.global.exception.BlueprintNotApprovedException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -46,5 +49,15 @@ public class BlueprintSearchBusiness {
         List<SearchResponse> searchResponseList = SearchResponse.toSearchResponseList(blueprintPage.getContent());
 
         return new PageImpl<>(searchResponseList, pageable, blueprintPage.getTotalElements());
+    }
+
+    @Transactional
+    public BlueprintResponse getApprovedBlueprintResponse(Long blueprintId) {
+        Blueprint blueprint = blueprintSearchService.findBlueprintById(blueprintId);
+        if (blueprint.getInspectionStatus() != InspectionStatus.PASSED) {
+            throw new BlueprintNotApprovedException(blueprintId.toString());
+        }
+
+        return BlueprintResponse.from(blueprint);
     }
 }

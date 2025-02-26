@@ -28,15 +28,9 @@ public class BlueprintSearchService {
 
     private final BlueprintRepository blueprintRepository;
 
-    public BlueprintResponse findApprovedBlueprintById(Long id) {
-        Blueprint blueprint = blueprintRepository.findById(id)
+    public Blueprint findBlueprintById(Long id) {
+        return blueprintRepository.findById(id)
                 .orElseThrow(() -> new BlueprintNotFoundException(id.toString()));
-
-        if (blueprint.getInspectionStatus() != InspectionStatus.PASSED) {
-            throw new BlueprintNotApprovedException(id.toString());
-        }
-
-        return BlueprintResponse.from(blueprint);
     }
 
     public List<BlueprintResponse> sortBlueprints(BlueprintSortRequest request, Pageable pageable) {

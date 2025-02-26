@@ -104,7 +104,7 @@ public class SearchController {
 
     @GetMapping("/blueprint/{id}")
     public ApiResponse<BlueprintResponse> getBlueprintDetails(@PathVariable("id") Long id) {
-        BlueprintResponse blueprintResponseDTO = blueprintSearchService.findApprovedBlueprintById(id);
+        BlueprintResponse blueprintResponseDTO = blueprintSearchBusiness.getApprovedBlueprintResponse(id);
         return ApiResponse.onSuccess(blueprintResponseDTO);
     }
 
