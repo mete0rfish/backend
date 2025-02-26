@@ -92,35 +92,28 @@ public class BlueprintSearchService {
         return blueprintRepository.findWithOrderBlueprints(blueprints);
     }
 
-    public Page<SearchResponse> findAllByCategory(FirstCategoryType firstCategory, String secondCategory, Pageable pageable) {
-        if (secondCategory == null) {
-            return findAllByFirstCategory(firstCategory, pageable);
-        }
-        return findAllBySecondCategory(firstCategory, secondCategory, pageable);
-    }
-
     public Page<SearchResponse> findAll(Pageable pageable) {
         Page<Blueprint> result = blueprintRepository.findByInspectionStatus(InspectionStatus.PASSED, pageable);
         List<SearchResponse> list = SearchResponse.fromBlueprintsToSearchResponseList(result.getContent());
         return new PageImpl<>(list, pageable, result.getTotalElements());
     }
 
-    private Page<SearchResponse> findAllByFirstCategory(FirstCategoryType category, Pageable pageable) {
-        Page<Blueprint> result = blueprintRepository.findAllByFirstCategory(category.getCategoryId(), InspectionStatus.PASSED, pageable);
-        List<SearchResponse> list = result.getContent().stream()
-                .map(SearchResponse::from)
-                .collect(Collectors.toList());
-        return new PageImpl<>(list, pageable, result.getTotalElements());
+    public Page<Blueprint> findAllBlueprintByFirstCategory(Long firstCategoryId, Pageable pageable) {
+        if (firstCategoryId == null || pageable == null) {
+            throw new IllegalArgumentException("firstCategoryId 또는 pageable이 NULL입니다. 함수 명 : findAllBlueprintByFirstCategory");
+        }
+
+        return blueprintRepository.findAllByFirstCategory(firstCategoryId, InspectionStatus.PASSED, pageable);
     }
 
-    private Page<SearchResponse> findAllBySecondCategory(FirstCategoryType firstCategory, String secondCategory, Pageable pageable) {
-        Page<Blueprint> result = blueprintRepository.findAllBySecondCategory(
-                firstCategory.getCategoryId(), secondCategory, InspectionStatus.PASSED, pageable);
-        List<SearchResponse> list = result.getContent().stream()
-                .map(SearchResponse::from)
-                .collect(Collectors.toList());
-        return new PageImpl<>(list, pageable, result.getTotalElements());
+    public Page<Blueprint> findAllBlueprintBySecondCategory(Long firstCategoryId, String secondCategory, Pageable pageable) {
+        if (firstCategoryId == null || secondCategory == null || pageable == null) {
+            throw new IllegalArgumentException("firstCategoryId, secondCategory 또는 pageable이 NULL입니다. 함수 명 : findAllBlueprintBySecondCategory");
+        }
+
+        return blueprintRepository.findAllBySecondCategory(firstCategoryId, secondCategory, InspectionStatus.PASSED, pageable);
     }
+
 
     private Long getCategoryId(String categoryName) {
         if (categoryName == null) {
