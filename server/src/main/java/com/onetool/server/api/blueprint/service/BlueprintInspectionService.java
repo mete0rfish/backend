@@ -34,11 +34,19 @@ public class BlueprintInspectionService {
     }
 
     public void updateBlueprintInspectionStatus(Blueprint blueprint){
+
+        validateBlueprintIsNull(blueprint);
         blueprint.approveBlueprint();
     }
 
-    @Transactional
-    public void rejectBlueprint(Long id) {
+
+    public void deleteBlueprintById(Long id) {
         blueprintRepository.deleteById(id);
+    }
+
+    private void validateBlueprintIsNull(Blueprint blueprint) {
+        if (blueprint == null) {
+            throw new NullPointerException("blueprint 객체는 NULL입니다. 함수명 : validateBlueprintIsNull");
+        }
     }
 }

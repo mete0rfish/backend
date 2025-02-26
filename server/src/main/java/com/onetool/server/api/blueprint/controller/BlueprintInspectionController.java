@@ -19,7 +19,6 @@ import java.util.List;
 @RequestMapping("/admin")
 public class BlueprintInspectionController {
 
-    private final BlueprintInspectionService blueprintInspectionService;
     private final BlueprintInspectionBusiness blueprintInspectionBusiness;
 
     @GetMapping("/inspection")
@@ -37,7 +36,7 @@ public class BlueprintInspectionController {
 
     @DeleteMapping("/inspection")
     public ApiResponse<?> deleteInspection(@RequestBody Long id) {
-        blueprintInspectionService.rejectBlueprint(id);
+        blueprintInspectionBusiness.removeBlueprint(id);
         return ApiResponse.onSuccess("반려(삭제)가 완료되었습니다.");
     }
 }

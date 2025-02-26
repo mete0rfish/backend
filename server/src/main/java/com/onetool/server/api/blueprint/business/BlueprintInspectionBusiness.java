@@ -32,4 +32,8 @@ public class BlueprintInspectionBusiness {
         blueprintInspectionService.updateBlueprintInspectionStatus(blueprint);
     }
 
+    @Transactional
+    public void removeBlueprint(Long blueprintId) {
+        blueprintInspectionService.deleteBlueprintById(blueprintId);
+    }
 }
