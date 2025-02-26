@@ -33,12 +33,10 @@ public class BlueprintInspectionService {
                 .orElseThrow(() -> new BlueprintNotFoundException(blueprintId + "는 DB에 존재하지 않습니다. 함수명 : findBluePrintById"));
     }
 
-    public void updateBlueprintInspectionStatus(Blueprint blueprint){
-
+    public void updateBlueprintInspectionStatus(Blueprint blueprint) {
         validateBlueprintIsNull(blueprint);
         blueprint.approveBlueprint();
     }
-
 
     public void deleteBlueprintById(Long id) {
         blueprintRepository.deleteById(id);

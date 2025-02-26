@@ -4,4 +4,5 @@ public record BlueprintSortRequest(
         String categoryName,
         String sortBy,
         String sortOrder
-) {}
+) {
+}
