@@ -18,6 +18,7 @@ import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Entity
 @Table(indexes = {
@@ -128,20 +129,20 @@ public class Blueprint extends BaseEntity {
     }
 
     public void updateBlueprint(BlueprintResponse blueprintResponse) {
-        this.blueprintName = blueprintResponse.blueprintName();
-        this.categoryId = blueprintResponse.categoryId();
-        this.standardPrice = blueprintResponse.standardPrice();
-        this.blueprintImg = blueprintResponse.blueprintImg();
-        this.blueprintDetails = blueprintResponse.blueprintDetails();
-        this.extension = blueprintResponse.extension();
-        this.program = blueprintResponse.program();
-        this.hits = blueprintResponse.hits();
-        this.salePrice = blueprintResponse.salePrice();
-        this.saleExpiredDate = blueprintResponse.saleExpiredDate();
-        this.creatorName = blueprintResponse.creatorName();
-        this.downloadLink = blueprintResponse.downloadLink();
-        this.isDeleted = blueprintResponse.isDeleted();
-        this.detailImage = blueprintResponse.detailImage();
+        Optional.ofNullable(blueprintResponse.blueprintName()).ifPresent(name -> this.blueprintName = name);
+        Optional.ofNullable(blueprintResponse.categoryId()).ifPresent(id -> this.categoryId = id);
+        Optional.ofNullable(blueprintResponse.standardPrice()).ifPresent(price -> this.standardPrice = price);
+        Optional.ofNullable(blueprintResponse.blueprintImg()).ifPresent(img -> this.blueprintImg = img);
+        Optional.ofNullable(blueprintResponse.blueprintDetails()).ifPresent(details -> this.blueprintDetails = details);
+        Optional.ofNullable(blueprintResponse.extension()).ifPresent(ext -> this.extension = ext);
+        Optional.ofNullable(blueprintResponse.program()).ifPresent(prog -> this.program = prog);
+        Optional.ofNullable(blueprintResponse.hits()).ifPresent(hits -> this.hits = hits);
+        Optional.ofNullable(blueprintResponse.salePrice()).ifPresent(salePrice -> this.salePrice = salePrice);
+        Optional.ofNullable(blueprintResponse.saleExpiredDate()).ifPresent(expiredDate -> this.saleExpiredDate = expiredDate);
+        Optional.ofNullable(blueprintResponse.creatorName()).ifPresent(creator -> this.creatorName = creator);
+        Optional.ofNullable(blueprintResponse.downloadLink()).ifPresent(link -> this.downloadLink = link);
+        Optional.ofNullable(blueprintResponse.isDeleted()).ifPresent(deleted -> this.isDeleted = deleted);
+        Optional.ofNullable(blueprintResponse.detailImage()).ifPresent(detailImg -> this.detailImage = detailImg);
     }
 
     public void approveBlueprint() {
