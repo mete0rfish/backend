@@ -8,7 +8,7 @@ import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 
 @Builder
-@Entity (name = "order_blueprint")
+@Entity(name = "order_blueprint")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
@@ -32,4 +32,23 @@ public class OrderBlueprint extends BaseEntity {
 
     @Column(name = "is_deleted", nullable = false)
     private boolean isDeleted = false;
+
+    public OrderBlueprint(String downloadUrl) {
+        this.downloadUrl = downloadUrl;
+    }
+
+    //연관관계 맺기~~~~~~
+    public void assignOrder(Orders order) {
+        if (this.order != order) {
+            this.order = order;
+            order.getOrderItems().add(this);
+        }
+    }
+
+    public void assignBlueprint(Blueprint blueprint) {
+        if (this.blueprint != blueprint) {
+            this.blueprint = blueprint;
+            blueprint.getOrderBlueprints().add(this);
+        }
+    }
 }

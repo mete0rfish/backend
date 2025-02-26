@@ -1,10 +1,10 @@
 package com.onetool.server.api.order.controller;
 
-import com.onetool.server.api.order.Orders;
+import com.onetool.server.api.order.business.OrderBusiness;
 import com.onetool.server.api.order.dto.request.OrderRequest;
 import com.onetool.server.global.auth.login.PrincipalDetails;
 import com.onetool.server.global.exception.ApiResponse;
-import com.onetool.server.api.order.service.OrderServiceImpl;
+import com.onetool.server.api.order.service.OrderService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -20,24 +20,25 @@ import static com.onetool.server.api.order.dto.response.OrderResponse.*;
 @RequestMapping("/orders")
 public class OrderController {
 
-    private final OrderServiceImpl orderService;
+    private final OrderBusiness orderBusiness;
+    private final OrderService orderService;
 
     @PostMapping
-    public ApiResponse<Long> createOrders(
+    public ApiResponse<Long> ordersPost(
             @AuthenticationPrincipal PrincipalDetails principal,
             @Valid @RequestBody OrderRequest request
     ) {
-        Long orderId = orderService.makeOrder(principal.getContext().getEmail(), request);
+        Long orderId = orderBusiness.createOrder(principal, request);
         return ApiResponse.onSuccess(orderId);
     }
 
     @GetMapping
-    public ApiResponse<List<MyPageOrderResponseDto>> getOrders(@AuthenticationPrincipal PrincipalDetails principal) {
+    public ApiResponse<List<MyPageOrderResponseDto>> ordersGet(@AuthenticationPrincipal PrincipalDetails principal) {
         return ApiResponse.onSuccess(orderService.getMyPageOrder(principal.getContext().getEmail()));
     }
 
     @DeleteMapping
-    public ApiResponse<Long> deleteOrders(
+    public ApiResponse<Long> ordersDelete(
             @RequestBody Long orderId
     ) {
         orderService.deleteOrder(orderId);
