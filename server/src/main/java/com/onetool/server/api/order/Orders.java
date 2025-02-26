@@ -52,7 +52,6 @@ public class Orders extends BaseEntity {
     private boolean isDeleted = false;
 
     public Orders(List<Blueprint> blueprints) {
-
         this.totalCount = blueprints.size();
         this.totalPrice = calcTotalPrice(blueprints);
     }

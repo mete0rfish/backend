@@ -55,5 +55,4 @@ public record MyPageOrderResponse(
     private static boolean isOrderEmpty(List<Orders> ordersList) {
         return ordersList.isEmpty();
     }
-
 }
