@@ -27,7 +27,7 @@ public class BlueprintSearchBusiness {
         List<Blueprint> withOrderBlueprints = blueprintSearchService.findAllBlueprintByBlueprintPage(blueprintPage);
         List<Blueprint> withCartBlueprints = blueprintSearchService.findAllBlueprintByBlueprintList(withOrderBlueprints);
 
-        return getSearchResponsePage(pageable, withCartBlueprints, blueprintPage);
+        return makeBlueprintPage(pageable, withCartBlueprints, blueprintPage);
     }
 
     @Transactional
@@ -36,14 +36,14 @@ public class BlueprintSearchBusiness {
                 ? blueprintSearchService.findAllBlueprintPage(firstCategory.getCategoryId(), pageable)
                 : blueprintSearchService.findAllBlueprintPage(firstCategory.getCategoryId(), secondCategory, pageable);
 
-        return getSearchResponsePage(pageable, blueprintPage.getContent(), blueprintPage);
+        return makeBlueprintPage(pageable, blueprintPage.getContent(), blueprintPage);
     }
 
     @Transactional
     public Page<SearchResponse> getSearchResponsePage(Pageable pageable) {
         Page<Blueprint> blueprintPage = blueprintSearchService.findAllBlueprintPage(pageable);
 
-        return getSearchResponsePage(pageable, blueprintPage.getContent(), blueprintPage);
+        return makeBlueprintPage(pageable, blueprintPage.getContent(), blueprintPage);
     }
 
     @Transactional
@@ -67,8 +67,8 @@ public class BlueprintSearchBusiness {
         return BlueprintResponse.toBlueprintResponseList(blueprintPage.getContent());
     }
 
-    private PageImpl<SearchResponse> getSearchResponsePage(Pageable pageable, List<Blueprint> withCartBlueprints, Page<Blueprint> blueprintPage) {
-        List<SearchResponse> searchResponseList = SearchResponse.toSearchResponseList(withCartBlueprints);
+    private PageImpl<SearchResponse> makeBlueprintPage(Pageable pageable, List<Blueprint> blueprintList, Page<Blueprint> blueprintPage) {
+        List<SearchResponse> searchResponseList = SearchResponse.toSearchResponseList(blueprintList);
 
         return new PageImpl<>(searchResponseList, pageable, blueprintPage.getTotalElements());
     }
