@@ -23,7 +23,6 @@ public class BlueprintService {
 
     public List<Blueprint> findAllBlueprintByIds(Set<Long> blueprintIds) {
         List<Blueprint> blueprintList = blueprintRepository.findAllById(blueprintIds);
-
         if (blueprintList.size() != blueprintIds.size()) {
             throw new BlueprintNotFoundException("요청 하신 Blueprint중 일부가 존재하지 않습니다.");
         }

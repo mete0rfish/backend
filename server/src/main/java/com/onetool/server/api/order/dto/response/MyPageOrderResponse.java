@@ -15,10 +15,10 @@ public record MyPageOrderResponse(
         Long totalPrice,
         String status,
         List<String> downloadUrl
-) {
-    public static List<MyPageOrderResponse> from(List<Orders> ordersList) {
+){
+    public static List<MyPageOrderResponse> from(List<Orders> ordersList){
         List<MyPageOrderResponse> dtos = new ArrayList<>();
-        if (isOrderEmpty(ordersList)) {
+        if(isOrderEmpty(ordersList)) {
             return dtos;
         }
 
