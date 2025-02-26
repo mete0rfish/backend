@@ -77,7 +77,7 @@ public class Orders extends BaseEntity {
     public void assignMember(Member member) {
         if (this.member != member) {
             this.member = member;
-            member.assignOrders(this);
+            member.getOrders().add(this);
         }
     }
 }
