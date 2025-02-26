@@ -51,9 +51,19 @@ public class Orders extends BaseEntity {
     @Column(name = "is_deleted", nullable = false)
     private boolean isDeleted = false;
 
+    public Orders(List<Blueprint> blueprints) {
+
+        this.totalCount = blueprints.size();
+        this.totalPrice = calcTotalPrice(blueprints);
+    }
+
+    private Long calcTotalPrice(List<Blueprint> blueprints) {
+        return blueprints.stream().mapToLong(Blueprint::getStandardPrice).sum();
+    }
+
     public List<String> getOrderItemsDownloadLinks() {
         List<String> orderItemsDownloadLinks = new ArrayList<>();
-        if(this.getStatus() == PaymentStatus.PAY_DONE) {
+        if (this.getStatus() == PaymentStatus.PAY_DONE) {
             this.orderItems.forEach(orderBlueprint ->
                     orderItemsDownloadLinks.add(
                             orderBlueprint.getDownloadUrl())
@@ -61,5 +71,13 @@ public class Orders extends BaseEntity {
             );
         }
         return orderItemsDownloadLinks;
+    }
+
+    //연관관계 맺기~~~~~~~~~
+    public void assignMember(Member member) {
+        if (this.member != member) {
+            this.member = member;
+            member.getOrders().add(this);
+        }
     }
 }
