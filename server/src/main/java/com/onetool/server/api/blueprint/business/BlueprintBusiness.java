@@ -6,4 +6,5 @@ import lombok.RequiredArgsConstructor;
 @Business
 @RequiredArgsConstructor
 public class BlueprintBusiness {
+
 }

@@ -4,6 +4,7 @@ import com.onetool.server.api.blueprint.Blueprint;
 import com.onetool.server.api.blueprint.dto.response.BlueprintResponse;
 import com.onetool.server.api.blueprint.repository.BlueprintRepository;
 import com.onetool.server.api.blueprint.InspectionStatus;
+import com.onetool.server.global.exception.BlueprintNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -22,17 +23,18 @@ public class BlueprintInspectionService {
     private final BlueprintRepository blueprintRepository;
 
     @Transactional
-    public List<BlueprintResponse> findAllNotPassedBlueprints(Pageable pageable){
-        Page<Blueprint> blueprints = blueprintRepository.findByInspectionStatus(InspectionStatus.NONE, pageable);
-
-        return blueprints.stream()
-                .map(BlueprintResponse::from)
-                .collect(Collectors.toList());
+    public Page<Blueprint> findAllNotPassedBlueprintsWithPage(Pageable pageable) {
+        Page<Blueprint> blueprintPage = blueprintRepository.findByInspectionStatus(InspectionStatus.NONE, pageable);
+        return blueprintPage;
     }
 
-    @Transactional
-    public void approveBlueprint(Long id) {
-        blueprintRepository.findById(id).ifPresent(Blueprint::approveBlueprint);
+    public Blueprint findBluePrintById(Long blueprintId) {
+        return blueprintRepository.findById(blueprintId)
+                .orElseThrow(() -> new BlueprintNotFoundException(blueprintId + "는 DB에 존재하지 않습니다. 함수명 : findBluePrintById"));
+    }
+
+    public void updateBlueprintInspectionStatus(Blueprint blueprint){
+        blueprint.approveBlueprint();
     }
 
     @Transactional

@@ -1,10 +1,13 @@
 package com.onetool.server.api.blueprint.dto.response;
 import com.onetool.server.api.blueprint.Blueprint;
 import lombok.Builder;
+import org.springframework.data.domain.Page;
 
 
 import java.math.BigInteger;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Builder
 public record BlueprintResponse(
@@ -24,6 +27,7 @@ public record BlueprintResponse(
         boolean isDeleted,
         String detailImage
 )  {
+
     @Builder
     public static BlueprintResponse from(Blueprint blueprint) {
         return new BlueprintResponse(
@@ -44,6 +48,13 @@ public record BlueprintResponse(
                 blueprint.getDetailImage()
         );
     }
+
+    public static List<BlueprintResponse> fromBlueprintPageToResponseList(Page<Blueprint> blueprintPage) {
+        return blueprintPage.stream()
+                .map(BlueprintResponse::from)
+                .collect(Collectors.toList());
+    }
+
     public static BlueprintResponse items(Blueprint blueprint){
         return BlueprintResponse.builder()
                 .id(blueprint.getId())
