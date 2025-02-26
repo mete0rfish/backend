@@ -8,6 +8,9 @@ import com.onetool.server.global.exception.BlueprintNotFoundException;
 import org.springframework.stereotype.Service;
 import jakarta.transaction.Transactional;
 
+import java.util.List;
+import java.util.Set;
+
 
 @Service
 @Transactional
@@ -17,6 +20,15 @@ public class BlueprintService {
     public BlueprintService(BlueprintRepository blueprintRepository) {
         this.blueprintRepository = blueprintRepository;
     }
+
+   public List<Blueprint> findAllBlueprintByIds(Set<Long> blueprintIds){
+       List<Blueprint> blueprintList = blueprintRepository.findAllById(blueprintIds);
+
+       if(blueprintList.size() != blueprintIds.size()){
+           throw new BlueprintNotFoundException("요청 하신 Blueprint중 일부가 존재하지 않습니다.");
+       }
+       return blueprintList;
+   }
 
     public void createBlueprint(final BlueprintRequest blueprintRequest) {
         Blueprint blueprint = convertToBlueprint(blueprintRequest);
