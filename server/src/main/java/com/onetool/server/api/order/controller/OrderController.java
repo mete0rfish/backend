@@ -2,6 +2,7 @@ package com.onetool.server.api.order.controller;
 
 import com.onetool.server.api.order.business.OrderBusiness;
 import com.onetool.server.api.order.dto.request.OrderRequest;
+import com.onetool.server.api.order.dto.response.MyPageOrderResponse;
 import com.onetool.server.global.auth.login.PrincipalDetails;
 import com.onetool.server.global.exception.ApiResponse;
 import com.onetool.server.api.order.service.OrderService;
@@ -12,8 +13,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static com.onetool.server.api.order.dto.response.OrderResponse.*;
-
 
 @RestController
 @RequiredArgsConstructor
@@ -21,7 +20,6 @@ import static com.onetool.server.api.order.dto.response.OrderResponse.*;
 public class OrderController {
 
     private final OrderBusiness orderBusiness;
-    private final OrderService orderService;
 
     @PostMapping
     public ApiResponse<Long> ordersPost(
@@ -33,15 +31,17 @@ public class OrderController {
     }
 
     @GetMapping
-    public ApiResponse<List<MyPageOrderResponseDto>> ordersGet(@AuthenticationPrincipal PrincipalDetails principal) {
-        return ApiResponse.onSuccess(orderService.getMyPageOrder(principal.getContext().getEmail()));
+    public ApiResponse<List<MyPageOrderResponse>> ordersGet(@AuthenticationPrincipal PrincipalDetails principal) {
+
+        List<MyPageOrderResponse> myPageOrderResponseList = orderBusiness.getMyPageOrderResponseList(principal);
+        return ApiResponse.onSuccess(myPageOrderResponseList);
     }
 
     @DeleteMapping
     public ApiResponse<Long> ordersDelete(
             @RequestBody Long orderId
     ) {
-        orderService.deleteOrder(orderId);
+        orderBusiness.removeOrders(orderId);
         return ApiResponse.onSuccess(orderId);
     }
 }
