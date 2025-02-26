@@ -33,32 +33,8 @@ public class BlueprintSearchService {
                 .orElseThrow(() -> new BlueprintNotFoundException(id.toString()));
     }
 
-    public List<BlueprintResponse> sortBlueprints(BlueprintSortRequest request, Pageable pageable) {
-        Long categoryId = getCategoryId(request.categoryName());
-        Sort sort = SortType.getSortBySortType(SortType.valueOf(request.sortBy().toUpperCase()), request.sortOrder());
-        Pageable sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort);
-
-        if (categoryId == null) {
-            return sortBlueprintsWithoutCategory(sortedPageable);
-        }
-
-        return sortBlueprintsWithCategory(categoryId, sortedPageable);
-    }
-
-    private List<BlueprintResponse> sortBlueprintsWithoutCategory(Pageable sortedPageable) {
-        Page<Blueprint> blueprintPage = blueprintRepository.findByInspectionStatus(InspectionStatus.PASSED, sortedPageable);
-        return blueprintPage.stream()
-                .map(BlueprintResponse::from)
-                .collect(Collectors.toList());
-    }
-
-    private List<BlueprintResponse> sortBlueprintsWithCategory(Long categoryId, Pageable sortedPageable) {
-        FirstCategoryType category = FirstCategoryType.findByCategoryId(categoryId);
-        Page<Blueprint> blueprintPage = blueprintRepository.findAllByFirstCategory(
-                category.getCategoryId(), InspectionStatus.PASSED, sortedPageable);
-        return blueprintPage.stream()
-                .map(BlueprintResponse::from)
-                .collect(Collectors.toList());
+    public Page<Blueprint> findAllBlueprintPage(Pageable sortedPageable) {
+        return blueprintRepository.findByInspectionStatus(InspectionStatus.PASSED, sortedPageable);
     }
 
     public Page<Blueprint> findBlueprintPageByKeywordAndInspection(String keyword, Pageable pageable) {
@@ -110,11 +86,4 @@ public class BlueprintSearchService {
         return blueprintRepository.findAllBySecondCategory(firstCategoryId, secondCategory, InspectionStatus.PASSED, pageable);
     }
 
-
-    private Long getCategoryId(String categoryName) {
-        if (categoryName == null) {
-            return null;
-        }
-        return FirstCategoryType.findByType(categoryName).getCategoryId();
-    }
 }

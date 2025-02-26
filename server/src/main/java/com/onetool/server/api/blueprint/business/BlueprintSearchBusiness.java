@@ -3,16 +3,16 @@ package com.onetool.server.api.blueprint.business;
 import com.onetool.server.api.blueprint.Blueprint;
 import com.onetool.server.api.blueprint.InspectionStatus;
 import com.onetool.server.api.blueprint.dto.response.BlueprintResponse;
+import com.onetool.server.api.blueprint.dto.response.BlueprintSortRequest;
 import com.onetool.server.api.blueprint.dto.response.SearchResponse;
+import com.onetool.server.api.blueprint.enums.SortType;
 import com.onetool.server.api.blueprint.service.BlueprintSearchService;
 import com.onetool.server.api.category.FirstCategoryType;
 import com.onetool.server.global.annotation.Business;
 import com.onetool.server.global.exception.BlueprintNotApprovedException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
 
 import java.util.List;
 
@@ -59,5 +59,23 @@ public class BlueprintSearchBusiness {
         }
 
         return BlueprintResponse.from(blueprint);
+    }
+
+    @Transactional
+    public List<BlueprintResponse> getSortedBluePrintList(BlueprintSortRequest request, Pageable sortedPageable) {
+        Long categoryId = getCategoryId(request.categoryName());
+        FirstCategoryType category = (categoryId != null) ? FirstCategoryType.findByCategoryId(categoryId) : null;
+        Page<Blueprint> blueprintPage = (category == null)
+                ? blueprintSearchService.findAllBlueprintPage(sortedPageable)
+                : blueprintSearchService.findAllBlueprintByFirstCategory(category.getCategoryId(), sortedPageable);
+
+        return BlueprintResponse.toBlueprintResponseList(blueprintPage.getContent());
+    }
+
+    private Long getCategoryId(String categoryName) {
+        if (categoryName == null) {
+            return null;
+        }
+        return FirstCategoryType.findByType(categoryName).getCategoryId();
     }
 }

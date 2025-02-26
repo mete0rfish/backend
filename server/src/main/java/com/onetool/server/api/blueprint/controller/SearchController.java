@@ -4,12 +4,14 @@ import com.onetool.server.api.blueprint.business.BlueprintSearchBusiness;
 import com.onetool.server.api.blueprint.dto.response.BlueprintResponse;
 import com.onetool.server.api.blueprint.dto.response.BlueprintSortRequest;
 import com.onetool.server.api.blueprint.dto.response.SearchResponse;
+import com.onetool.server.api.blueprint.enums.SortType;
 import com.onetool.server.api.blueprint.service.BlueprintSearchService;
 import com.onetool.server.api.category.FirstCategoryType;
 import com.onetool.server.global.exception.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -116,7 +118,9 @@ public class SearchController {
             Pageable pageable
     ) {
         BlueprintSortRequest request = new BlueprintSortRequest(categoryName, sortBy, sortOrder);
-        List<BlueprintResponse> sortedItems = blueprintSearchService.sortBlueprints(request, pageable);
+        Sort sort = SortType.getSortBySortType(SortType.valueOf(request.sortBy().toUpperCase()), request.sortOrder());
+        Pageable sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort);
+        List<BlueprintResponse> sortedItems = blueprintSearchBusiness.getSortedBluePrintList(request, sortedPageable);
         return ApiResponse.onSuccess(sortedItems);
     }
 }
