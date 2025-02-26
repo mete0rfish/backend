@@ -32,7 +32,6 @@ public class OrderController {
 
     @GetMapping
     public ApiResponse<List<MyPageOrderResponse>> ordersGet(@AuthenticationPrincipal PrincipalDetails principal) {
-
         List<MyPageOrderResponse> myPageOrderResponseList = orderBusiness.getMyPageOrderResponseList(principal);
         return ApiResponse.onSuccess(myPageOrderResponseList);
     }

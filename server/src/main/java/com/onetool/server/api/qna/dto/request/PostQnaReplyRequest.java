@@ -13,5 +13,4 @@ public record PostQnaReplyRequest(
                 .content(request.content())
                 .build();
     }
-
 }
