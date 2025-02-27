@@ -11,7 +11,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -37,7 +36,7 @@ public class PaymentBusiness {
     @Transactional
     public Long createPayment(PaymentRequest request) {
         Payment payment = request.toEntity(request, orderService);
-        return paymentService.save(payment).getId(); // save()만 PaymentService
+        return paymentService.save(payment).getId();
     }
 
     @Transactional
