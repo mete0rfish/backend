@@ -1,11 +1,12 @@
-package com.onetool.server.api.blueprint.dto;
+package com.onetool.server.api.blueprint.dto.response;
 
 import com.onetool.server.api.blueprint.Blueprint;
-import jakarta.persistence.Column;
 import lombok.Builder;
 
 import java.math.BigInteger;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Builder
 public record SearchResponse(
@@ -25,6 +26,12 @@ public record SearchResponse(
         String secondCategory,
         String detailImage
 ) {
+
+    public static List<SearchResponse> toSearchResponseList(List<Blueprint> blueprintList){
+        return blueprintList.stream()
+                .map(SearchResponse::from)
+                .collect(Collectors.toList());
+    }
 
     public static SearchResponse from(Blueprint blueprint) {
         return SearchResponse.builder()

@@ -43,7 +43,7 @@ public record MyPageOrderResponse(
         int blueprintCount = orders.getOrderItems().size();
         sb.append(firstBlueprintName);
 
-        if(blueprintCount > 1) {
+        if (blueprintCount > 1) {
             sb.append("외 ");
             sb.append(blueprintCount - 1);
             sb.append("개");

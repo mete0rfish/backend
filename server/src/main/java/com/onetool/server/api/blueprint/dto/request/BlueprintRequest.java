@@ -1,4 +1,4 @@
-package com.onetool.server.api.blueprint.dto;
+package com.onetool.server.api.blueprint.dto.request;
 
 import com.onetool.server.api.blueprint.Blueprint;
 import lombok.Builder;
@@ -22,7 +22,7 @@ public record BlueprintRequest(
         String downloadLink,
         boolean isDeleted,
         String detailImage
-)  {
+) {
     @Builder
     public static BlueprintRequest from(Blueprint blueprint) {
         return new BlueprintRequest(

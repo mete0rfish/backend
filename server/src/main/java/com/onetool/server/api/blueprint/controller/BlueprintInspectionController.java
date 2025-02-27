@@ -1,9 +1,12 @@
 package com.onetool.server.api.blueprint.controller;
 
-import com.onetool.server.api.blueprint.dto.BlueprintResponse;
+import com.onetool.server.api.blueprint.Blueprint;
+import com.onetool.server.api.blueprint.business.BlueprintInspectionBusiness;
+import com.onetool.server.api.blueprint.dto.response.BlueprintResponse;
 import com.onetool.server.api.blueprint.service.BlueprintInspectionService;
 import com.onetool.server.global.exception.ApiResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -16,24 +19,24 @@ import java.util.List;
 @RequestMapping("/admin")
 public class BlueprintInspectionController {
 
-    private final BlueprintInspectionService blueprintInspectionService;
+    private final BlueprintInspectionBusiness blueprintInspectionBusiness;
 
     @GetMapping("/inspection")
-    public ApiResponse<List<BlueprintResponse>> getNotPassedBlueprints(
+    public ApiResponse<List<BlueprintResponse>> getInspection(
             @PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
-        List<BlueprintResponse> responses = blueprintInspectionService.findAllNotPassedBlueprints(pageable);
-        return ApiResponse.onSuccess(responses);
+        List<BlueprintResponse> blueprintResponseList = blueprintInspectionBusiness.getNotPassedBlueprintList(pageable);
+        return ApiResponse.onSuccess(blueprintResponseList);
     }
 
     @PostMapping("/inspection")
-    public ApiResponse<?> approveBlueprint(@RequestBody Long id) {
-        blueprintInspectionService.approveBlueprint(id);
+    public ApiResponse<?> postInspection(@RequestBody Long id) {
+        blueprintInspectionBusiness.editBlueprintWithApprove(id);
         return ApiResponse.onSuccess("승인이 완료되었습니다");
     }
 
     @DeleteMapping("/inspection")
-    public ApiResponse<?> rejectBlueprint(@RequestBody Long id) {
-        blueprintInspectionService.rejectBlueprint(id);
+    public ApiResponse<?> deleteInspection(@RequestBody Long id) {
+        blueprintInspectionBusiness.removeBlueprint(id);
         return ApiResponse.onSuccess("반려(삭제)가 완료되었습니다.");
     }
 }

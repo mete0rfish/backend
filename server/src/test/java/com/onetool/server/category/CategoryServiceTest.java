@@ -2,7 +2,7 @@ package com.onetool.server.category;
 
 import com.onetool.server.api.blueprint.service.BlueprintSearchService;
 import com.onetool.server.api.blueprint.service.BlueprintService;
-import com.onetool.server.api.blueprint.dto.SearchResponse;
+import com.onetool.server.api.blueprint.dto.response.SearchResponse;
 import com.onetool.server.api.category.FirstCategoryType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

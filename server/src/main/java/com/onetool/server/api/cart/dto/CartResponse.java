@@ -1,6 +1,6 @@
 package com.onetool.server.api.cart.dto;
 
-import com.onetool.server.api.blueprint.dto.BlueprintResponse;
+import com.onetool.server.api.blueprint.dto.response.BlueprintResponse;
 import com.onetool.server.api.cart.CartBlueprint;
 import lombok.Builder;
 
