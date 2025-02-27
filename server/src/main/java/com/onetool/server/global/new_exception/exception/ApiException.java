@@ -9,11 +9,11 @@ public class ApiException extends RuntimeException {
     private final ErrorCodeIfs errorCode;
     private String customErrorMessage;
 
-    private ApiException(ErrorCodeIfs code) {
+    public ApiException(ErrorCodeIfs code) {
         this.errorCode = code;
     }
 
-    private ApiException(ErrorCodeIfs code, final String message) {
+    public ApiException(ErrorCodeIfs code, final String message) {
         this.errorCode = code;
         this.customErrorMessage = message;
     }

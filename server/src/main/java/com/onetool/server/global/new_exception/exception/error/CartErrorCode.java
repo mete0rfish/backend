@@ -8,7 +8,7 @@ import static org.springframework.http.HttpStatus.NO_CONTENT;
 
 @AllArgsConstructor
 @Getter
-public enum CartErrorCode {
+public enum CartErrorCode implements ErrorCodeIfs{
 
     //장바구니 에러
     NO_ITEM_IN_CART(NO_CONTENT, "CART-0000", "장바구니에 상품이 없습니다."),

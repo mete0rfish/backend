@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 
 @Getter
 @AllArgsConstructor
-public enum EmailErrorCode {
+public enum EmailErrorCode implements ErrorCodeIfs{
 
     // 이메일 관련
     EMAIL_ERROR(HttpStatus.BAD_REQUEST, "EMAIL-0001", "이메일 전송 중 오류가 발생했습니다."),

@@ -9,7 +9,7 @@ import static org.springframework.http.HttpStatus.NO_CONTENT;
 
 @AllArgsConstructor
 @Getter
-public enum QnaErrorCode {
+public enum QnaErrorCode implements ErrorCodeIfs{
 
     //Qna 에러
     NO_QNA_CONTENT(NO_CONTENT, "QNA-0000", "게시된 문의사항이 없습니다."),
