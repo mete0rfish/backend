@@ -6,6 +6,7 @@ import com.onetool.server.global.exception.QnaNullPointException;
 import com.onetool.server.global.exception.base.BaseException;
 import com.onetool.server.api.member.domain.Member;
 import com.onetool.server.api.qna.repository.QnaBoardRepository;
+import com.onetool.server.global.exception.codes.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,7 +14,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
-import static com.onetool.server.global.exception.codes.ErrorCode.NO_QNA_CONTENT;
+import static com.onetool.server.global.new_exception.exception.error.QnaErrorCode.NO_QNA_CONTENT;
+
 
 @Service
 @RequiredArgsConstructor
@@ -35,7 +37,7 @@ public class QnaBoardService {
     public QnaBoard findQnaBoardById(Long qnaId) {
         return qnaBoardRepository
                 .findByIdWithReplies(qnaId)
-                .orElseThrow(() -> new BaseException(NO_QNA_CONTENT));
+                .orElseThrow(() -> new BaseException(ErrorCode.NO_QNA_REPLY));
     }
 
     @Transactional
@@ -66,6 +68,6 @@ public class QnaBoardService {
 
     public void hasErrorWithNoContent(List<QnaBoard> data) {
         if(data.isEmpty())
-            throw new BaseException(NO_QNA_CONTENT);
+            throw new BaseException(ErrorCode.NO_QNA_REPLY);
     }
 }
