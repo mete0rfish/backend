@@ -25,7 +25,7 @@ import static com.onetool.server.global.exception.codes.ErrorCode.*;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class CartServiceImpl implements CartService{
+public class CartService implements CartService{
 
     private final CartRepository cartRepository;
     private final MemberRepository memberRepository;
@@ -60,7 +60,7 @@ public class CartServiceImpl implements CartService{
 
     @Transactional
     public String deleteBlueprintInCart(MemberAuthContext user,
-                                      Long blueprintId){
+                                        Long blueprintId){
 
         Member member = findMemberWithCart(user.getId());
         Cart cart = member.getCart();
