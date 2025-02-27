@@ -23,23 +23,20 @@ public class QnaBoardBusiness {
 
 
     public List<QnaBoardBriefResponse> getQnaBoardBriefList() {
-
         List<QnaBoard> qnaBoards = qnaBoardService.findAllQnaBoards();
         return QnaBoardBriefResponse.fromQnaBoardListToBriefResponseList(qnaBoards);
     }
 
     @Transactional
-    public void createQnaBoard(Principal principal, PostQnaBoardRequest request) {
-
-        Member member = memberService.findMember(principal.getName());
+    public void createQnaBoard(String email, PostQnaBoardRequest request) {
+        Member member = memberService.findByEmail(email);
         QnaBoard qnaBoard = request.toQnaBoard();
         qnaBoardService.saveQnaBoard(member, qnaBoard);
     }
 
     @Transactional
-    public QnaBoardDetailResponse getQnaBoardDetail(Principal principal, Long qnaId) {
-
-        Member member = memberService.findMember(principal.getName());
+    public QnaBoardDetailResponse getQnaBoardDetail(String email, Long qnaId) {
+        Member member = memberService.findByEmail(email);
         QnaBoard qnaBoard = qnaBoardService.findQnaBoardById(qnaId);
         boolean authorization = qnaBoard.isMyQnaBoard(member);
 
@@ -47,9 +44,8 @@ public class QnaBoardBusiness {
     }
 
     @Transactional
-    public void removeQnaBoard(Principal principal, Long qnaId) {
-
-        Member member = memberService.findMember(principal.getName());
+    public void removeQnaBoard(String email, Long qnaId) {
+        Member member = memberService.findByEmail(email);
         QnaBoard qnaBoard = qnaBoardService.findQnaBoardById(qnaId);
         qnaBoard.validateMemberCanRemoveOrUpdate(member);
 
@@ -57,13 +53,11 @@ public class QnaBoardBusiness {
     }
 
     @Transactional
-    public void editQnaBoard(Principal principal, Long qnaId, PostQnaBoardRequest request) {
-
-        Member member = memberService.findMember(principal.getName());
+    public void editQnaBoard(String email, Long qnaId, PostQnaBoardRequest request) {
+        Member member = memberService.findByEmail(email);
         QnaBoard qnaBoard = qnaBoardService.findQnaBoardById(qnaId);
         qnaBoard.validateMemberCanRemoveOrUpdate(member);
 
         qnaBoardService.updateQnaBoard(qnaBoard, request);
     }
-
 }
