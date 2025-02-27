@@ -3,9 +3,6 @@ package com.onetool.server.api.payments.dto;
 import com.onetool.server.api.payments.domain.Payment;
 import lombok.Builder;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Builder
 public record PaymentResponse(
         Long id,
