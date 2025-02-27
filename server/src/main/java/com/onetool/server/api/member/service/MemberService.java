@@ -243,4 +243,10 @@ public class MemberService {
         return memberRepository.findByEmail(email)
                 .orElseThrow(() -> new BaseException(NON_EXIST_USER));
     }
+
+    public Member findMemberWithCart(Long id) {
+        return memberRepository
+                .findByIdWithCart(id)
+                .orElseThrow(() -> new BaseException(NON_EXIST_USER));
+    }
 }

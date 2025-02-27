@@ -13,6 +13,8 @@ import com.onetool.server.global.exception.base.BaseException;
 import com.onetool.server.api.member.domain.Member;
 import com.onetool.server.api.member.repository.MemberRepository;
 import com.onetool.server.global.exception.codes.ErrorCode;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -25,12 +27,15 @@ import static com.onetool.server.global.exception.codes.ErrorCode.*;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class CartService implements CartService{
+public class CartService {
 
+    @PersistenceContext
+    private final EntityManager entityManager;
     private final CartRepository cartRepository;
     private final MemberRepository memberRepository;
     private final BlueprintRepository blueprintRepository;
     private final CartBlueprintRepository cartBlueprintRepository;
+
 
     @Transactional(readOnly = true)
     public Object showCart(MemberAuthContext user){
@@ -43,19 +48,14 @@ public class CartService implements CartService{
         return CartResponse.CartItems.cartItems(totalPrice, cartBlueprints);
     }
 
-    @Transactional
-    public String addBlueprintToCart(MemberAuthContext user,
-                                     Long blueprintId){
+    public void saveCart(Cart cart, Blueprint blueprint){
+        CartBlueprint cartBlueprint = new CartBlueprint();
+        cartBlueprint.assignBlueprint(blueprint);
+        cartBlueprint.assignCart(cart);
 
-        Member member = findMemberWithCart(user.getId());
-        Cart cart = member.getCart();
-        Blueprint blueprint = findBlueprint(blueprintId);
-        isBlueprintAlreadyInCart(cart, blueprint);
-        CartBlueprint newCartBlueprint = CartBlueprint.of(cart, blueprint);
-
-        updateCartAndSave(cart, newCartBlueprint, Action.ADD);
-        log.info("size: {}, totalPrice: {}", cart.getCartItems().size(), cart.getTotalPrice());
-        return "장바구니에 추가됐습니다.";
+        cartBlueprintRepository.save(cartBlueprint);
+        entityManager.flush();
+        cart.updateTotalPrice(cart); //todo test필요
     }
 
     @Transactional
@@ -80,7 +80,7 @@ public class CartService implements CartService{
                 .orElseThrow(() -> new BaseException(NON_EXIST_USER));
     }
 
-    private void isBlueprintAlreadyInCart(Cart cart, Blueprint blueprint) {
+    public void isBlueprintAlreadyInCart(Cart cart, Blueprint blueprint) {
         if(cartBlueprintRepository.existsByCartAndBlueprint(cart, blueprint)) throw new BaseException(ALREADY_EXIST_BLUEPRINT_IN_CART);
     }
 
@@ -99,8 +99,7 @@ public class CartService implements CartService{
             cart.getCartItems().remove(cartBlueprint);
         }
 
-        long totalPrice = calculateTotalPrice(cart);
-        cart.updateTotalPrice(totalPrice);
+        cart.updateTotalPrice(cart);
         cartRepository.save(cart);
     }
 

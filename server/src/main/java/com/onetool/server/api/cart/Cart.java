@@ -25,23 +25,27 @@ public class Cart extends BaseEntity {
     @JoinColumn(name = "member_cart_id")
     private Member member;
 
-    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "cart", fetch = FetchType.EAGER)
     private List<CartBlueprint> cartItems = new ArrayList<>();
 
-    private Cart(Member member){
+    private Cart(Member member) {
         this.member = member;
         this.totalPrice = 0L;
     }
 
-    public static Cart createCart(Member member){
+    public static Cart createCart(Member member) {
         return new Cart(member);
     }
 
-    public void updateTotalPrice(Long totalPrice){
+    public void updateTotalPrice(Cart cart) {
+
+        long totalPrice = this.getCartItems().stream()
+                .mapToLong(item -> item.getBlueprint().getStandardPrice())
+                .sum();
         this.totalPrice = totalPrice;
     }
 
-    public boolean isCartEmpty(){
+    public boolean isCartEmpty() {
         return cartItems.isEmpty();
     }
 }
