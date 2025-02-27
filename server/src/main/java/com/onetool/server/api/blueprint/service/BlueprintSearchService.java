@@ -2,9 +2,9 @@ package com.onetool.server.api.blueprint.service;
 
 import com.onetool.server.api.blueprint.Blueprint;
 import com.onetool.server.api.blueprint.InspectionStatus;
-import com.onetool.server.api.blueprint.dto.BlueprintResponse;
-import com.onetool.server.api.blueprint.dto.BlueprintSortRequest;
-import com.onetool.server.api.blueprint.dto.SearchResponse;
+import com.onetool.server.api.blueprint.dto.response.BlueprintResponse;
+import com.onetool.server.api.blueprint.dto.response.BlueprintSortRequest;
+import com.onetool.server.api.blueprint.dto.response.SearchResponse;
 import com.onetool.server.api.blueprint.enums.SortType;
 import com.onetool.server.api.blueprint.repository.BlueprintRepository;
 import com.onetool.server.api.category.FirstCategoryType;

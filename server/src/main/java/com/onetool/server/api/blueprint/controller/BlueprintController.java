@@ -1,9 +1,6 @@
 package com.onetool.server.api.blueprint.controller;
-import com.onetool.server.api.blueprint.dto.BlueprintRequest;
-import com.onetool.server.api.blueprint.dto.BlueprintResponse;
-import com.onetool.server.api.blueprint.dto.BlueprintSortRequest;
-import com.onetool.server.global.exception.codes.ErrorCode;
-import org.springframework.data.domain.Pageable;
+import com.onetool.server.api.blueprint.dto.request.BlueprintRequest;
+import com.onetool.server.api.blueprint.dto.response.BlueprintResponse;
 import com.onetool.server.api.blueprint.service.BlueprintService;
 import com.onetool.server.global.auth.login.PrincipalDetails;
 import com.onetool.server.global.exception.ApiResponse;
@@ -11,8 +8,6 @@ import com.onetool.server.global.exception.MemberNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/blueprint")

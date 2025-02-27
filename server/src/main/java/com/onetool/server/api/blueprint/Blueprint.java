@@ -1,6 +1,6 @@
 package com.onetool.server.api.blueprint;
 
-import com.onetool.server.api.blueprint.dto.BlueprintRequest;
+import com.onetool.server.api.blueprint.dto.request.BlueprintRequest;
 import com.onetool.server.api.cart.CartBlueprint;
 import com.onetool.server.global.entity.BaseEntity;
 import com.onetool.server.api.order.OrderBlueprint;
@@ -31,10 +31,10 @@ public class Blueprint extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Column(name="blueprint_name")
+    @Column(name = "blueprint_name")
     private String blueprintName;
 
-    @Column(name="category_id")
+    @Column(name = "category_id")
     private Long categoryId;
 
     @Column(name = "standard_price")

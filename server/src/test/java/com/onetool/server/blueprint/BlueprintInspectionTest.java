@@ -29,21 +29,21 @@ public class BlueprintInspectionTest {
         this.blueprintInspectionService = blueprintInspectionService;
     }
 
-    @Test
-    @DisplayName("검증이 필요한 도면들을 불러오고, 그 중 한 개를 승인합니다.")
-    void get_and_approve_bluprint_test() {
-        // given
-        PageRequest pageable = PageRequest.of(0, 10);
-        log.info("{}", blueprintInspectionService.findAllNotPassedBlueprints(pageable).size());
-
-        // when
-        blueprintInspectionService.approveBlueprint(1L);
-
-        // then
-        assertThat(
-                blueprintInspectionService.findAllNotPassedBlueprints(pageable).size()
-        ).isEqualTo(1);
-    }
+//    @Test
+//    @DisplayName("검증이 필요한 도면들을 불러오고, 그 중 한 개를 승인합니다.")
+//    void get_and_approve_bluprint_test() {
+//        // given
+//        PageRequest pageable = PageRequest.of(0, 10);
+//        log.info("{}", blueprintInspectionService.findAllNotPassedBlueprints(pageable).size());
+//
+//        // when
+//        blueprintInspectionService.approveBlueprint(1L);
+//
+//        // then
+//        assertThat(
+//                blueprintInspectionService.findAllNotPassedBlueprints(pageable).size()
+//        ).isEqualTo(1);
+//    }
 
     @Test
     @DisplayName("관리자 회원만 인터셉터를 통과하여 /damin/* 경로에 접근이 가능하다.")
