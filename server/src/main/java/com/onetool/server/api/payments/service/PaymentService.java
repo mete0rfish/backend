@@ -34,13 +34,6 @@ public class PaymentService {
 
     @Transactional
     public void deleteById(Payment payment) {
-        validateOrdersIsNull(payment);
         paymentRepository.delete(payment);
-    }
-
-    private void validateOrdersIsNull(Payment payment) {
-        if (payment == null) {
-            throw new OrdersNullPointException("payment가 NULL입니다. 함수명 : validatePaymentIsNull");
-        }
     }
 }

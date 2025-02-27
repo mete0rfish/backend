@@ -37,8 +37,7 @@ public class PaymentBusiness {
     @Transactional
     public Long createPayment(PaymentRequest request) {
         Payment payment = request.toEntity(request, orderService);
-        Payment savedPayment = paymentService.save(payment); // save()만 PaymentService
-        return savedPayment.getId();
+        return paymentService.save(payment).getId(); // save()만 PaymentService
     }
 
     @Transactional
