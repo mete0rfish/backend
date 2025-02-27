@@ -37,8 +37,8 @@ public class OrderBusiness {
     public List<MyPageOrderResponse> getMyPageOrderResponseList(@AuthenticationPrincipal PrincipalDetails principal) {
         Member member = memberService.findMember(principal.getContext().getEmail());
         List<Orders> ordersList = orderService.findAllOrdersByUserId(member.getId());
-
         List<MyPageOrderResponse> myPageOrderResponseList = MyPageOrderResponse.from(ordersList);
+
         return myPageOrderResponseList;
     }
 

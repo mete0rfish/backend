@@ -35,9 +35,7 @@ public class OrderService {
 
     @Transactional
     public Long saveOrder(Orders orders, Member member, List<Blueprint> blueprintList) {
-
         validateOrdersIsNull(orders);
-
         assignAllConnectOrders(orders, member, blueprintList);
         orderRepository.save(orders);
 
@@ -47,7 +45,6 @@ public class OrderService {
     @Transactional
     public void deleteOrder(Orders orders) {
         validateOrdersIsNull(orders);
-
         orderRepository.delete(orders);
     }
 
@@ -59,7 +56,6 @@ public class OrderService {
 
     private void assignAllConnectOrders(Orders orders, Member member, List<Blueprint> blueprintList) {
         orders.assignMember(member);
-
         blueprintList.forEach(blueprint -> {
             OrderBlueprint orderBlueprint = new OrderBlueprint(blueprint.getDownloadLink());
             orderBlueprint.assignOrder(orders);
