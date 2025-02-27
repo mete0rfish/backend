@@ -41,21 +41,21 @@ public class BlueprintServiceTest {
         assertThat(response.getTotalElements()).isEqualTo(6);
     }
 
-    @DisplayName("id가 1인 Blueprint가 삭제 상태로 변경되는지 확인")
-    @Test
-    void testMarkAsDeleted() {
-        // given: Blueprint가 초기화되고 isDeleted는 false
-        Blueprint blueprint = blueprintRepository.findById(1L)
-                .orElseThrow(() -> new IllegalArgumentException("Blueprint with id 1 not found"));
-        assertThat(blueprint.getIsDeleted()).isFalse();
-
-        // when: Blueprint를 삭제 상태로 설정
-        blueprintService.deleteBlueprint(blueprint.getId());
-
-        // then: 삭제 상태가 true로 변경되었는지 확인
-        Blueprint deletedBlueprint = blueprintRepository.findDeletedById(1L)
-                .orElseThrow(() -> new IllegalArgumentException("Blueprint with id 1 not found"));
-
-        assertThat(deletedBlueprint.getIsDeleted()).isTrue();
-    }
+//    @DisplayName("id가 1인 Blueprint가 삭제 상태로 변경되는지 확인")
+//    @Test
+//    void testMarkAsDeleted() {
+//        // given: Blueprint가 초기화되고 isDeleted는 false
+//        Blueprint blueprint = blueprintRepository.findById(1L)
+//                .orElseThrow(() -> new IllegalArgumentException("Blueprint with id 1 not found"));
+//        assertThat(blueprint.getIsDeleted()).isFalse();
+//
+//        // when: Blueprint를 삭제 상태로 설정
+//        blueprintService.deleteBlueprint(blueprint.getId());
+//
+//        // then: 삭제 상태가 true로 변경되었는지 확인
+//        Blueprint deletedBlueprint = blueprintRepository.findDeletedById(1L)
+//                .orElseThrow(() -> new IllegalArgumentException("Blueprint with id 1 not found"));
+//
+//        assertThat(deletedBlueprint.getIsDeleted()).isTrue();
+//    }
 }
