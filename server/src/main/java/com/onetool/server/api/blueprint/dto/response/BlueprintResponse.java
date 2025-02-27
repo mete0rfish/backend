@@ -50,6 +50,12 @@ public record BlueprintResponse(
         );
     }
 
+    public static List<BlueprintResponse> toBlueprintResponseList(List<Blueprint> blueprintList) {
+        return blueprintList.stream()
+                .map(BlueprintResponse::from)
+                .toList();
+    }
+
     public static List<BlueprintResponse> fromBlueprintPageToResponseList(Page<Blueprint> blueprintPage) {
         return blueprintPage.stream()
                 .map(BlueprintResponse::from)

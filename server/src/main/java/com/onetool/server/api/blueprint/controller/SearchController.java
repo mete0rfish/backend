@@ -1,13 +1,17 @@
 package com.onetool.server.api.blueprint.controller;
 
+import com.onetool.server.api.blueprint.business.BlueprintSearchBusiness;
 import com.onetool.server.api.blueprint.dto.response.BlueprintResponse;
 import com.onetool.server.api.blueprint.dto.response.BlueprintSortRequest;
 import com.onetool.server.api.blueprint.dto.response.SearchResponse;
+import com.onetool.server.api.blueprint.enums.SortType;
 import com.onetool.server.api.blueprint.service.BlueprintSearchService;
 import com.onetool.server.api.category.FirstCategoryType;
 import com.onetool.server.global.exception.ApiResponse;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -22,88 +26,86 @@ import java.util.List;
 
 @Slf4j
 @RestController
+@RequiredArgsConstructor
 public class SearchController {
 
-    private final BlueprintSearchService blueprintSearchService;
-
-    public SearchController(BlueprintSearchService blueprintSearchService) {
-        this.blueprintSearchService = blueprintSearchService;
-    }
+    private final BlueprintSearchBusiness blueprintSearchBusiness;
 
     @GetMapping("/blueprint")
     public ApiResponse<Page<SearchResponse>> searchWithKeyword(
-            @RequestParam("s")String keyword,
-            @PageableDefault(size = 5, sort = "id", direction = Sort.Direction.DESC)Pageable pageable
+            @RequestParam("s") String keyword,
+            @PageableDefault(size = 5, sort = "id", direction = Sort.Direction.DESC) Pageable pageable
     ) {
         String decodedKeyword = URLDecoder.decode(keyword, StandardCharsets.UTF_8);
         log.info("Decoded keyword: {}", decodedKeyword);
-        Page<SearchResponse> response = blueprintSearchService.searchNameAndCreatorWithKeyword(decodedKeyword, pageable);
+        Page<SearchResponse> response = blueprintSearchBusiness.getSearchResponsePage(decodedKeyword, pageable);
         return ApiResponse.onSuccess(response);
     }
 
     @GetMapping("/blueprint/building")
     public ApiResponse<Page<SearchResponse>> searchBuildingCategory(
-            @PageableDefault(size = 5, sort = "id", direction = Sort.Direction.DESC)Pageable pageable,
+            @PageableDefault(size = 5, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
             @RequestParam(required = false) String category
     ) {
-        Page<SearchResponse> responses = blueprintSearchService.findAllByCategory(FirstCategoryType.CATEGORY_BUILDING, category, pageable);
+        Page<SearchResponse> responses = blueprintSearchBusiness.getSearchResponsePage(FirstCategoryType.CATEGORY_BUILDING, category, pageable);
         return ApiResponse.onSuccess(responses);
     }
 
     @GetMapping("/blueprint/civil")
     public ApiResponse<Page<SearchResponse>> searchCivilCategory(
-            @PageableDefault(size = 5, sort = "id", direction = Sort.Direction.DESC)Pageable pageable,
+            @PageableDefault(size = 5, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
             @RequestParam(required = false) String category
     ) {
-        Page<SearchResponse> responses = blueprintSearchService.findAllByCategory(FirstCategoryType.CATEGORY_CIVIL, category, pageable);
+        Page<SearchResponse> responses = blueprintSearchBusiness.getSearchResponsePage(FirstCategoryType.CATEGORY_CIVIL, category, pageable);
         return ApiResponse.onSuccess(responses);
     }
 
     @GetMapping("/blueprint/interior")
     public ApiResponse<Page<SearchResponse>> searchInteriorCategory(
-            @PageableDefault(size = 5, sort = "id", direction = Sort.Direction.DESC)Pageable pageable,
+            @PageableDefault(size = 5, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
             @RequestParam(required = false) String category
     ) {
-        Page<SearchResponse> responses = blueprintSearchService.findAllByCategory(FirstCategoryType.CATEGORY_INTERIOR, category, pageable);
+        Page<SearchResponse> responses = blueprintSearchBusiness.getSearchResponsePage(FirstCategoryType.CATEGORY_INTERIOR, category, pageable);
         return ApiResponse.onSuccess(responses);
     }
+
     @GetMapping("/blueprint/machine")
     public ApiResponse<Page<SearchResponse>> searchMachineCategory(
-            @PageableDefault(size = 5, sort = "id", direction = Sort.Direction.DESC)Pageable pageable,
+            @PageableDefault(size = 5, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
             @RequestParam(required = false) String category
     ) {
-        Page<SearchResponse> responses = blueprintSearchService.findAllByCategory(FirstCategoryType.CATEGORY_MACHINE, category, pageable);
+        Page<SearchResponse> responses = blueprintSearchBusiness.getSearchResponsePage(FirstCategoryType.CATEGORY_MACHINE, category, pageable);
         return ApiResponse.onSuccess(responses);
     }
 
     @GetMapping("/blueprint/electric")
     public ApiResponse<Page<SearchResponse>> searchElectricCategory(
-            @PageableDefault(size = 5, sort = "id", direction = Sort.Direction.DESC)Pageable pageable,
+            @PageableDefault(size = 5, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
             @RequestParam(required = false) String category
     ) {
-        Page<SearchResponse> responses = blueprintSearchService.findAllByCategory(FirstCategoryType.CATEGORY_ELECTRIC, category, pageable);
+        Page<SearchResponse> responses = blueprintSearchBusiness.getSearchResponsePage(FirstCategoryType.CATEGORY_ELECTRIC, category, pageable);
         return ApiResponse.onSuccess(responses);
     }
 
     @GetMapping("/blueprint/etc")
     public ApiResponse<Page<SearchResponse>> searchEtcCategory(
-            @PageableDefault(page = 0, size = 10, sort = "id", direction = Sort.Direction.DESC)Pageable pageable
+            @PageableDefault(page = 0, size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable
     ) {
-        Page<SearchResponse> responses = blueprintSearchService.findAllByCategory(FirstCategoryType.CATEGORY_CIVIL, null, pageable);
+        Page<SearchResponse> responses = blueprintSearchBusiness.getSearchResponsePage(FirstCategoryType.CATEGORY_CIVIL, null, pageable);
         return ApiResponse.onSuccess(responses);
     }
 
     @GetMapping("/blueprint/all")
     public ApiResponse<Page<SearchResponse>> searchAllBlueprint(
-            @PageableDefault(size = 5, sort = "id", direction = Sort.Direction.DESC)Pageable pageable
+            @PageableDefault(size = 5, sort = "id", direction = Sort.Direction.DESC) Pageable pageable
     ) {
-        Page<SearchResponse> responses = blueprintSearchService.findAll(pageable);
+        Page<SearchResponse> responses = blueprintSearchBusiness.getSearchResponsePage(pageable);
         return ApiResponse.onSuccess(responses);
     }
 
     @GetMapping("/blueprint/{id}")
     public ApiResponse<BlueprintResponse> getBlueprintDetails(@PathVariable("id") Long id) {
-        BlueprintResponse blueprintResponseDTO = blueprintSearchService.findApprovedBlueprintById(id);
+        BlueprintResponse blueprintResponseDTO = blueprintSearchBusiness.getApprovedBlueprintResponse(id);
         return ApiResponse.onSuccess(blueprintResponseDTO);
     }
 
@@ -115,7 +117,9 @@ public class SearchController {
             Pageable pageable
     ) {
         BlueprintSortRequest request = new BlueprintSortRequest(categoryName, sortBy, sortOrder);
-        List<BlueprintResponse> sortedItems = blueprintSearchService.sortBlueprints(request, pageable);
+        Sort sort = SortType.getSortBySortType(SortType.valueOf(request.sortBy().toUpperCase()), request.sortOrder());
+        Pageable sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort);
+        List<BlueprintResponse> sortedItems = blueprintSearchBusiness.getSortedBluePrintList(request, sortedPageable);
         return ApiResponse.onSuccess(sortedItems);
     }
 }
