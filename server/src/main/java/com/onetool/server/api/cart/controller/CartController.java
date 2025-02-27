@@ -16,19 +16,19 @@ public class CartController {
 
     @PostMapping("/api/cart/add/{blueprintId}")
     public ApiResponse<String> addBlueprintToCart(@AuthenticationPrincipal PrincipalDetails principal,
-                                             @PathVariable(name = "blueprintId") Long blueprintId){
+                                                  @PathVariable(name = "blueprintId") Long blueprintId) {
         cartBusiness.addBlueprintToCart(principal.getContext().getId(), blueprintId);
         return ApiResponse.onSuccess("장바구니에 상품이 등록 되었습니다.");
     }
 
     @GetMapping("/cart")
-    public ApiResponse<Object> showMyCart(@AuthenticationPrincipal PrincipalDetails principal){
+    public ApiResponse<Object> showMyCart(@AuthenticationPrincipal PrincipalDetails principal) {
         return ApiResponse.onSuccess(cartBusiness.getMyCart(principal.getContext().getId()));
     }
 
     @DeleteMapping("/api/cart/delete/{blueprintId}")
     public ApiResponse<String> deleteBlueprintInCart(@AuthenticationPrincipal PrincipalDetails principal,
-                                                @PathVariable(name = "blueprintId") Long blueprintId){
+                                                     @PathVariable(name = "blueprintId") Long blueprintId) {
         return ApiResponse.onSuccess(cartBusiness.removeBlueprintInCart(principal.getContext().getId(), blueprintId));
     }
 }

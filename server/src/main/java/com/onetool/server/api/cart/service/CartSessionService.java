@@ -22,7 +22,7 @@ public class CartSessionService {
     public List<CartSessionResponse> getCartSessions(List<Long> ids) {
         List<CartSessionResponse> sessions = new ArrayList<>();
 
-        if(ids == null) {
+        if (ids == null) {
             return null;
         }
 

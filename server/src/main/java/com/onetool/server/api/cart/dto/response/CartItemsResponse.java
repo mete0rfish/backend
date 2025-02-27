@@ -11,8 +11,8 @@ import java.util.List;
 public record CartItemsResponse(
         Long totalPrice,
         List<BlueprintResponse> blueprintsInCart
-){
-    public static CartItemsResponse cartItems(Long totalPrice, List<CartBlueprint> cartBlueprints){
+) {
+    public static CartItemsResponse cartItems(Long totalPrice, List<CartBlueprint> cartBlueprints) {
         return CartItemsResponse.builder()
                 .totalPrice(totalPrice)
                 .blueprintsInCart(cartBlueprints.stream()

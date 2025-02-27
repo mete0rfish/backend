@@ -14,22 +14,22 @@ public class CartBlueprint extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST} )
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JoinColumn(name = "cart_id")
     private Cart cart;
 
     //도면 상품은 도면 엔티티가 나오는 대로 짤게요
-    @ManyToOne(fetch = FetchType.LAZY,  cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JoinColumn(name = "blueprint_id")
     private Blueprint blueprint;
 
     @Builder
-    public CartBlueprint(Cart cart, Blueprint blueprint){
+    public CartBlueprint(Cart cart, Blueprint blueprint) {
         this.cart = cart;
         this.blueprint = blueprint;
     }
 
-    public static CartBlueprint of(Cart cart, Blueprint blueprint){
+    public static CartBlueprint of(Cart cart, Blueprint blueprint) {
         return CartBlueprint.builder()
                 .cart(cart)
                 .blueprint(blueprint)

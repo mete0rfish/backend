@@ -36,11 +36,11 @@ public class CartService {
         return cartRepository.findTotalPriceByCartId(cartId);
     }
 
-    public List<CartBlueprint> findCartBlueprint(Long cartId){
+    public List<CartBlueprint> findCartBlueprint(Long cartId) {
         return cartRepository.findCartBlueprintsByCartId(cartId);
     }
 
-    public void saveCart(Cart cart, Blueprint blueprint){
+    public void saveCart(Cart cart, Blueprint blueprint) {
         CartBlueprint cartBlueprint = new CartBlueprint();
         cartBlueprint.assignBlueprint(blueprint);
         cartBlueprint.assignCart(cart);
@@ -49,14 +49,15 @@ public class CartService {
         entityManager.flush(); //todo test필요
     }
 
-    public void deleteCartBlueprint(CartBlueprint cartBlueprint){
-        if(cartBlueprint == null) throw new NullPointerException("cartBlueprint는 NULL입니다.");
+    public void deleteCartBlueprint(CartBlueprint cartBlueprint) {
+        if (cartBlueprint == null) throw new NullPointerException("cartBlueprint는 NULL입니다.");
 
         cartBlueprintRepository.deleteById(cartBlueprint.getId());
         entityManager.flush(); //todo test필요
     }
 
     public void validateBlueprintAlreadyInCart(Cart cart, Blueprint blueprint) {
-        if(cartBlueprintRepository.existsByCartAndBlueprint(cart, blueprint)) throw new BaseException(ALREADY_EXIST_BLUEPRINT_IN_CART);
+        if (cartBlueprintRepository.existsByCartAndBlueprint(cart, blueprint))
+            throw new BaseException(ALREADY_EXIST_BLUEPRINT_IN_CART);
     }
 }
