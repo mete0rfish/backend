@@ -8,10 +8,10 @@ import com.onetool.server.api.qna.dto.response.QnaBoardBriefResponse;
 import com.onetool.server.api.qna.dto.response.QnaBoardDetailResponse;
 import com.onetool.server.api.qna.service.QnaBoardService;
 import com.onetool.server.global.annotation.Business;
-import jakarta.transaction.Transactional;
+import com.onetool.server.global.auth.MemberAuthContext;
 import lombok.RequiredArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.security.Principal;
 import java.util.List;
 
 @Business
@@ -21,9 +21,16 @@ public class QnaBoardBusiness {
     private final QnaBoardService qnaBoardService;
     private final MemberService memberService;
 
-
+    @Transactional(readOnly = true)
     public List<QnaBoardBriefResponse> getQnaBoardBriefList() {
         List<QnaBoard> qnaBoards = qnaBoardService.findAllQnaBoards();
+        return QnaBoardBriefResponse.fromQnaBoardListToBriefResponseList(qnaBoards);
+    }
+
+    @Transactional(readOnly = true)
+    public List<QnaBoardBriefResponse> getMyQna(MemberAuthContext context) {
+        memberService.validateExistId(context.getId());
+        List<QnaBoard> qnaBoards = qnaBoardService.findByMemberId(context.getId());
         return QnaBoardBriefResponse.fromQnaBoardListToBriefResponseList(qnaBoards);
     }
 

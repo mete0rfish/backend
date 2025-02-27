@@ -25,9 +25,7 @@ public class QnaBoardService {
     public List<QnaBoard> findAllQnaBoards() {
         List<QnaBoard> qnaBoards = qnaBoardRepository
                 .findAllQnaBoardsOrderedByCreatedAt();
-
         hasErrorWithNoContent(qnaBoards);
-        //TODO : 페이징 관련
         return qnaBoards;
     }
 
@@ -36,6 +34,11 @@ public class QnaBoardService {
         return qnaBoardRepository
                 .findByIdWithReplies(qnaId)
                 .orElseThrow(() -> new BaseException(NO_QNA_CONTENT));
+    }
+
+    @Transactional(readOnly = true)
+    public List<QnaBoard> findByMemberId(Long memberId) {
+        return qnaBoardRepository.findByMemberId(memberId);
     }
 
     @Transactional
@@ -64,7 +67,7 @@ public class QnaBoardService {
         qnaBoard.update(request.title(), request.content());
     }
 
-    public void hasErrorWithNoContent(List<QnaBoard> data) {
+    private void hasErrorWithNoContent(List<QnaBoard> data) {
         if(data.isEmpty())
             throw new BaseException(NO_QNA_CONTENT);
     }
