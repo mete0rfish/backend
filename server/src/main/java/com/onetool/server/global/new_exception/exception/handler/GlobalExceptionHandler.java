@@ -15,7 +15,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(value = Exception.class)
     public ResponseEntity<Object> exception(
             Exception exception
-    ){
+    ) {
         log.error("❌ [HTTP 500] Internal Server Error: ", exception);
 
         return ResponseEntity.status(500)

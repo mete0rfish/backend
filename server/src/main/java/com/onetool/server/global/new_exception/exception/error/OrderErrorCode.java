@@ -14,6 +14,7 @@ public enum OrderErrorCode {
     ORDER_NOT_FOUND(NOT_FOUND, "ORDER-001", "주문이 존재하지 않습니다."),
     DEPOSIT_NOT_FOUND(NOT_FOUND, "PAYMENT-001", "결제가 존재하지 않습니다."),
     ;
+
     private final HttpStatus httpStatus;
     private final String serverCode;
     private final String description;

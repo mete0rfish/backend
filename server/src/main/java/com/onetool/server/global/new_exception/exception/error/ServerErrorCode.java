@@ -47,8 +47,8 @@ public enum ServerErrorCode implements ErrorCodeIfs {
     NOT_VALID_HEADER_ERROR(HttpStatus.NOT_FOUND, "G012", "Header에 데이터가 존재하지 않는 경우 "),
     // 5xx : server error
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "SERVER-0000", "서버 에러"),
-
     ;
+
     private final HttpStatus httpStatus;
     private final String serverCode;
     private final String description;

@@ -19,7 +19,7 @@ public class ApiExceptionHandler {
         return ResponseEntity
                 .status(errorCode.getHttpStatus())
                 .body(
-                       ErrorResponse.generateErrorResponse(apiException)
+                        ErrorResponse.generateErrorResponse(apiException)
                 );
     }
 }
