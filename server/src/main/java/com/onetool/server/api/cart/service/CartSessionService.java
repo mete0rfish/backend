@@ -2,7 +2,7 @@ package com.onetool.server.api.cart.service;
 
 import com.onetool.server.api.blueprint.Blueprint;
 import com.onetool.server.api.blueprint.repository.BlueprintRepository;
-import com.onetool.server.api.cart.dto.CartSessionResponse;
+import com.onetool.server.api.cart.dto.response.CartSessionResponse;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

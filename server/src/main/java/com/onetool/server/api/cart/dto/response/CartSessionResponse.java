@@ -1,4 +1,4 @@
-package com.onetool.server.api.cart.dto;
+package com.onetool.server.api.cart.dto.response;
 
 import lombok.Builder;
 
