@@ -1,19 +1,26 @@
-package com.whale.gather_one.global.exception.handler;
+package com.onetool.server.global.new_exception.exception.handler;
 
-import com.whale.gather_one.global.exception.BaseException;
-import com.whale.gather_one.global.exception.response.ErrorResponse;
+import com.onetool.server.global.new_exception.exception.response.ErrorResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.annotation.Order;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @Slf4j
-@RestControllerAdvice(annotations = {RestController.class})
+@RestControllerAdvice
+@Order(value = Integer.MAX_VALUE)
 public class GlobalExceptionHandler {
 
-    /**
-     * 클라이언트 에러
-     * 직접 생성한 예외에 대한 처리
-     */
-    @ExceptionHandler(BaseException.class)
-    public ErrorResponse onThrowException(BaseException baseException) {
-        return ErrorResponse.generateErrorResponse(baseException);
+    @ExceptionHandler(value = Exception.class)
+    public ResponseEntity<Object> exception(
+            Exception exception
+    ){
+        log.error("❌ [HTTP 500] Internal Server Error: ", exception);
+
+        return ResponseEntity.status(500)
+                .body(
+                        ErrorResponse.generateErrorResponse(exception)
+                );
     }
 }
