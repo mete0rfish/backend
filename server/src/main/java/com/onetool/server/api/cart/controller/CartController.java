@@ -12,30 +12,23 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class CartController {
 
-    private final CartService cartService;
     private final CartBusiness cartBusiness;
 
-    /**
-     * 도면 상세페이지에서 장바구니에 추가
-     * @param principal
-     * @param blueprintId
-     * @return
-     */
     @PostMapping("/api/cart/add/{blueprintId}")
     public ApiResponse<String> addBlueprintToCart(@AuthenticationPrincipal PrincipalDetails principal,
                                              @PathVariable(name = "blueprintId") Long blueprintId){
-        cartBusiness.addBlueprintToCart(principal.getContext(), blueprintId);
+        cartBusiness.addBlueprintToCart(principal.getContext().getId(), blueprintId);
         return ApiResponse.onSuccess("장바구니에 상품이 등록 되었습니다.");
     }
 
     @GetMapping("/cart")
     public ApiResponse<Object> showMyCart(@AuthenticationPrincipal PrincipalDetails principal){
-        return ApiResponse.onSuccess(cartService.showCart(principal.getContext()));
+        return ApiResponse.onSuccess(cartBusiness.getMyCart(principal.getContext().getId()));
     }
 
     @DeleteMapping("/api/cart/delete/{blueprintId}")
     public ApiResponse<String> deleteBlueprintInCart(@AuthenticationPrincipal PrincipalDetails principal,
                                                 @PathVariable(name = "blueprintId") Long blueprintId){
-        return ApiResponse.onSuccess(cartService.deleteBlueprintInCart(principal.getContext(), blueprintId));
+        return ApiResponse.onSuccess(cartBusiness.removeBlueprintInCart(principal.getContext().getId(), blueprintId));
     }
 }
