@@ -8,6 +8,8 @@ import com.onetool.server.api.order.repository.OrderRepository;
 import com.onetool.server.global.exception.OrderNotFoundException;
 import com.onetool.server.api.member.domain.Member;
 import com.onetool.server.global.exception.OrdersNullPointException;
+import com.onetool.server.global.new_exception.exception.ApiException;
+import com.onetool.server.global.new_exception.exception.error.OrderErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -30,7 +32,7 @@ public class OrderService {
     @Transactional
     public Orders findOrdersById(Long orderId) {
         return orderRepository.findById(orderId)
-                .orElseThrow(() -> new OrderNotFoundException(orderId));
+                .orElseThrow(() -> new ApiException(OrderErrorCode.NOT_FOUND_ERROR,"orderId : "+orderId));
     }
 
     @Transactional
@@ -55,7 +57,7 @@ public class OrderService {
 
     private void validateOrdersIsNull(Orders orders) {
         if (orders == null) {
-            throw new OrdersNullPointException("Orders가 NULL입니다. 함수명 : validateOrdersIsNull");
+            throw new ApiException(OrderErrorCode.NULL_POINT_ERROR,"Orders 객체가 NULL입니다.");
         }
     }
 
