@@ -41,9 +41,7 @@ public class CartService {
     }
 
     public void saveCart(Cart cart, Blueprint blueprint) {
-        CartBlueprint cartBlueprint = new CartBlueprint();
-        cartBlueprint.assignBlueprint(blueprint);
-        cartBlueprint.assignCart(cart);
+        CartBlueprint cartBlueprint = CartBlueprint.create(cart, blueprint);
 
         cartBlueprintRepository.save(cartBlueprint);
         entityManager.flush(); //todo test필요
