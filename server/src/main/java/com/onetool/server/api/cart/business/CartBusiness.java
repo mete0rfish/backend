@@ -10,6 +10,8 @@ import com.onetool.server.api.member.domain.Member;
 import com.onetool.server.api.member.service.MemberService;
 import com.onetool.server.global.annotation.Business;
 import com.onetool.server.global.exception.base.BaseException;
+import com.onetool.server.global.new_exception.exception.ApiException;
+import com.onetool.server.global.new_exception.exception.error.CartErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -60,6 +62,6 @@ public class CartBusiness {
         return cart.getCartItems().stream()
                 .filter(cartItem -> cartItem.getBlueprint().getId().equals(blueprintId))
                 .findFirst()
-                .orElseThrow(() -> new BaseException(NO_BLUEPRINT_FOUND));
+                .orElseThrow(() -> new ApiException(CartErrorCode.NOT_FOUND_ERROR, "해당하는 Cart에 bluePrintId와 일치하는 Cart가 존재하지 않습니다. cartId : " + cart.getId() + "blueprintId : " + blueprintId));
     }
 }
