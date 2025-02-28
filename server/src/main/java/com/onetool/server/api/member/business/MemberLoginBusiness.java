@@ -7,13 +7,12 @@ import com.onetool.server.global.annotation.Business;
 import com.onetool.server.global.auth.MemberAuthContext;
 import com.onetool.server.global.auth.jwt.JwtUtil;
 import com.onetool.server.global.exception.ApiResponse;
-import com.onetool.server.global.exception.IllegalLogoutMember;
-import com.onetool.server.global.exception.codes.ErrorCode;
+import com.onetool.server.global.new_exception.exception.ApiException;
+import com.onetool.server.global.new_exception.exception.error.LoginErrorCode;
 import com.onetool.server.global.redis.service.TokenBlackListRedisService;
 import com.onetool.server.global.redis.service.TokenRedisService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Map;
@@ -34,8 +33,8 @@ public class MemberLoginBusiness {
         Member member = memberService.findByEmail(request.getEmail());
 
         if (!encoder.matches(request.getPassword(), member.getPassword())) {
-            log.error("비밀번호 불일치: " + encoder.encode(member.getPassword()));
-            throw new BadCredentialsException("비밀번호가 일치하지 않습니다.");
+            log.error("비밀번호 불일치: {}", encoder.encode(member.getPassword()));
+            throw new ApiException(LoginErrorCode.INVALID_PASSWORD);
         }
 
         MemberAuthContext context = MemberAuthContext.from(member);
@@ -45,11 +44,12 @@ public class MemberLoginBusiness {
     public ApiResponse<String> logout(String accessToken, String email) {
         Long expiration = jwtUtil.getExpirationMilliSec(accessToken);
         tokenBlackListRedisService.setBlackList(accessToken, expiration);
-        if (tokenRedisService.hasKey(email)) {
-            tokenRedisService.deleteValues(email);
-        } else {
-            throw new IllegalLogoutMember(ErrorCode.ILLEGAL_LOGOUT_USER);
+
+        if (!tokenRedisService.hasKey(email)) {
+            throw new ApiException(LoginErrorCode.ILLEGAL_LOGOUT_USER);
         }
+        tokenRedisService.deleteValues(email);
+
         return ApiResponse.onSuccess("로그아웃이 완료되었습니다.");
     }
 }

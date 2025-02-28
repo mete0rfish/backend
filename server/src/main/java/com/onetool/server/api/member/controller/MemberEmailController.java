@@ -4,7 +4,6 @@ import com.onetool.server.api.member.business.MemberBusiness;
 import com.onetool.server.api.member.business.MemberEmailBusiness;
 import com.onetool.server.api.member.dto.MemberFindEmailRequest;
 import com.onetool.server.api.member.dto.MemberFindPwdRequest;
-import com.onetool.server.api.member.service.MemberService;
 import com.onetool.server.global.exception.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
