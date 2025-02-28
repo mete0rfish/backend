@@ -1,9 +1,5 @@
 package com.onetool.server.api.member.service;
 
-import com.onetool.server.global.exception.*;
-import com.onetool.server.global.exception.base.BaseException;
-import com.onetool.server.global.exception.codes.ErrorCode;
-
 import com.onetool.server.api.member.repository.MemberRepository;
 import com.onetool.server.api.member.domain.Member;
 import com.onetool.server.global.new_exception.exception.ApiException;
