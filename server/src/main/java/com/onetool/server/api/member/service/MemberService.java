@@ -6,11 +6,10 @@ import com.onetool.server.global.exception.codes.ErrorCode;
 
 import com.onetool.server.api.member.repository.MemberRepository;
 import com.onetool.server.api.member.domain.Member;
+import com.onetool.server.global.new_exception.exception.ApiException;
+import com.onetool.server.global.new_exception.exception.error.MemberErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,17 +22,20 @@ public class MemberService {
 
     @Transactional(readOnly = true)
     public Member findByNameAndPhoneNumber(String name, String phoneNumber) {
-        return memberRepository.findByNameAndPhoneNum(name, phoneNumber).orElseThrow(() -> new MemberNotFoundException(name));
+        return memberRepository.findByNameAndPhoneNum(name, phoneNumber).orElseThrow(() ->
+                new ApiException(MemberErrorCode.NON_EXIST_USER, "이름과 비밀번호가 일치하는 회원이 존재하지 않습니다."));
     }
 
     @Transactional(readOnly = true)
     public Member findByEmail(String email) {
-        return memberRepository.findByEmail(email).orElseThrow(() -> new MemberNotFoundException(email));
+        return memberRepository.findByEmail(email).orElseThrow(() ->
+                new ApiException(MemberErrorCode.NON_EXIST_USER, "이메일과 일치하는 회원이 존재하지 않습니다."));
     }
 
     @Transactional(readOnly = true)
     public Member findById(Long id) {
-        return memberRepository.findById(id).orElseThrow(() -> new MemberNotFoundException(id.toString()));
+        return memberRepository.findById(id).orElseThrow(() ->
+                new ApiException(MemberErrorCode.NON_EXIST_USER, "ID가 일치하는 회원이 존재하지 않습니다."));
     }
 
     @Transactional
@@ -54,19 +56,19 @@ public class MemberService {
 
     public void validateExistId(Long id) {
         if (!memberRepository.existsById(id)) {
-            throw new BaseException(ErrorCode.NON_EXIST_USER);
+            throw new ApiException(MemberErrorCode.NON_EXIST_USER, "ID가 일치하는 회원이 존재하지 않습니다.");
         }
     }
 
     public void validateDuplicateEmail(String email) {
         if (memberRepository.existsByEmail(email)) {
-            throw new BaseException(ErrorCode.EXIST_EMAIL);
+            throw new ApiException(MemberErrorCode.EXIST_EMAIL, "이미 사용 중인 이메일입니다.");
         }
     }
 
     public Member findMemberWithCartById(Long id) {
         return memberRepository
                 .findByIdWithCart(id)
-                .orElseThrow(() -> new BaseException(NON_EXIST_USER));
+                .orElseThrow(() -> new ApiException(MemberErrorCode.NON_EXIST_USER));
     }
 }

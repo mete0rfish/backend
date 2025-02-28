@@ -5,8 +5,6 @@ import com.onetool.server.api.member.domain.Member;
 import com.onetool.server.api.member.dto.MemberFindPwdRequest;
 import com.onetool.server.api.member.service.MemberService;
 import com.onetool.server.global.annotation.Business;
-import com.onetool.server.global.exception.BusinessLogicException;
-import com.onetool.server.global.exception.codes.ErrorCode;
 import com.onetool.server.global.redis.service.MailRedisService;
 import groovy.util.logging.Slf4j;
 import lombok.RequiredArgsConstructor;
