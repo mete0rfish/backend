@@ -4,10 +4,12 @@ import com.onetool.server.api.qna.business.QnaBoardBusiness;
 import com.onetool.server.api.qna.dto.request.PostQnaBoardRequest;
 import com.onetool.server.api.qna.dto.response.QnaBoardBriefResponse;
 import com.onetool.server.api.qna.dto.response.QnaBoardDetailResponse;
+import com.onetool.server.global.auth.login.PrincipalDetails;
 import com.onetool.server.global.exception.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
@@ -27,25 +29,25 @@ public class QnaBoardController {
 
     @PostMapping("/qna/post")
     public ApiResponse<String> qnaWrite(
-            Principal principal,
+            @AuthenticationPrincipal PrincipalDetails principalDetails,
             @Valid @RequestBody PostQnaBoardRequest request) {
         log.info("쓰기");
-        qnaBoardBusiness.createQnaBoard(principal, request);
+        qnaBoardBusiness.createQnaBoard(principalDetails.getContext().getEmail(), request);
         return ApiResponse.onSuccess("문의사항 등록이 완료됐습니다.");
     }
 
     @GetMapping("/{qnaId}")
     public ApiResponse<QnaBoardDetailResponse> qnaDetails(
-            Principal principal,
+            @AuthenticationPrincipal PrincipalDetails principalDetails,
             @PathVariable Long qnaId) {
-        return ApiResponse.onSuccess(qnaBoardBusiness.getQnaBoardDetail(principal, qnaId));
+        return ApiResponse.onSuccess(qnaBoardBusiness.getQnaBoardDetail(principalDetails.getContext().getEmail(), qnaId));
     }
 
     @PostMapping("/{qnaId}/delete")
     public ApiResponse<String> qnaDelete(
-            Principal principal,
+            @AuthenticationPrincipal PrincipalDetails principalDetails,
             @PathVariable Long qnaId) {
-        qnaBoardBusiness.removeQnaBoard(principal, qnaId);
+        qnaBoardBusiness.removeQnaBoard(principalDetails.getContext().getEmail(), qnaId);
         return ApiResponse.onSuccess("게시글이 삭제되었습니다.");
     }
 
@@ -53,11 +55,11 @@ public class QnaBoardController {
 
     @GetMapping("/{qnaId}/update")
     public ApiResponse<String> qnaUpdate(
-            Principal principal,
+            @AuthenticationPrincipal PrincipalDetails principalDetails,
             @PathVariable Long qnaId,
             @Valid @RequestBody PostQnaBoardRequest request) {
 
-        qnaBoardBusiness.editQnaBoard(principal, qnaId, request);
+        qnaBoardBusiness.editQnaBoard(principalDetails.getContext().getEmail(), qnaId, request);
         return ApiResponse.onSuccess("게시글이 수정되었습니다.");
     }
 }

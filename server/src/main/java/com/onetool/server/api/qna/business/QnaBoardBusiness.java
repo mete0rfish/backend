@@ -8,10 +8,10 @@ import com.onetool.server.api.qna.dto.response.QnaBoardBriefResponse;
 import com.onetool.server.api.qna.dto.response.QnaBoardDetailResponse;
 import com.onetool.server.api.qna.service.QnaBoardService;
 import com.onetool.server.global.annotation.Business;
-import jakarta.transaction.Transactional;
+import com.onetool.server.global.auth.MemberAuthContext;
 import lombok.RequiredArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.security.Principal;
 import java.util.List;
 
 @Business
@@ -21,25 +21,29 @@ public class QnaBoardBusiness {
     private final QnaBoardService qnaBoardService;
     private final MemberService memberService;
 
-
+    @Transactional(readOnly = true)
     public List<QnaBoardBriefResponse> getQnaBoardBriefList() {
-
         List<QnaBoard> qnaBoards = qnaBoardService.findAllQnaBoards();
         return QnaBoardBriefResponse.fromQnaBoardListToBriefResponseList(qnaBoards);
     }
 
-    @Transactional
-    public void createQnaBoard(Principal principal, PostQnaBoardRequest request) {
+    @Transactional(readOnly = true)
+    public List<QnaBoardBriefResponse> getMyQna(MemberAuthContext context) {
+        memberService.validateExistId(context.getId());
+        List<QnaBoard> qnaBoards = qnaBoardService.findAllByMemberId(context.getId());
+        return QnaBoardBriefResponse.fromQnaBoardListToBriefResponseList(qnaBoards);
+    }
 
-        Member member = memberService.findMember(principal.getName());
+    @Transactional
+    public void createQnaBoard(String email, PostQnaBoardRequest request) {
+        Member member = memberService.findByEmail(email);
         QnaBoard qnaBoard = request.toQnaBoard();
         qnaBoardService.saveQnaBoard(member, qnaBoard);
     }
 
     @Transactional
-    public QnaBoardDetailResponse getQnaBoardDetail(Principal principal, Long qnaId) {
-
-        Member member = memberService.findMember(principal.getName());
+    public QnaBoardDetailResponse getQnaBoardDetail(String email, Long qnaId) {
+        Member member = memberService.findByEmail(email);
         QnaBoard qnaBoard = qnaBoardService.findQnaBoardById(qnaId);
         boolean authorization = qnaBoard.isMyQnaBoard(member);
 
@@ -47,9 +51,8 @@ public class QnaBoardBusiness {
     }
 
     @Transactional
-    public void removeQnaBoard(Principal principal, Long qnaId) {
-
-        Member member = memberService.findMember(principal.getName());
+    public void removeQnaBoard(String email, Long qnaId) {
+        Member member = memberService.findByEmail(email);
         QnaBoard qnaBoard = qnaBoardService.findQnaBoardById(qnaId);
         qnaBoard.validateMemberCanRemoveOrUpdate(member);
 
@@ -57,13 +60,11 @@ public class QnaBoardBusiness {
     }
 
     @Transactional
-    public void editQnaBoard(Principal principal, Long qnaId, PostQnaBoardRequest request) {
-
-        Member member = memberService.findMember(principal.getName());
+    public void editQnaBoard(String email, Long qnaId, PostQnaBoardRequest request) {
+        Member member = memberService.findByEmail(email);
         QnaBoard qnaBoard = qnaBoardService.findQnaBoardById(qnaId);
         qnaBoard.validateMemberCanRemoveOrUpdate(member);
 
         qnaBoardService.updateQnaBoard(qnaBoard, request);
     }
-
 }

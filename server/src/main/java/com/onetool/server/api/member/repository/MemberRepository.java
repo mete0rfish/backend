@@ -25,10 +25,4 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     @Query("SELECT CASE WHEN COUNT(m) > 0 THEN true ELSE false END FROM Member m WHERE m.email = :email")
     boolean existsByEmail(@Param("email") String email);
-
-    @Query("SELECT m FROM Member m JOIN FETCH m.qnaBoards WHERE m.id = :memberId")
-    Optional<Member> findMemberWithQnaBoards(@Param("memberId") Long memberId);
-
-    @Query(value = "SELECT * FROM member m WHERE m.id = :id AND m.is_deleted = :isDeleted", nativeQuery = true)
-    Optional<Member> findByIdAndIsDeleted(@Param("id") Long id, @Param("isDeleted") boolean isDeleted);
 }
