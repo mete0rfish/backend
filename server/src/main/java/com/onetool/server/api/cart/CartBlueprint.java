@@ -8,7 +8,7 @@ import lombok.*;
 @Entity
 @Getter
 @Setter
-@NoArgsConstructor(access = AccessLevel.PUBLIC)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CartBlueprint extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,11 +29,11 @@ public class CartBlueprint extends BaseEntity {
         this.blueprint = blueprint;
     }
 
-    public static CartBlueprint of(Cart cart, Blueprint blueprint) {
-        return CartBlueprint.builder()
-                .cart(cart)
-                .blueprint(blueprint)
-                .build();
+    public static CartBlueprint create(Cart cart, Blueprint blueprint) {
+        CartBlueprint cartBlueprint = new CartBlueprint();
+        cartBlueprint.assignCart(cart);
+        cartBlueprint.assignBlueprint(blueprint);
+        return cartBlueprint;
     }
 
     //연관관계 맺기~~~~~~~~~
