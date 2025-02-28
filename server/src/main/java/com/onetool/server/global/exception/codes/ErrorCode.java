@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
+import static org.springframework.http.HttpStatus.*;
+
 @Getter
 @AllArgsConstructor
 public enum ErrorCode implements BaseCode {
@@ -12,8 +14,8 @@ public enum ErrorCode implements BaseCode {
     // 가장 일반적인 응답
     _INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "COMMON500", "서버 에러, 관리자에게 문의 바랍니다."),
     _BAD_REQUEST(HttpStatus.BAD_REQUEST,"COMMON400","잘못된 요청입니다."),
-    _UNAUTHORIZED(HttpStatus.UNAUTHORIZED,"COMMON401","인증이 필요합니다."),
-    _FORBIDDEN(HttpStatus.FORBIDDEN, "COMMON403", "금지된 요청입니다."),
+    _UNAUTHORIZED(UNAUTHORIZED,"COMMON401","인증이 필요합니다."),
+    _FORBIDDEN(FORBIDDEN, "COMMON403", "금지된 요청입니다."),
 
     /**
      * ******************************* Global Error CodeList ***************************************
@@ -49,58 +51,58 @@ public enum ErrorCode implements BaseCode {
     JACKSON_PROCESS_ERROR(HttpStatus.BAD_REQUEST, "G007", "com.fasterxml.jackson.core Exception"),
 
     // 권한이 없음
-    FORBIDDEN_ERROR(HttpStatus.FORBIDDEN, "G008", "Forbidden Exception"),
+    FORBIDDEN_ERROR(FORBIDDEN, "G008", "Forbidden Exception"),
 
     // 서버로 요청한 리소스가 존재하지 않음
-    NOT_FOUND_ERROR(HttpStatus.NOT_FOUND, "G009", "Not Found Exception"),
+    NOT_FOUND_ERROR(NOT_FOUND, "G009", "Not Found Exception"),
 
     // NULL Point Exception 발생
-    NULL_POINT_ERROR(HttpStatus.NOT_FOUND, "G010", "Null Point Exception"),
+    NULL_POINT_ERROR(NOT_FOUND, "G010", "Null Point Exception"),
 
     // @RequestBody 및 @RequestParam, @PathVariable 값이 유효하지 않음
-    NOT_VALID_ERROR(HttpStatus.NOT_FOUND, "G011", "handle Validation Exception"),
+    NOT_VALID_ERROR(NOT_FOUND, "G011", "handle Validation Exception"),
 
     // @RequestBody 및 @RequestParam, @PathVariable 값이 유효하지 않음
-    NOT_VALID_HEADER_ERROR(HttpStatus.NOT_FOUND, "G012", "Header에 데이터가 존재하지 않는 경우 "),
+    NOT_VALID_HEADER_ERROR(NOT_FOUND, "G012", "Header에 데이터가 존재하지 않는 경우 "),
 
     // 4xx : client error
 
     //사용자 에러
-    NON_EXIST_USER(HttpStatus.NOT_FOUND, "MEMBER-0001", "존재하지 않는 회원입니다"),
+    NON_EXIST_USER(NOT_FOUND, "MEMBER-0001", "존재하지 않는 회원입니다"),
     ILLEGAL_LOGOUT_USER(HttpStatus.BAD_REQUEST, "MEMBER-0002", "이미 로그아웃된 회원입니다."),
 
     //바인딩 에러
     BINDING_ERROR(HttpStatus.BAD_REQUEST, "BINDING-0000", "바인딩에 실패했습니다."),
 
     //로그인 에러
-    EMAIL_NOT_FOUND(HttpStatus.NOT_FOUND, "LOGIN-0001", "이메일이 잘못됨"),
+    EMAIL_NOT_FOUND(NOT_FOUND, "LOGIN-0001", "이메일이 잘못됨"),
     BAD_REQUEST(HttpStatus.BAD_REQUEST, "COMMON-0000", "잘못된 요청입니다."),
     EXIST_EMAIL(HttpStatus.BAD_REQUEST, "COMMON-0002", "이미 존재하는 회원입니다."),
     DUPLICATE_MEMBER(HttpStatus.BAD_REQUEST, "COMMON-0003", "기존 회원 정보와 중복됩니다."),
     INVALID_TOKEN(HttpStatus.BAD_REQUEST, "COMMON-0004", "유효하지 않은 토큰입니다."),
 
     //도면 에러
-    NO_BLUEPRINT_FOUND(HttpStatus.NOT_FOUND, "BLUEPRINT-0000", "도면이 존재하지 않습니다."),
+    NO_BLUEPRINT_FOUND(NOT_FOUND, "BLUEPRINT-0000", "도면이 존재하지 않습니다."),
     INVALID_SORT_TYPE(HttpStatus.BAD_REQUEST, "BLUEPRINT-0001", "정렬 타입이 올바르지 않습니다."),
     BLUEPRINT_NOT_APPROVED(HttpStatus.BAD_REQUEST, "BLUEPRINT-0002", "승인되지 않은 도면입니다."),
 
     //카테고리 에러
-    CATEGORY_NOT_FOUND(HttpStatus.NOT_FOUND, "CATEGORY-0000", "존재하지 않는 카테고리입니다."),
+    CATEGORY_NOT_FOUND(NOT_FOUND, "CATEGORY-0000", "존재하지 않는 카테고리입니다."),
 
     //장바구니 에러
-    NO_ITEM_IN_CART(HttpStatus.NO_CONTENT, "CART-0000", "장바구니에 상품이 없습니다."),
+    NO_ITEM_IN_CART(NO_CONTENT, "CART-0000", "장바구니에 상품이 없습니다."),
     ALREADY_EXIST_BLUEPRINT_IN_CART(HttpStatus.BAD_REQUEST, "CART-0001", "장바구니에 존재하는 상품입니다."),
     CART_BLUEPRINT_NOT_FOUND(HttpStatus.BAD_REQUEST, "CART-0002", "장바구니에 담긴 도면을 찾을 수 없습니다."),
     CART_NOT_FOUND(HttpStatus.BAD_REQUEST, "CART-0003", "장바구니를 찾을 수 없습니다."),
 
     //Qna 에러
-    NO_QNA_CONTENT(HttpStatus.NO_CONTENT, "QNA-0000", "게시된 문의사항이 없습니다."),
-    UNAVAILABLE_TO_MODIFY(HttpStatus.FORBIDDEN, "QNA-0001", "게시글에 대한 권한이 없습니다."),
-    NO_QNA_REPLY(HttpStatus.NO_CONTENT, "QNA-0002", "유효한 댓글이 아닙니다."),
+//    NO_QNA_CONTENT(HttpStatus.NO_CONTENT, "QNA-0000", "게시된 문의사항이 없습니다."),
+    UNAVAILABLE_TO_MODIFY(FORBIDDEN, "QNA-0001", "게시글에 대한 권한이 없습니다."),
+    NO_QNA_REPLY(NO_CONTENT, "QNA-0002", "유효한 댓글이 아닙니다."),
 
     //결제 및 주문 에러
-    ORDER_NOT_FOUND(HttpStatus.NOT_FOUND, "ORDER-001", "주문이 존재하지 않습니다."),
-    DEPOSIT_NOT_FOUND(HttpStatus.NOT_FOUND, "PAYMENT-001", "결제가 존재하지 않습니다."),
+    ORDER_NOT_FOUND(NOT_FOUND, "ORDER-001", "주문이 존재하지 않습니다."),
+    DEPOSIT_NOT_FOUND(NOT_FOUND, "PAYMENT-001", "결제가 존재하지 않습니다."),
 
     // 5xx : server error
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "SERVER-0000", "서버 에러"),

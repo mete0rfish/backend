@@ -6,5 +6,6 @@ import lombok.Builder;
 public class CartRequest {
     public record AddBlueprintToCart(
             @NotNull Long blueprintId
-    ){}
+    ) {
+    }
 }

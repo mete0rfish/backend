@@ -8,6 +8,9 @@ import com.onetool.server.api.member.repository.MemberRepository;
 import com.onetool.server.api.member.domain.Member;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -59,5 +62,11 @@ public class MemberService {
         if (memberRepository.existsByEmail(email)) {
             throw new BaseException(ErrorCode.EXIST_EMAIL);
         }
+    }
+
+    public Member findMemberWithCartById(Long id) {
+        return memberRepository
+                .findByIdWithCart(id)
+                .orElseThrow(() -> new BaseException(NON_EXIST_USER));
     }
 }
