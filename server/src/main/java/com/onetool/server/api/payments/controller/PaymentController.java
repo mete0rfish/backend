@@ -33,7 +33,7 @@ public class PaymentController {
 
     @DeleteMapping
     public ApiResponse<Long> deletePayment(@RequestBody Long paymentId) {
-        paymentBusiness.deletePayment(paymentId);
+        paymentBusiness.removePayment(paymentId);
         return ApiResponse.onSuccess(paymentId);
     }
 }

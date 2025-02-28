@@ -40,7 +40,7 @@ public class PaymentBusiness {
     }
 
     @Transactional
-    public void deletePayment(Long paymentId) {
+    public void removePayment(Long paymentId) {
         Payment targetPayment = paymentService.findById(paymentId);
         paymentService.deleteById(targetPayment);
     }
