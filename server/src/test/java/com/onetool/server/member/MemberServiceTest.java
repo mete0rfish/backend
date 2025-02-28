@@ -1,5 +1,6 @@
 package com.onetool.server.member;
 
+import com.onetool.server.api.member.business.MemberBusiness;
 import com.onetool.server.api.member.domain.Member;
 import com.onetool.server.api.member.repository.MemberRepository;
 import com.onetool.server.api.member.service.MemberService;
@@ -18,10 +19,8 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDate;
 import java.util.Map;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
@@ -29,9 +28,11 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 public class MemberServiceTest {
 
     @Autowired
-    MemberRepository memberRepository;
+    private MemberRepository memberRepository;
     @Autowired
-    MemberService memberService;
+    private MemberService memberService;
+    @Autowired
+    private MemberBusiness memberBusiness;
 
     @Test
     void create_member() {
@@ -184,7 +185,7 @@ public class MemberServiceTest {
         Long memberId = 1L;  // 삭제할 회원의 ID (id=1로 설정)
 
         // when: deleteMember 메서드 호출하여 회원 삭제
-        memberService.deleteMember(memberId);
+        memberBusiness.deleteMember(memberId);
 
         // then: 해당 회원의 isDeleted 값이 true로 변경되었는지 확인
         Member deletedMember = memberRepository.findById(memberId).orElseThrow(() -> new MemberNotFoundException(memberId.toString()));

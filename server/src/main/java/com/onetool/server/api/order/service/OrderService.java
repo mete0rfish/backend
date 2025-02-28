@@ -48,6 +48,11 @@ public class OrderService {
         orderRepository.delete(orders);
     }
 
+    @Transactional(readOnly = true)
+    public List<Orders> findByUserId(Long userId) {
+        return orderRepository.findByUserId(userId);
+    }
+
     private void validateOrdersIsNull(Orders orders) {
         if (orders == null) {
             throw new OrdersNullPointException("Orders가 NULL입니다. 함수명 : validateOrdersIsNull");
