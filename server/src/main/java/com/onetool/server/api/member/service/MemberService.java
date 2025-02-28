@@ -22,7 +22,6 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.integration.IntegrationProperties;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -244,7 +243,7 @@ public class MemberService {
                 .orElseThrow(() -> new BaseException(NON_EXIST_USER));
     }
 
-    public Member findMemberWithCart(Long id) {
+    public Member findMemberWithCartById(Long id) {
         return memberRepository
                 .findByIdWithCart(id)
                 .orElseThrow(() -> new BaseException(NON_EXIST_USER));

@@ -27,7 +27,7 @@ public class CartBusiness {
 
     @Transactional
     public void addBlueprintToCart(Long userId, Long blueprintId) {
-        Member memberWithCart = memberService.findMemberWithCart(userId);
+        Member memberWithCart = memberService.findMemberWithCartById(userId);
         Blueprint blueprint = blueprintService.findBlueprintById(blueprintId);
         Cart cart = memberWithCart.getCart();
         cartService.validateBlueprintAlreadyInCart(cart, blueprint);
@@ -47,7 +47,7 @@ public class CartBusiness {
 
     @Transactional
     public String removeBlueprintInCart(Long userId, Long blueprintId) {
-        Member member = memberService.findMemberWithCart(userId);
+        Member member = memberService.findMemberWithCartById(userId);
         Cart cart = member.getCart();
         CartBlueprint cartBlueprint = findCartBlueprint(cart, blueprintId);
         cartService.deleteCartBlueprint(cartBlueprint);
