@@ -3,8 +3,6 @@ package com.onetool.server.api.payments.service;
 import com.onetool.server.api.order.Orders;
 import com.onetool.server.api.payments.domain.Payment;
 import com.onetool.server.api.payments.repository.PaymentRepository;
-import com.onetool.server.global.exception.OrdersNullPointException;
-import com.onetool.server.global.exception.PaymentNotFoundException;
 import com.onetool.server.global.new_exception.exception.ApiException;
 import com.onetool.server.global.new_exception.exception.error.PaymentErrorCode;
 import lombok.RequiredArgsConstructor;
