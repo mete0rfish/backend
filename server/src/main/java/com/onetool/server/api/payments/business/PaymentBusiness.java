@@ -25,7 +25,7 @@ public class PaymentBusiness {
 
     @Transactional(readOnly = true)
     public List<PaymentResponse> getPaymentList(Long userId) {
-        List<Orders> ordersList = orderService.findByUserId(userId);
+        List<Orders> ordersList = orderService.findAllByUserId(userId);
         return ordersList.stream()
                 .map(paymentService::findByOrders)
                 .filter(Objects::nonNull)
@@ -40,7 +40,7 @@ public class PaymentBusiness {
     }
 
     @Transactional
-    public void deletePayment(Long paymentId) {
+    public void removePayment(Long paymentId) {
         Payment targetPayment = paymentService.findById(paymentId);
         paymentService.deleteById(targetPayment);
     }

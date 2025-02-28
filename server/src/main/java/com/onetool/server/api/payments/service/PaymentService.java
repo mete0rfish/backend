@@ -3,8 +3,8 @@ package com.onetool.server.api.payments.service;
 import com.onetool.server.api.order.Orders;
 import com.onetool.server.api.payments.domain.Payment;
 import com.onetool.server.api.payments.repository.PaymentRepository;
-import com.onetool.server.global.exception.OrdersNullPointException;
-import com.onetool.server.global.exception.PaymentNotFoundException;
+import com.onetool.server.global.new_exception.exception.ApiException;
+import com.onetool.server.global.new_exception.exception.error.PaymentErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -24,7 +24,8 @@ public class PaymentService {
 
     @Transactional(readOnly = true)
     public Payment findById(Long id) {
-        return paymentRepository.findById(id).orElseThrow(() -> new PaymentNotFoundException(id));
+        return paymentRepository.findById(id).orElseThrow(() ->
+                new ApiException(PaymentErrorCode.PAYMENT_NOT_FOUND,"ID와 일치하는 결제 정보가 존재하지 않습니다."));
     }
 
     @Transactional

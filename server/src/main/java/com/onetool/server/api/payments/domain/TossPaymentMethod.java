@@ -1,8 +1,6 @@
 package com.onetool.server.api.payments.domain;
 
 import lombok.Getter;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 
 @Getter
 public enum TossPaymentMethod {
