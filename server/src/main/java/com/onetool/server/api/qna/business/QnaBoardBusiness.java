@@ -30,7 +30,7 @@ public class QnaBoardBusiness {
     @Transactional(readOnly = true)
     public List<QnaBoardBriefResponse> getMyQna(MemberAuthContext context) {
         memberService.validateExistId(context.getId());
-        List<QnaBoard> qnaBoards = qnaBoardService.findByMemberId(context.getId());
+        List<QnaBoard> qnaBoards = qnaBoardService.findAllByMemberId(context.getId());
         return QnaBoardBriefResponse.fromQnaBoardListToBriefResponseList(qnaBoards);
     }
 

@@ -37,7 +37,7 @@ public class QnaBoardService {
     }
 
     @Transactional(readOnly = true)
-    public List<QnaBoard> findByMemberId(Long memberId) {
+    public List<QnaBoard> findAllByMemberId(Long memberId) {
         return qnaBoardRepository.findByMemberId(memberId);
     }
 
