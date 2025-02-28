@@ -1,6 +1,5 @@
 package com.onetool.server.api.member.controller;
 
-import com.onetool.server.api.member.business.MemberEmailBusiness;
 import com.onetool.server.api.member.business.MemberLoginBusiness;
 import com.onetool.server.api.member.dto.LoginRequest;
 import com.onetool.server.global.auth.jwt.JwtUtil;
