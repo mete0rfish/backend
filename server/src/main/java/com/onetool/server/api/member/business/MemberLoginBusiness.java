@@ -38,14 +38,7 @@ public class MemberLoginBusiness {
             throw new BadCredentialsException("비밀번호가 일치하지 않습니다.");
         }
 
-        MemberAuthContext context = MemberAuthContext.builder()
-                .id(member.getId())
-                .role(member.getRole().name())
-                .name(member.getName())
-                .email(member.getEmail())
-                .password(member.getPassword())
-                .build();
-
+        MemberAuthContext context = MemberAuthContext.from(member);
         return jwtUtil.createTokens(context);
     }
 
