@@ -17,12 +17,13 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
+import static com.onetool.server.global.util.CookieUtil.createRefreshTokenCookie;
+
 @Slf4j
 @RestController
 @RequiredArgsConstructor
 public class MemberLoginController {
 
-    private final MemberEmailBusiness memberEmailBusiness;
     private final MemberLoginBusiness memberLoginBusiness;
     private final JwtUtil jwtUtil;
 
@@ -44,15 +45,5 @@ public class MemberLoginController {
     ) {
         String accessToken = jwtUtil.resolveToken(servletRequest);
         return memberLoginBusiness.logout(accessToken, principalDetails.getUsername());
-    }
-
-    private ResponseCookie createRefreshTokenCookie(String refreshToken) {
-        return ResponseCookie.from("refreshToken", refreshToken)
-                .maxAge(7 * 24 * 60 * 60)
-                .path("/")
-                .secure(true)
-                .sameSite("None")
-                .httpOnly(true)
-                .build();
     }
 }
