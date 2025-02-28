@@ -67,6 +67,6 @@ public class MemberService {
     public Member findMemberWithCartById(Long id) {
         return memberRepository
                 .findByIdWithCart(id)
-                .orElseThrow(() -> new BaseException(NON_EXIST_USER));
+                .orElseThrow(() -> new BaseException(ErrorCode.NON_EXIST_USER));
     }
 }
