@@ -6,6 +6,9 @@ import com.onetool.server.api.qna.QnaReply;
 import com.onetool.server.api.qna.repository.QnaReplyRepository;
 import com.onetool.server.global.exception.QnaNullPointException;
 import com.onetool.server.global.exception.base.BaseException;
+import com.onetool.server.global.new_exception.exception.ApiException;
+import com.onetool.server.global.new_exception.exception.error.QnaErrorCode;
+import com.onetool.server.global.new_exception.exception.error.ServerErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +23,7 @@ public class QnaReplyService {
     public QnaReply findQnaReplyById(Long id) {
         return qnaReplyRepository
                 .findByIdWithBoardAndMember(id)
-                .orElseThrow(() -> new BaseException(NO_QNA_REPLY));
+                .orElseThrow(() ->new ApiException(ServerErrorCode.NOT_FOUND_ERROR,"해당 id : "+id));
     }
 
     public void saveQnaReply(Member member, QnaBoard qnaBoard, QnaReply qnaReply) {
@@ -50,7 +53,7 @@ public class QnaReplyService {
 
     private void validateQnaReplyIsNull(QnaReply qnaReply) {
         if (qnaReply == null) {
-            throw new QnaNullPointException("qnaReply는 null입니다. 함수명: validateQnaReplyIsNull");
+            throw new ApiException(QnaErrorCode.NULL_POINT_ERROR);
         }
     }
 }

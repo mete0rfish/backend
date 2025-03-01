@@ -2,6 +2,8 @@ package com.onetool.server.global.generator;
 
 import com.onetool.server.global.exception.BusinessLogicException;
 import com.onetool.server.global.exception.codes.ErrorCode;
+import com.onetool.server.global.new_exception.exception.ApiException;
+import com.onetool.server.global.new_exception.exception.error.EmailErrorCode;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
@@ -19,7 +21,7 @@ public class RandomGenerator {
             }
             return builder.toString();
         } catch (NoSuchAlgorithmException e) {
-            throw new BusinessLogicException("잘못된 생성알고리즘", ErrorCode.AUTH_CODE_ERROR);
+            throw new ApiException(EmailErrorCode.AUTH_CODE_ERROR);
         }
     }
 
@@ -33,7 +35,7 @@ public class RandomGenerator {
             }
             return builder.toString();
         } catch (NoSuchAlgorithmException e) {
-            throw new BusinessLogicException("생성 알고리즘 문제", ErrorCode.RANDOM_PASSWORD_ERROR);
+            throw new ApiException(EmailErrorCode.RANDOM_PASSWORD_ERROR,"생성 알고리즘 문제");
         }
     }
 }

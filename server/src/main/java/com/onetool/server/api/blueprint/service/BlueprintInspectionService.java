@@ -5,6 +5,9 @@ import com.onetool.server.api.blueprint.dto.response.BlueprintResponse;
 import com.onetool.server.api.blueprint.repository.BlueprintRepository;
 import com.onetool.server.api.blueprint.InspectionStatus;
 import com.onetool.server.global.exception.BlueprintNotFoundException;
+import com.onetool.server.global.new_exception.exception.ApiException;
+import com.onetool.server.global.new_exception.exception.error.BlueprintErrorCode;
+import com.onetool.server.global.new_exception.exception.error.CartErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -30,7 +33,7 @@ public class BlueprintInspectionService {
 
     public Blueprint findBluePrintById(Long blueprintId) {
         return blueprintRepository.findById(blueprintId)
-                .orElseThrow(() -> new BlueprintNotFoundException(blueprintId + "는 DB에 존재하지 않습니다. 함수명 : findBluePrintById"));
+                .orElseThrow(() -> new ApiException(BlueprintErrorCode.NOT_FOUND_ERROR,"blueprintId : "+ blueprintId));
     }
 
     public void updateBlueprintInspectionStatus(Blueprint blueprint) {
@@ -44,7 +47,7 @@ public class BlueprintInspectionService {
 
     private void validateBlueprintIsNull(Blueprint blueprint) {
         if (blueprint == null) {
-            throw new NullPointerException("blueprint 객체는 NULL입니다. 함수명 : validateBlueprintIsNull");
+            throw new ApiException(BlueprintErrorCode.NULL_POINT_ERROR,"blueprint가 NULL입니다.");
         }
     }
 }

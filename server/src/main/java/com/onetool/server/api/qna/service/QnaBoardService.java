@@ -7,6 +7,8 @@ import com.onetool.server.global.exception.base.BaseException;
 import com.onetool.server.api.member.domain.Member;
 import com.onetool.server.api.qna.repository.QnaBoardRepository;
 import com.onetool.server.global.exception.codes.ErrorCode;
+import com.onetool.server.global.new_exception.exception.ApiException;
+import com.onetool.server.global.new_exception.exception.error.QnaErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,7 +37,7 @@ public class QnaBoardService {
     public QnaBoard findQnaBoardById(Long qnaId) {
         return qnaBoardRepository
                 .findByIdWithReplies(qnaId)
-                .orElseThrow(() -> new BaseException(ErrorCode.NO_QNA_REPLY));
+                .orElseThrow(() -> new ApiException(QnaErrorCode.NOT_FOUND_ERROR,"qnaId : "+qnaId));
     }
 
     @Transactional(readOnly = true)
@@ -46,7 +48,7 @@ public class QnaBoardService {
     @Transactional
     public void saveQnaBoard(Member member, QnaBoard qnaBoard) {
         Optional.ofNullable(qnaBoard)
-                .orElseThrow(() -> new QnaNullPointException("qnaBoard는 null입니다. 함수명 : saveQnaBoard"))
+                .orElseThrow(() ->new ApiException(QnaErrorCode.NULL_POINT_ERROR,"qnaBoard가 NULL입니다."))
                 .assignMember(member);
         qnaBoardRepository.save(qnaBoard);
     }
@@ -54,7 +56,7 @@ public class QnaBoardService {
     @Transactional
     public void deleteQnaBoard(QnaBoard qnaBoard, Member member) {
         Optional.ofNullable(qnaBoard)
-                .orElseThrow(() -> new QnaNullPointException("qnaBoard는 null입니다. 함수명 : removeQnaBoard"))
+                .orElseThrow(() -> new ApiException(QnaErrorCode.NULL_POINT_ERROR,"qnaBoard가 NULL입니다."))
                 .unassignMember(member);
 
         qnaBoardRepository.delete(qnaBoard);
@@ -63,7 +65,7 @@ public class QnaBoardService {
     @Transactional
     public void updateQnaBoard(QnaBoard qnaBoard, PostQnaBoardRequest request) {
         if (qnaBoard == null) {
-            throw new QnaNullPointException("qnaBoard는 null입니다. 함수명 : updateQnaBoard");
+            throw new ApiException(QnaErrorCode.NULL_POINT_ERROR,"qnaBoard가 NULL입니다.");
         }
 
         qnaBoard.update(request.title(), request.content());
@@ -71,6 +73,6 @@ public class QnaBoardService {
 
     private void hasErrorWithNoContent(List<QnaBoard> data) {
         if(data.isEmpty())
-            throw new BaseException(ErrorCode.NO_QNA_REPLY);
+            throw new ApiException(QnaErrorCode.NOT_FOUND_ERROR);
     }
 }

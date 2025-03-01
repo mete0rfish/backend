@@ -46,5 +46,4 @@ public class CartBlueprint extends BaseEntity {
         this.blueprint = blueprint;
         blueprint.getCartBlueprints().add(this);
     }
-
 }

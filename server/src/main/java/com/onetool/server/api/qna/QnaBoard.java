@@ -3,6 +3,8 @@ package com.onetool.server.api.qna;
 import com.onetool.server.global.entity.BaseEntity;
 import com.onetool.server.api.member.domain.Member;
 import com.onetool.server.global.exception.UnAvailableModifyeException;
+import com.onetool.server.global.new_exception.exception.ApiException;
+import com.onetool.server.global.new_exception.exception.error.QnaErrorCode;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -62,7 +64,7 @@ public class QnaBoard extends BaseEntity {
 
     public void validateMemberCanRemoveOrUpdate(Member member) {
         if(!this.member.getEmail().equals(member.getEmail())){
-            throw new UnAvailableModifyeException("해당 유저는 삭제 및 수정 권한이 없습니다.");
+            throw new ApiException(QnaErrorCode.UNAVAILABLE_TO_MODIFY,"해당 유저는 삭제 및 수정 권한이 없습니다.");
         }
     }
 
