@@ -1,7 +1,5 @@
 package com.onetool.server.api.payments.domain;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.onetool.server.api.order.Orders;
 import jakarta.persistence.*;
 import lombok.*;
 

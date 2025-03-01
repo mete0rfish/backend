@@ -15,6 +15,7 @@ public enum OrderErrorCode implements ErrorCodeIfs{
     NULL_POINT_ERROR(HttpStatus.NOT_FOUND, "ORDER-0010", "해당 객체는 NULL입니다."),
     NOT_FOUND_ERROR(HttpStatus.NOT_FOUND, "ORDER-0011", "해당 객체는 서버에 존재하지 않습니다"),
     DEPOSIT_NOT_FOUND(NOT_FOUND, "PAYMENT-001", "결제가 존재하지 않습니다."),
+
     ;
 
     private final HttpStatus httpStatus;

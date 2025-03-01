@@ -1,7 +1,6 @@
 package com.onetool.server.api.order.service;
 
 import com.onetool.server.api.blueprint.Blueprint;
-import com.onetool.server.api.member.service.MemberService;
 import com.onetool.server.api.order.OrderBlueprint;
 import com.onetool.server.api.order.Orders;
 import com.onetool.server.api.order.repository.OrderRepository;
@@ -51,7 +50,7 @@ public class OrderService {
     }
 
     @Transactional(readOnly = true)
-    public List<Orders> findByUserId(Long userId) {
+    public List<Orders> findAllByUserId(Long userId) {
         return orderRepository.findByUserId(userId);
     }
 
