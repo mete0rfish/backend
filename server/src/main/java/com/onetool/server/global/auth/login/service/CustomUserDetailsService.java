@@ -29,7 +29,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public PrincipalDetails loadUserByUsername(String id) throws UsernameNotFoundException {
-        Member member = memberRepository.findById(Long.parseLong(id))
+        Member member = memberRepository.findMemberById(Long.parseLong(id))
                 .orElseThrow(() -> new MemberNotFoundException("해당하는 유저가 없습니다."));
 
         MemberAuthContext context = MemberAuthContext.builder()
