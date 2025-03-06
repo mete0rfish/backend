@@ -2,7 +2,6 @@ package com.onetool.server.api.payments.service;
 
 import com.onetool.server.api.order.service.OrderFixture;
 import com.onetool.server.api.order.service.OrderService;
-import com.onetool.server.api.payments.dto.DepositRequest;
 import com.onetool.server.global.exception.PaymentNotFoundException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

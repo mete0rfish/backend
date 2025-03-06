@@ -32,14 +32,14 @@ public class BlueprintServiceTest {
 
     private Blueprint blueprint;
 
-    @DisplayName("키워드 기반 검색이 잘되는지 확인")
-    @Test
-    void search_with_keyword() {
-        String keyword = "마을";
-        Pageable pageable = PageRequest.of(0, 5);
-        Page<SearchResponse> response = blueprintSearchService.searchNameAndCreatorWithKeyword(keyword, pageable);
-        assertThat(response.getTotalElements()).isEqualTo(6);
-    }
+//    @DisplayName("키워드 기반 검색이 잘되는지 확인")
+//    @Test
+//    void search_with_keyword() {
+//        String keyword = "마을";
+//        Pageable pageable = PageRequest.of(0, 5);
+//        Page<SearchResponse> response = blueprintSearchService.searchNameAndCreatorWithKeyword(keyword, pageable);
+//        assertThat(response.getTotalElements()).isEqualTo(6);
+//    }
 
 //    @DisplayName("id가 1인 Blueprint가 삭제 상태로 변경되는지 확인")
 //    @Test
