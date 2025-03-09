@@ -36,14 +36,14 @@ public class QnaBoardBusiness {
 
     @Transactional
     public void createQnaBoard(String email, PostQnaBoardRequest request) {
-        Member member = memberService.findByEmail(email);
+        Member member = memberService.findOne(email);
         QnaBoard qnaBoard = request.toQnaBoard();
         qnaBoardService.saveQnaBoard(member, qnaBoard);
     }
 
     @Transactional
     public QnaBoardDetailResponse getQnaBoardDetail(String email, Long qnaId) {
-        Member member = memberService.findByEmail(email);
+        Member member = memberService.findOne(email);
         QnaBoard qnaBoard = qnaBoardService.findQnaBoardById(qnaId);
         boolean authorization = qnaBoard.isMyQnaBoard(member);
 
@@ -52,7 +52,7 @@ public class QnaBoardBusiness {
 
     @Transactional
     public void removeQnaBoard(String email, Long qnaId) {
-        Member member = memberService.findByEmail(email);
+        Member member = memberService.findOne(email);
         QnaBoard qnaBoard = qnaBoardService.findQnaBoardById(qnaId);
         qnaBoard.validateMemberCanRemoveOrUpdate(member);
 
@@ -61,7 +61,7 @@ public class QnaBoardBusiness {
 
     @Transactional
     public void editQnaBoard(String email, Long qnaId, PostQnaBoardRequest request) {
-        Member member = memberService.findByEmail(email);
+        Member member = memberService.findOne(email);
         QnaBoard qnaBoard = qnaBoardService.findQnaBoardById(qnaId);
         qnaBoard.validateMemberCanRemoveOrUpdate(member);
 

@@ -22,19 +22,19 @@ public class MemberBusiness {
 
     @Transactional(readOnly = true)
     public String findEmail(MemberFindEmailRequest request) {
-        Member member = memberService.findByNameAndPhoneNumber(request.name(), request.phone_num());
+        Member member = memberService.findOne(request.name(), request.phone_num());
         return member.getEmail();
     }
 
     @Transactional(readOnly = true)
     public MemberInfoResponse getMemberInfo(Long userId) {
-        Member member = memberService.findById(userId);
+        Member member = memberService.findOne(userId);
         return MemberInfoResponse.from(member);
     }
 
     @Transactional(readOnly = true)
     public List<BlueprintDownloadResponse> getPurchasedBlueprints(final Long userId) {
-        final Member member = memberService.findById(userId);
+        final Member member = memberService.findOne(userId);
         return member.getOrders().stream()
                 .flatMap(order -> order.getOrderItems().stream())
                 .map(BlueprintDownloadResponse::from)
@@ -51,14 +51,14 @@ public class MemberBusiness {
 
     @Transactional
     public void updateMember(Long id, MemberUpdateRequest request) {
-        Member member = memberService.findById(id);
+        Member member = memberService.findOne(id);
         member.updateWith(request, encoder);
         memberService.save(member);
     }
 
     @Transactional
     public void deleteMember(Long id) {
-        Member member = memberService.findById(id);
+        Member member = memberService.findOne(id);
         memberService.delete(member);
     }
 }

@@ -30,7 +30,7 @@ public class MemberLoginBusiness {
     private final MemberService memberService;
 
     public Map<String, String> login(LoginRequest request) {
-        Member member = memberService.findByEmail(request.getEmail());
+        Member member = memberService.findOne(request.getEmail());
 
         if (!encoder.matches(request.getPassword(), member.getPassword())) {
             log.error("비밀번호 불일치: {}", encoder.encode(member.getPassword()));
