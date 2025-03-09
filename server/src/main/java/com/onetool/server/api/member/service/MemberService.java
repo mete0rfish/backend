@@ -17,19 +17,19 @@ public class MemberService {
     private final MemberRepository memberRepository;
 
     @Transactional(readOnly = true)
-    public Member findByNameAndPhoneNumber(String name, String phoneNumber) {
+    public Member findOne(String name, String phoneNumber) {
         return memberRepository.findByNameAndPhoneNum(name, phoneNumber).orElseThrow(() ->
                 new ApiException(MemberErrorCode.NON_EXIST_USER, "이름과 비밀번호가 일치하는 회원이 존재하지 않습니다."));
     }
 
     @Transactional(readOnly = true)
-    public Member findByEmail(String email) {
+    public Member findOne(String email) {
         return memberRepository.findByEmail(email).orElseThrow(() ->
                 new ApiException(MemberErrorCode.NON_EXIST_USER, "이메일과 일치하는 회원이 존재하지 않습니다."));
     }
 
     @Transactional(readOnly = true)
-    public Member findById(Long id) {
+    public Member findOne(Long id) {
         return memberRepository.findById(id).orElseThrow(() ->
                 new ApiException(MemberErrorCode.NON_EXIST_USER, "ID가 일치하는 회원이 존재하지 않습니다."));
     }
@@ -62,7 +62,7 @@ public class MemberService {
         }
     }
 
-    public Member findMemberWithCartById(Long id) {
+    public Member findOneWithCart(Long id) {
         return memberRepository
                 .findByIdWithCart(id)
                 .orElseThrow(() -> new ApiException(MemberErrorCode.NON_EXIST_USER));

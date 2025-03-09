@@ -5,11 +5,26 @@ import com.onetool.server.api.member.enums.SocialType;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.Repository;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
 import java.util.Optional;
 
-public interface MemberRepository extends JpaRepository<Member, Long> {
+public interface MemberRepository extends Repository<Member, Long> {
+
+    Member save(Member member);
+
+    void delete(Member member);
+
+    Optional<Member> findById(Long id);
+
+    List<Member> findAll();
+
+    boolean existsById(Long id);
+
+    int count();
+
     @Query("SELECT m FROM Member m WHERE m.email = :email")
     Optional<Member> findByEmail(@Param("email") String email);
 

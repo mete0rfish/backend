@@ -26,7 +26,7 @@ public class OrderBusiness {
 
     @Transactional
     public Long createOrder(PrincipalDetails principalDetails, OrderRequest orderRequest) {
-        Member member = memberService.findByEmail(principalDetails.getContext().getEmail());
+        Member member = memberService.findOne(principalDetails.getContext().getEmail());
         List<Blueprint> blueprintList = blueprintService.findAllBlueprintByIds(orderRequest.blueprintIds());
         Orders orders = new Orders(blueprintList);
 
@@ -35,7 +35,7 @@ public class OrderBusiness {
 
     @Transactional
     public List<MyPageOrderResponse> getMyPageOrderResponseList(@AuthenticationPrincipal PrincipalDetails principal) {
-        Member member = memberService.findByEmail(principal.getContext().getEmail());
+        Member member = memberService.findOne(principal.getContext().getEmail());
         List<Orders> ordersList = orderService.findAllOrdersByUserId(member.getId());
         return MyPageOrderResponse.from(ordersList);
     }

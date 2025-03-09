@@ -12,9 +12,6 @@ import com.onetool.server.global.annotation.Business;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 
-import java.security.Principal;
-import java.util.List;
-
 @Business
 @RequiredArgsConstructor
 public class QnaReplyBusiness {
@@ -25,7 +22,7 @@ public class QnaReplyBusiness {
 
     @Transactional
     public void createQnaReply(String email, Long qnaId, PostQnaReplyRequest request) {
-        Member member = memberService.findByEmail(email);
+        Member member = memberService.findOne(email);
         QnaBoard qnaBoard = qnaBoardService.findQnaBoardById(qnaId);
         QnaReply qnaReply = request.fromRequestTooQnaReply(request);
         qnaReplyService.saveQnaReply(member, qnaBoard, qnaReply);
@@ -33,14 +30,14 @@ public class QnaReplyBusiness {
 
     @Transactional
     public void removeQnaReply(String email, Long qnaId, ModifyQnaReplyRequest request) {
-        Member member = memberService.findByEmail(email);
+        Member member = memberService.findOne(email);
         QnaBoard qnaBoard =qnaBoardService.findQnaBoardById(qnaId);
         QnaReply qnaReply = qnaReplyService.findQnaReplyById(request.replyId());
         qnaReplyService.deleteQnaReply(member, qnaBoard, qnaReply);
     }
 
     public void updateQnaReply(String email, Long qnaId, ModifyQnaReplyRequest request) {
-        Member member = memberService.findByEmail(email);
+        Member member = memberService.findOne(email);
         QnaReply qnaReply = qnaReplyService.findQnaReplyById(request.replyId());
         qnaReplyService.updateQnaReply(member, request.content(), qnaReply);
     }

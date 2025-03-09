@@ -52,7 +52,7 @@ public class MemberEmailBusiness {
 
     @Transactional
     public void findLostPwd(MemberFindPwdRequest request) {
-        Member member = memberService.findByEmail(request.getEmail());
+        Member member = memberService.findOne(request.getEmail());
         String randomPassword = createRandomPassword();
         memberService.updatePassword(member, encoder.encode(randomPassword));
         mailService.sendEmail(
