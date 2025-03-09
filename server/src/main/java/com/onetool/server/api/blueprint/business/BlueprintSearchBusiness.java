@@ -23,9 +23,9 @@ public class BlueprintSearchBusiness {
 
     @Transactional
     public Page<SearchResponse> getSearchResponsePage(String keyword, Pageable pageable) {
-        Page<Blueprint> blueprintPage = blueprintSearchService.findAllBlueprintPage(keyword, pageable);
-        List<Blueprint> withOrderBlueprints = blueprintSearchService.findAllBlueprintByBlueprintPage(blueprintPage);
-        List<Blueprint> withCartBlueprints = blueprintSearchService.findAllBlueprintByBlueprintList(withOrderBlueprints);
+        Page<Blueprint> blueprintPage = blueprintSearchService.findAllByPassed(keyword, pageable);
+        List<Blueprint> withOrderBlueprints = blueprintSearchService.fetchAllWithOrderBlueprints(blueprintPage);
+        List<Blueprint> withCartBlueprints = blueprintSearchService.fetchAllWithCartBlueprints(withOrderBlueprints);
 
         return makeBlueprintPage(pageable, withCartBlueprints, blueprintPage);
     }
@@ -33,22 +33,22 @@ public class BlueprintSearchBusiness {
     @Transactional
     public Page<SearchResponse> getSearchResponsePage(FirstCategoryType firstCategory, String secondCategory, Pageable pageable) {
         Page<Blueprint> blueprintPage = (secondCategory == null)
-                ? blueprintSearchService.findAllBlueprintPage(firstCategory.getCategoryId(), pageable)
-                : blueprintSearchService.findAllBlueprintPage(firstCategory.getCategoryId(), secondCategory, pageable);
+                ? blueprintSearchService.findAllByPassed(firstCategory.getCategoryId(), pageable)
+                : blueprintSearchService.findAllByPassed(firstCategory.getCategoryId(), secondCategory, pageable);
 
         return makeBlueprintPage(pageable, blueprintPage.getContent(), blueprintPage);
     }
 
     @Transactional
     public Page<SearchResponse> getSearchResponsePage(Pageable pageable) {
-        Page<Blueprint> blueprintPage = blueprintSearchService.findAllBlueprintPage(pageable);
+        Page<Blueprint> blueprintPage = blueprintSearchService.findAllByPassed(pageable);
 
         return makeBlueprintPage(pageable, blueprintPage.getContent(), blueprintPage);
     }
 
     @Transactional
     public BlueprintResponse getApprovedBlueprintResponse(Long blueprintId) {
-        Blueprint blueprint = blueprintSearchService.findBlueprintById(blueprintId);
+        Blueprint blueprint = blueprintSearchService.findOne(blueprintId);
         if (blueprint.getInspectionStatus() != InspectionStatus.PASSED) {
             throw new BlueprintNotApprovedException(blueprintId.toString());
         }
@@ -61,8 +61,8 @@ public class BlueprintSearchBusiness {
         Long categoryId = getCategoryId(request.categoryName());
         FirstCategoryType category = (categoryId != null) ? FirstCategoryType.findByCategoryId(categoryId) : null;
         Page<Blueprint> blueprintPage = (category == null)
-                ? blueprintSearchService.findAllBlueprintPage(sortedPageable)
-                : blueprintSearchService.findAllBlueprintPage(category.getCategoryId(), sortedPageable);
+                ? blueprintSearchService.findAllByPassed(sortedPageable)
+                : blueprintSearchService.findAllByPassed(category.getCategoryId(), sortedPageable);
 
         return BlueprintResponse.toBlueprintResponseList(blueprintPage.getContent());
     }

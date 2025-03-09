@@ -9,15 +9,12 @@ import com.onetool.server.api.cart.service.CartService;
 import com.onetool.server.api.member.domain.Member;
 import com.onetool.server.api.member.service.MemberService;
 import com.onetool.server.global.annotation.Business;
-import com.onetool.server.global.exception.base.BaseException;
 import com.onetool.server.global.new_exception.exception.ApiException;
 import com.onetool.server.global.new_exception.exception.error.CartErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-
-import static com.onetool.server.global.exception.codes.ErrorCode.NO_BLUEPRINT_FOUND;
 
 @Business
 @RequiredArgsConstructor
@@ -29,7 +26,7 @@ public class CartBusiness {
 
     @Transactional
     public void addBlueprintToCart(Long userId, Long blueprintId) {
-        Member memberWithCart = memberService.findMemberWithCartById(userId);
+        Member memberWithCart = memberService.findOneWithCart(userId);
         Blueprint blueprint = blueprintService.findBlueprintById(blueprintId);
         Cart cart = memberWithCart.getCart();
         cartService.validateBlueprintAlreadyInCart(cart, blueprint);
@@ -49,7 +46,7 @@ public class CartBusiness {
 
     @Transactional
     public String removeBlueprintInCart(Long userId, Long blueprintId) {
-        Member member = memberService.findMemberWithCartById(userId);
+        Member member = memberService.findOneWithCart(userId);
         Cart cart = member.getCart();
         CartBlueprint cartBlueprint = findCartBlueprint(cart, blueprintId);
         cartService.deleteCartBlueprint(cartBlueprint);
