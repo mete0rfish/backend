@@ -1,10 +1,11 @@
 package com.onetool.server.api.member.fixture;
 
-import com.onetool.server.api.cart.Cart;
 import com.onetool.server.api.member.domain.Member;
-import com.onetool.server.api.member.dto.MemberCreateRequest;
-import com.onetool.server.api.member.dto.MemberUpdateRequest;
+import com.onetool.server.api.member.dto.*;
 import com.onetool.server.api.member.enums.UserRole;
+import com.onetool.server.api.qna.dto.response.QnaBoardBriefResponse;
+
+import java.util.*;
 
 public class MemberFixture {
 
@@ -44,9 +45,31 @@ public class MemberFixture {
         );
     }
 
+    public static MemberCreateResponse createMemberCreateResponse() {
+        return MemberCreateResponse.builder()
+                .id(2L)
+                .name("홍길동")
+                .email("user@example.com")
+                .build();
+    }
+
     public static MemberUpdateRequest createMemberUpdateRequest() {
         return MemberUpdateRequest.builder()
                 .name("길동홍")
                 .build();
+    }
+
+    public static List<QnaBoardBriefResponse> createQnaBoardBriefResponses() {
+        List<QnaBoardBriefResponse> responses = new ArrayList<>();
+        responses.add(QnaBoardBriefResponse.builder().title("test1").writer("writer1").build());
+        responses.add(QnaBoardBriefResponse.builder().title("test2").writer("writer2").build());
+        return responses;
+    }
+
+    public static List<BlueprintDownloadResponse> createBlueprintDownloadResponses() {
+        List<BlueprintDownloadResponse> responses = new ArrayList<>();
+        responses.add(BlueprintDownloadResponse.builder().blueprintId(1L).blueprintName("도면1").build());
+        responses.add(BlueprintDownloadResponse.builder().blueprintId(2L).blueprintName("도면2").build());
+        return responses;
     }
 }
