@@ -83,6 +83,11 @@ public class FakeMemberRepository implements MemberRepository {
                 .anyMatch(m -> m.getEmail().equals(email));
     }
 
+    @Override
+    public Optional<Member> findMemberById(Long id) {
+        return Optional.empty();
+    }
+
     public void clear() {
         store.clear();
     }
