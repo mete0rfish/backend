@@ -31,17 +31,16 @@ public class CartBusiness {
         Cart cart = memberWithCart.getCart();
         cartService.validateBlueprintAlreadyInCart(cart, blueprint);
         cartService.saveCart(cart, blueprint);
-        cart.updateTotalPrice(cart);
+        cart.updateTotalPrice();
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public Object getMyCart(Long userId) {
         Cart cart = cartService.findCartById(userId);
-        Long totalPrice = cartService.findTotalPrice(cart.getId());
-        List<CartBlueprint> cartBlueprintList = cartService.findCartBlueprint(cart.getId());
-
-        if (cartBlueprintList == null) return "장바구니가 비었습니다.";
-        return CartItemsResponse.cartItems(totalPrice, cartBlueprintList);
+        if (cart.getCartItems().isEmpty()){
+            return "장바구니가 비었습니다.";
+        }
+        return CartItemsResponse.from(cart);
     }
 
     @Transactional
@@ -50,8 +49,7 @@ public class CartBusiness {
         Cart cart = member.getCart();
         CartBlueprint cartBlueprint = findCartBlueprint(cart, blueprintId);
         cartService.deleteCartBlueprint(cartBlueprint);
-        cart.updateTotalPrice(cart);
-
+        cart.updateTotalPrice();
         return "삭제되었습니다";
     }
 

@@ -37,8 +37,9 @@ public class Cart extends BaseEntity {
         return new Cart(member);
     }
 
-    public void updateTotalPrice(Cart cart) {
-        this.totalPrice = this.getCartItems().stream()
+    public void updateTotalPrice() {
+        this.totalPrice = this.getCartItems()
+                .stream()
                 .mapToLong(item -> item.getBlueprint().getStandardPrice())
                 .sum();
     }

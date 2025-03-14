@@ -14,6 +14,7 @@ import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -24,8 +25,6 @@ import static com.onetool.server.global.exception.codes.ErrorCode.*;
 @RequiredArgsConstructor
 public class CartService {
 
-    @PersistenceContext
-    private final EntityManager entityManager;
     private final CartRepository cartRepository;
     private final CartBlueprintRepository cartBlueprintRepository;
 
@@ -34,26 +33,15 @@ public class CartService {
                 .orElseThrow(() -> new ApiException(CartErrorCode.NOT_FOUND_ERROR,"유저와 관련된 Cart가 없습니다. userId : "+ userId));
     }
 
-    public Long findTotalPrice(Long cartId) {
-        return cartRepository.findTotalPriceByCartId(cartId);
-    }
-
-    public List<CartBlueprint> findCartBlueprint(Long cartId) {
-        return cartRepository.findCartBlueprintsByCartId(cartId);
-    }
-
     public void saveCart(Cart cart, Blueprint blueprint) {
         CartBlueprint cartBlueprint = CartBlueprint.create(cart, blueprint);
-
         cartBlueprintRepository.save(cartBlueprint);
-        entityManager.flush(); //todo test필요
     }
 
     public void deleteCartBlueprint(CartBlueprint cartBlueprint) {
         if (cartBlueprint == null) throw new ApiException(CartErrorCode.NULL_POINT_ERROR,"CartBlueprint가 NULL입니다");
 
         cartBlueprintRepository.deleteById(cartBlueprint.getId());
-        entityManager.flush(); //todo test필요
     }
 
     public void validateBlueprintAlreadyInCart(Cart cart, Blueprint blueprint) {
