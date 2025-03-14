@@ -23,14 +23,14 @@ public class QnaBoardBusiness {
 
     @Transactional(readOnly = true)
     public List<QnaBoardBriefResponse> getQnaBoardBriefList() {
-        List<QnaBoard> qnaBoards = qnaBoardService.findAllQnaBoards();
+        List<QnaBoard> qnaBoards = qnaBoardService.findAll();
         return QnaBoardBriefResponse.fromQnaBoardListToBriefResponseList(qnaBoards);
     }
 
     @Transactional(readOnly = true)
     public List<QnaBoardBriefResponse> getMyQna(MemberAuthContext context) {
         memberService.validateExistId(context.getId());
-        List<QnaBoard> qnaBoards = qnaBoardService.findAllByMemberId(context.getId());
+        List<QnaBoard> qnaBoards = qnaBoardService.findAll(context.getId());
         return QnaBoardBriefResponse.fromQnaBoardListToBriefResponseList(qnaBoards);
     }
 
@@ -44,7 +44,7 @@ public class QnaBoardBusiness {
     @Transactional
     public QnaBoardDetailResponse getQnaBoardDetail(String email, Long qnaId) {
         Member member = memberService.findOne(email);
-        QnaBoard qnaBoard = qnaBoardService.findQnaBoardById(qnaId);
+        QnaBoard qnaBoard = qnaBoardService.fetchWithQnaReply(qnaId);
         boolean authorization = qnaBoard.isMyQnaBoard(member);
 
         return QnaBoardDetailResponse.fromQnaBoardToDetailResponse(qnaBoard, authorization);
@@ -53,7 +53,7 @@ public class QnaBoardBusiness {
     @Transactional
     public void removeQnaBoard(String email, Long qnaId) {
         Member member = memberService.findOne(email);
-        QnaBoard qnaBoard = qnaBoardService.findQnaBoardById(qnaId);
+        QnaBoard qnaBoard = qnaBoardService.fetchWithQnaReply(qnaId);
         qnaBoard.validateMemberCanRemoveOrUpdate(member);
 
         qnaBoardService.deleteQnaBoard(qnaBoard, member);
@@ -62,7 +62,7 @@ public class QnaBoardBusiness {
     @Transactional
     public void editQnaBoard(String email, Long qnaId, PostQnaBoardRequest request) {
         Member member = memberService.findOne(email);
-        QnaBoard qnaBoard = qnaBoardService.findQnaBoardById(qnaId);
+        QnaBoard qnaBoard = qnaBoardService.fetchWithQnaReply(qnaId);
         qnaBoard.validateMemberCanRemoveOrUpdate(member);
 
         qnaBoardService.updateQnaBoard(qnaBoard, request);
