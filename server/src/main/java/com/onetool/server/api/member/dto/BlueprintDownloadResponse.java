@@ -2,7 +2,9 @@ package com.onetool.server.api.member.dto;
 
 import com.onetool.server.api.blueprint.Blueprint;
 import com.onetool.server.api.order.OrderBlueprint;
+import lombok.Builder;
 
+@Builder
 public record BlueprintDownloadResponse(
         Long blueprintId,
         String blueprintImage,
