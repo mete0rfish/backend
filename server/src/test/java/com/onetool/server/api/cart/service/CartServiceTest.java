@@ -8,6 +8,7 @@ import com.onetool.server.api.cart.fixture.CartFixture;
 import com.onetool.server.api.cart.repository.CartBlueprintRepository;
 import com.onetool.server.api.cart.repository.CartRepository;
 import com.onetool.server.api.member.domain.Member;
+import com.onetool.server.api.member.fixture.MemberFixture;
 import com.onetool.server.global.new_exception.exception.ApiException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,7 +27,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
-import static org.springframework.test.util.ReflectionTestUtils.setField;
 
 @ExtendWith(MockitoExtension.class)
 @ActiveProfiles("test")
@@ -80,19 +80,27 @@ public class CartServiceTest {
     @Test
     void 장바구니_도면_추가_성공() {
         //given
-        Blueprint newBlueprintToAddInCart = CartFixture.createBlueprintToAddInCart();
+        Blueprint newBlueprintToAddInCart = CartFixture.createBlueprint();
+        int beforeSize = cart.getCartItems().size();
 
         //when
         cartService.saveCart(cart, newBlueprintToAddInCart);
 
         //then
         verify(cartBlueprintRepository, times(1)).save(any(CartBlueprint.class));
+        assertThat(cart.getCartItems())
+                .hasSize(beforeSize + 1);
+        assertThat(cart.getCartItems())
+                .extracting("blueprint")
+                .contains(newBlueprintToAddInCart);
+        assertThat(cart.getTotalPrice())
+                .isEqualTo(100000L);
     }
 
     @Test
     void 장바구니_도면_추가_실패() {
         //given
-        Blueprint newBlueprintToAddInCart = CartFixture.createBlueprintToAddInCart();
+        Blueprint newBlueprintToAddInCart = CartFixture.createBlueprint();
         cart.getCartItems().add(new CartBlueprint(cart, newBlueprintToAddInCart));
 
         // when & then
@@ -103,24 +111,27 @@ public class CartServiceTest {
     @Test
     void 장바구니_도면_삭제_성공(){
         //given
-        CartBlueprint cartBlueprint = CartBlueprint.builder().build();
+        CartBlueprint cartBlueprint = CartBlueprint.create(cart, CartFixture.createBlueprint());
 
         //when
-        cartService.deleteCartBlueprint(cartBlueprint);
+        cartService.deleteCartBlueprint(cart, cartBlueprint);
 
         // then
         verify(cartBlueprintRepository, times(1)).deleteById(cartBlueprint.getId());
+        assertThat(cart.getCartItems())
+                .doesNotContain(cartBlueprint);
+        assertThat(cart.getTotalPrice())
+                .isEqualTo(60000L);
     }
 
     @Test
-    void 장바구니_도면_삭졔_실패(){
+    void 장바구니_도면_삭제_실패(){
         // Given
-        CartBlueprint cartBlueprint = null;
 
         // When & Then
         // 현재 ApiException 인스턴스를 만들 떄 커스텀 에러 메세지를 에러 메세지로 초기화하지 않아 예외 발생 여부만 확인
         // TODO : 커스텀 메세지까지 확인
-        assertThatThrownBy(() -> cartService.deleteCartBlueprint(cartBlueprint))
+        assertThatThrownBy(() -> cartService.deleteCartBlueprint(cart, null))
                 .isInstanceOf(ApiException.class);
     }
 }

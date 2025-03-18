@@ -66,7 +66,7 @@ public class CartFixture {
         return blueprints;
     }
 
-    public static Blueprint createBlueprintToAddInCart(){
+    public static Blueprint createBlueprint(){
         return Blueprint.builder()
                 .id(4L)
                 .blueprintName("test blueprint 4")

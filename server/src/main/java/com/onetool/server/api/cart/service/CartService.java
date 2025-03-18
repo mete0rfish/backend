@@ -34,13 +34,16 @@ public class CartService {
         validateBlueprintAlreadyInCart(cart, blueprint.getId());
         CartBlueprint cartBlueprint = CartBlueprint.create(cart, blueprint);
         cartBlueprintRepository.save(cartBlueprint);
+        cart.updateTotalPrice();
     }
 
-    public void deleteCartBlueprint(CartBlueprint cartBlueprint) {
+    public void deleteCartBlueprint(Cart cart, CartBlueprint cartBlueprint) {
         if (cartBlueprint == null) {
             throw new ApiException(CartErrorCode.NULL_POINT_ERROR, "CartBlueprint가 NULL입니다");
         }
         cartBlueprintRepository.deleteById(cartBlueprint.getId());
+        cartBlueprint.deleteCartBlueprint();
+        cart.updateTotalPrice();
     }
 
     private void validateBlueprintAlreadyInCart(Cart cart, Long blueprintId) {

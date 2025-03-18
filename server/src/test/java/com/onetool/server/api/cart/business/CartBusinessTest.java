@@ -9,6 +9,7 @@ import com.onetool.server.api.cart.dto.response.CartItemsResponse;
 import com.onetool.server.api.cart.fixture.CartFixture;
 import com.onetool.server.api.cart.service.CartService;
 import com.onetool.server.api.member.domain.Member;
+import com.onetool.server.api.member.fixture.MemberFixture;
 import com.onetool.server.api.member.service.MemberService;
 import com.onetool.server.global.new_exception.exception.ApiException;
 import com.onetool.server.global.new_exception.exception.error.CartErrorCode;
@@ -20,14 +21,11 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.context.ActiveProfiles;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.*;
-import static org.mockito.Mockito.*;
-import static org.springframework.test.util.ReflectionTestUtils.setField;
 
 @ExtendWith(MockitoExtension.class)
 @ActiveProfiles("test")
@@ -51,8 +49,8 @@ public class CartBusinessTest {
 
     @BeforeEach
     public void setUp() {
-        member = CartFixture.createMemberWithCart();
-        blueprint = CartFixture.createBlueprintToAddInCart();
+        member = MemberFixture.createMember();
+        blueprint = CartFixture.createBlueprint();
         cart = member.getCart();
     }
 
@@ -61,26 +59,12 @@ public class CartBusinessTest {
         //given
         given(memberService.findOneWithCart(anyLong())).willReturn(member);
         given(blueprintService.findBlueprintById(anyLong())).willReturn(blueprint);
-        doAnswer(invocation -> {
-            Cart cartArg = invocation.getArgument(0);
-            Blueprint blueprintArg = invocation.getArgument(1);
-            cartArg.getCartItems().add(new CartBlueprint(cartArg, blueprintArg));
-            return null;
-        }).when(cartService).saveCart(any(Cart.class), any(Blueprint.class));
-        int beforeSize = cart.getCartItems().size();
 
         //when
         cartBusiness.addBlueprintToCart(member.getId(), blueprint.getId());
 
         //then
         verify(cartService).saveCart(any(Cart.class), any(Blueprint.class));
-        assertThat(cart.getCartItems())
-                .hasSize(beforeSize + 1);
-        assertThat(cart.getCartItems())
-                .extracting("blueprint")
-                .contains(blueprint);
-        assertThat(cart.getTotalPrice())
-                .isEqualTo(40000L);
     }
 
     @Test
@@ -114,22 +98,12 @@ public class CartBusinessTest {
     @Test
     void 장바구니_도면_삭제_성공(){
         //given
-        CartBlueprint cartBlueprint = CartBlueprint.create(cart, blueprint);
         given(memberService.findOneWithCart(anyLong())).willReturn(member);
         given(cartService.findCartBlueprint(any(Cart.class), anyLong()))
-                .willReturn(cartBlueprint);
-        doAnswer(invocation -> {
-            CartBlueprint cbArgs = invocation.getArgument(0);
-            cart.getCartItems().remove(cbArgs);
-            return null;
-        }).when(cartService).deleteCartBlueprint(any(CartBlueprint.class));
-
-        // when
-        String result = cartBusiness.removeBlueprintInCart(member.getId(), blueprint.getId());
-
-        // then
-        assertThat(result).isEqualTo("삭제되었습니다");
-        assertThat(member.getCart().getCartItems())
-                .doesNotContain(cartBlueprint);
+                .willReturn(CartBlueprint.builder().build());
+        doNothing().when(cartService).deleteCartBlueprint(any(Cart.class), any(CartBlueprint.class));
+        // when & then
+        assertThat(cartBusiness.removeBlueprintInCart(member.getId(), blueprint.getId()))
+                .isEqualTo("삭제되었습니다");
     }
 }

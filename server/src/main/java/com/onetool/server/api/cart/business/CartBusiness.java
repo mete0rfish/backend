@@ -28,7 +28,6 @@ public class CartBusiness {
         Blueprint blueprint = blueprintService.findBlueprintById(blueprintId);
         Cart cart = memberWithCart.getCart();
         cartService.saveCart(cart, blueprint);
-        cart.updateTotalPrice();
     }
 
     @Transactional(readOnly = true)
@@ -45,8 +44,7 @@ public class CartBusiness {
         Member member = memberService.findOneWithCart(userId);
         Cart cart = member.getCart();
         CartBlueprint cartBlueprint = cartService.findCartBlueprint(cart, blueprintId);
-        cartService.deleteCartBlueprint(cartBlueprint);
-        cart.updateTotalPrice();
+        cartService.deleteCartBlueprint(cart, cartBlueprint);
         return "삭제되었습니다";
     }
 }
