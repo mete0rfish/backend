@@ -9,8 +9,6 @@ import com.onetool.server.api.cart.service.CartService;
 import com.onetool.server.api.member.domain.Member;
 import com.onetool.server.api.member.service.MemberService;
 import com.onetool.server.global.annotation.Business;
-import com.onetool.server.global.new_exception.exception.ApiException;
-import com.onetool.server.global.new_exception.exception.error.CartErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,7 +27,6 @@ public class CartBusiness {
         Member memberWithCart = memberService.findOneWithCart(userId);
         Blueprint blueprint = blueprintService.findBlueprintById(blueprintId);
         Cart cart = memberWithCart.getCart();
-        cartService.validateBlueprintAlreadyInCart(cart, blueprint);
         cartService.saveCart(cart, blueprint);
         cart.updateTotalPrice();
     }
@@ -47,16 +44,9 @@ public class CartBusiness {
     public String removeBlueprintInCart(Long userId, Long blueprintId) {
         Member member = memberService.findOneWithCart(userId);
         Cart cart = member.getCart();
-        CartBlueprint cartBlueprint = findCartBlueprint(cart, blueprintId);
+        CartBlueprint cartBlueprint = cartService.findCartBlueprint(cart, blueprintId);
         cartService.deleteCartBlueprint(cartBlueprint);
         cart.updateTotalPrice();
         return "삭제되었습니다";
-    }
-
-    private CartBlueprint findCartBlueprint(Cart cart, Long blueprintId) {
-        return cart.getCartItems().stream()
-                .filter(cartItem -> cartItem.getBlueprint().getId().equals(blueprintId))
-                .findFirst()
-                .orElseThrow(() -> new ApiException(CartErrorCode.NOT_FOUND_ERROR, "해당하는 Cart에 bluePrintId와 일치하는 Cart가 존재하지 않습니다. cartId : " + cart.getId() + "blueprintId : " + blueprintId));
     }
 }

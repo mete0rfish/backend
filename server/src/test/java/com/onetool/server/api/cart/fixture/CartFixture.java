@@ -4,14 +4,23 @@ import com.onetool.server.api.blueprint.Blueprint;
 import com.onetool.server.api.cart.Cart;
 import com.onetool.server.api.cart.CartBlueprint;
 import com.onetool.server.api.member.domain.Member;
+import com.onetool.server.api.member.enums.UserRole;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class CartFixture {
 
-    public static Member createCartMember() {
+    public static Member createMemberWithCart() {
         return Member.builder()
+                .id(1L)
+                .name("이동훈")
+                .email("test@example.com")
+                .role(UserRole.ROLE_USER)
+                .phoneNum("01012345678")
+                .field("BACKEND")
+                .isNative(true)
+                .cart(null)
                 .build();
     }
 

@@ -17,7 +17,7 @@ public record CartItemsResponse(
         return CartItemsResponse.builder()
                 .totalPrice(cart.getTotalPrice())
                 .blueprintsInCart(cart.getCartItems().stream()
-                        .map(CartItemResponse::from)
+                        .map(cartBlueprint -> CartItemResponse.from(cartBlueprint.getBlueprint()))
                         .toList())
                 .build();
     }

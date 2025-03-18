@@ -1,25 +1,24 @@
 package com.onetool.server.api.cart.dto.response;
 
+import com.onetool.server.api.blueprint.Blueprint;
 import com.onetool.server.api.cart.CartBlueprint;
 import lombok.Builder;
 
 @Builder
 public record CartItemResponse(
-        Long blueprintId,
         String blueprintName,
         String extension,
         String author,
         Long standardPrice,
         Long salesPrice
 ) {
-    public static CartItemResponse from(CartBlueprint cartBlueprint) {
+    public static CartItemResponse from(Blueprint blueprint) {
         return CartItemResponse.builder()
-                .blueprintId(cartBlueprint.getId())
-                .blueprintName(cartBlueprint.getBlueprint().getBlueprintName())
-                .extension(cartBlueprint.getBlueprint().getExtension())
-                .author(cartBlueprint.getBlueprint().getCreatorName())
-                .standardPrice(cartBlueprint.getBlueprint().getStandardPrice())
-                .salesPrice(cartBlueprint.getBlueprint().getSalePrice())
+                .blueprintName(blueprint.getBlueprintName())
+                .extension(blueprint.getExtension())
+                .author(blueprint.getCreatorName())
+                .standardPrice(blueprint.getStandardPrice())
+                .salesPrice(blueprint.getSalePrice())
                 .build();
     }
 }

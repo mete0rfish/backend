@@ -54,7 +54,6 @@ public class CartServiceTest {
     @Test
     void 장바구니_id_조회_성공(){
         //given
-        // cartRepository에서 memberId로 장바구니를 조회해오면 Fixture를 통해 미리 만들어놓은 Cart를 불러오도록 Stub(스텁)
         given(cartRepository.findCartWithMemberByMemberId(anyLong()))
                 .willReturn(Optional.of(cart));
 
@@ -88,6 +87,17 @@ public class CartServiceTest {
 
         //then
         verify(cartBlueprintRepository, times(1)).save(any(CartBlueprint.class));
+    }
+
+    @Test
+    void 장바구니_도면_추가_실패() {
+        //given
+        Blueprint newBlueprintToAddInCart = CartFixture.createBlueprintToAddInCart();
+        cart.getCartItems().add(new CartBlueprint(cart, newBlueprintToAddInCart));
+
+        // when & then
+        assertThatThrownBy(() -> cartService.saveCart(cart, newBlueprintToAddInCart))
+                .isInstanceOf(ApiException.class);
     }
 
     @Test
