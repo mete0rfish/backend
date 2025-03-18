@@ -10,9 +10,6 @@ import com.onetool.server.api.cart.fixture.CartFixture;
 import com.onetool.server.api.cart.service.CartService;
 import com.onetool.server.api.member.domain.Member;
 import com.onetool.server.api.member.fixture.MemberFixture;
-import com.onetool.server.api.member.service.MemberService;
-import com.onetool.server.global.new_exception.exception.ApiException;
-import com.onetool.server.global.new_exception.exception.error.CartErrorCode;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -35,9 +32,6 @@ public class CartBusinessTest {
     private CartService cartService;
 
     @Mock
-    private MemberService memberService;
-
-    @Mock
     private BlueprintService blueprintService;
 
     @InjectMocks
@@ -57,7 +51,7 @@ public class CartBusinessTest {
     @Test
     void 장바구니에_도면_추가_성공(){
         //given
-        given(memberService.findOneWithCart(anyLong())).willReturn(member);
+        given(cartService.findCartById(anyLong())).willReturn(cart);
         given(blueprintService.findBlueprintById(anyLong())).willReturn(blueprint);
 
         //when
@@ -98,7 +92,7 @@ public class CartBusinessTest {
     @Test
     void 장바구니_도면_삭제_성공(){
         //given
-        given(memberService.findOneWithCart(anyLong())).willReturn(member);
+        given(cartService.findCartById(anyLong())).willReturn(cart);
         given(cartService.findCartBlueprint(any(Cart.class), anyLong()))
                 .willReturn(CartBlueprint.builder().build());
         doNothing().when(cartService).deleteCartBlueprint(any(Cart.class), any(CartBlueprint.class));
