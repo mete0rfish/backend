@@ -4,9 +4,7 @@ import com.onetool.server.api.blueprint.Blueprint;
 import com.onetool.server.api.order.OrderBlueprint;
 import com.onetool.server.api.order.Orders;
 import com.onetool.server.api.order.repository.OrderRepository;
-import com.onetool.server.global.exception.OrderNotFoundException;
 import com.onetool.server.api.member.domain.Member;
-import com.onetool.server.global.exception.OrdersNullPointException;
 import com.onetool.server.global.new_exception.exception.ApiException;
 import com.onetool.server.global.new_exception.exception.error.OrderErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +23,7 @@ public class OrderService {
 
     @Transactional
     public List<Orders> findAllOrdersByUserId(Long memberId) {
-        return orderRepository.findByUserId(memberId);
+        return orderRepository.findByMemberId(memberId);
     }
 
     @Transactional
@@ -51,7 +49,7 @@ public class OrderService {
 
     @Transactional(readOnly = true)
     public List<Orders> findAllByUserId(Long userId) {
-        return orderRepository.findByUserId(userId);
+        return orderRepository.findByMemberId(userId);
     }
 
     private void validateOrdersIsNull(Orders orders) {
