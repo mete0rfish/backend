@@ -10,10 +10,7 @@ import com.onetool.server.api.qna.QnaBoard;
 import com.onetool.server.api.qna.QnaReply;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.SQLDelete;
@@ -28,9 +25,11 @@ import java.util.Optional;
 
 @Entity
 @Getter
-@Setter
+@Setter(value = AccessLevel.PRIVATE)
 @NoArgsConstructor
 @Slf4j
+@Builder
+@AllArgsConstructor
 @SQLDelete(sql = "UPDATE Member SET is_deleted = true WHERE id = ?")
 @SQLRestriction("is_deleted = false")
 public class Member extends BaseEntity {
@@ -99,29 +98,8 @@ public class Member extends BaseEntity {
     @Column(name = "is_deleted", nullable = false)
     private boolean isDeleted = false;
 
-    @Builder
-    public Member(Long id, String password, String email, String name, LocalDate birthDate, String phoneNum, UserRole role, String field, boolean isNative, boolean serviceAccept, String platformType, SocialType socialType, String socialId, List<QnaBoard> qnaBoards, List<QnaReply> qnaReplies, Cart cart, boolean isDeleted) {
-        this.id = id;
-        this.password = password;
-        this.email = email;
-        this.name = name;
-        this.birthDate = birthDate;
-        this.phoneNum = phoneNum;
-        this.role = role;
-        this.field = field;
-        this.isNative = isNative;
-        this.serviceAccept = serviceAccept;
-        this.platformType = platformType;
-        this.socialType = socialType;
-        this.socialId = socialId;
-        this.qnaBoards = qnaBoards;
-        this.qnaReplies = qnaReplies;
-        this.cart = cart != null ? cart : Cart.createCart(this);
-        this.isDeleted = isDeleted;
-    }
-
     @Transactional
-    public void updateWith(MemberUpdateRequest request, PasswordEncoder encoder) {
+    public void update(MemberUpdateRequest request, PasswordEncoder encoder) {
         Optional.ofNullable(request.getName()).ifPresent(this::setName);
         Optional.ofNullable(request.getPhoneNum()).ifPresent(this::setPhoneNum);
         Optional.ofNullable(request.getDevelopmentField()).ifPresent(this::setField);
@@ -129,6 +107,10 @@ public class Member extends BaseEntity {
             log.info("new password: {}", newPassword);
             this.setPassword(encoder.encode(newPassword));
         });
+    }
+
+    public void update(String password) {
+        setPassword(password);
     }
 
     public boolean getIsDeleted() {

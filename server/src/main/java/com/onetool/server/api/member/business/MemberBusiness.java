@@ -52,7 +52,7 @@ public class MemberBusiness {
     @Transactional
     public void updateMember(Long id, MemberUpdateRequest request) {
         Member member = memberService.findOne(id);
-        member.updateWith(request, encoder);
+        member.update(request, encoder);
         memberService.save(member);
     }
 

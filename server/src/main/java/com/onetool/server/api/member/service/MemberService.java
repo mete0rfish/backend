@@ -46,7 +46,7 @@ public class MemberService {
 
     @Transactional
     public void updatePassword(Member member, String encodedNewPassword) {
-        member.setPassword(encodedNewPassword);
+        member.update(encodedNewPassword);
         memberRepository.save(member);
     }
 
