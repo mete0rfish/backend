@@ -2,11 +2,8 @@ package com.onetool.server.api.qna.service;
 
 import com.onetool.server.api.qna.QnaBoard;
 import com.onetool.server.api.qna.dto.request.PostQnaBoardRequest;
-import com.onetool.server.global.exception.QnaNullPointException;
-import com.onetool.server.global.exception.base.BaseException;
 import com.onetool.server.api.member.domain.Member;
 import com.onetool.server.api.qna.repository.QnaBoardRepository;
-import com.onetool.server.global.exception.codes.ErrorCode;
 import com.onetool.server.global.new_exception.exception.ApiException;
 import com.onetool.server.global.new_exception.exception.error.QnaErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -16,8 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
-import static com.onetool.server.global.new_exception.exception.error.QnaErrorCode.NO_QNA_CONTENT;
-
 
 @Service
 @RequiredArgsConstructor
@@ -26,7 +21,7 @@ public class QnaBoardService {
     private final QnaBoardRepository qnaBoardRepository;
 
     @Transactional(readOnly = true)
-    public List<QnaBoard> findAllQnaBoards() {
+    public List<QnaBoard> findAll() {
         List<QnaBoard> qnaBoards = qnaBoardRepository
                 .findAllQnaBoardsOrderedByCreatedAt();
         hasErrorWithNoContent(qnaBoards);
@@ -34,15 +29,15 @@ public class QnaBoardService {
     }
 
     @Transactional(readOnly = true)
-    public QnaBoard findQnaBoardById(Long qnaId) {
-        return qnaBoardRepository
-                .findByIdWithReplies(qnaId)
-                .orElseThrow(() -> new ApiException(QnaErrorCode.NOT_FOUND_ERROR,"qnaId : "+qnaId));
+    public List<QnaBoard> findAll(Long memberId) {
+        return qnaBoardRepository.findByMemberId(memberId);
     }
 
     @Transactional(readOnly = true)
-    public List<QnaBoard> findAllByMemberId(Long memberId) {
-        return qnaBoardRepository.findByMemberId(memberId);
+    public QnaBoard fetchWithQnaReply(Long qnaId) {
+        return qnaBoardRepository
+                .findByIdWithReplies(qnaId)
+                .orElseThrow(() -> new ApiException(QnaErrorCode.NOT_FOUND_ERROR));
     }
 
     @Transactional
