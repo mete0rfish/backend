@@ -24,7 +24,7 @@ public class QnaReplyController {
     @PostMapping("/reply")
     public ApiResponse<String> addReply(
             @AuthenticationPrincipal PrincipalDetails principalDetails,
-            @PathVariable Long qnaId,
+            @PathVariable(name = "qnaId") Long qnaId,
             @Valid @RequestBody PostQnaReplyRequest request) {
 
         qnaReplyBusiness.createQnaReply(principalDetails.getContext().getEmail(), qnaId, request);
@@ -34,7 +34,7 @@ public class QnaReplyController {
     @DeleteMapping("/reply")
     public ApiResponse<String> deleteReply(
             @AuthenticationPrincipal PrincipalDetails principalDetails,
-            @PathVariable Long qnaId,
+            @PathVariable(name = "qnaId") Long qnaId,
             @Valid @RequestBody ModifyQnaReplyRequest request) {
 
         qnaReplyBusiness.removeQnaReply(principalDetails.getContext().getEmail(),qnaId,request);
@@ -44,7 +44,7 @@ public class QnaReplyController {
     @PatchMapping("/reply")
     public ApiResponse<String> updateReply(
             @AuthenticationPrincipal PrincipalDetails principalDetails,
-            @PathVariable Long qnaId,
+            @PathVariable(name = "qnaId") Long qnaId,
             @Valid @RequestBody ModifyQnaReplyRequest request) {
 
         qnaReplyBusiness.updateQnaReply(principalDetails.getContext().getEmail(),qnaId,request);

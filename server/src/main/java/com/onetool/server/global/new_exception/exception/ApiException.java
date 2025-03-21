@@ -7,13 +7,16 @@ import lombok.Getter;
 public class ApiException extends RuntimeException {
 
     private final ErrorCodeIfs errorCode;
-    private String customErrorMessage;
+    private final String customErrorMessage;
 
     public ApiException(ErrorCodeIfs code) {
+        super(code.getDescription());
         this.errorCode = code;
+        this.customErrorMessage = null;
     }
 
     public ApiException(ErrorCodeIfs code, final String message) {
+        super(message != null ? message : code.getDescription());
         this.errorCode = code;
         this.customErrorMessage = message;
     }
@@ -22,8 +25,13 @@ public class ApiException extends RuntimeException {
         return customErrorMessage != null;
     }
 
+    @Override
+    public String getMessage() {
+        return hasCustomMessage() ? customErrorMessage : errorCode.getDescription();
+    }
+
     public static ApiException from(ErrorCodeIfs errorCode) {
-        return new ApiException(errorCode, null);
+        return new ApiException(errorCode);
     }
 
     public static ApiException from(ErrorCodeIfs errorCode, final String customErrorMessage) {

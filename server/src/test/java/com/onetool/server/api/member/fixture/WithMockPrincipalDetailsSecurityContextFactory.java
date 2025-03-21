@@ -22,6 +22,7 @@ implements WithSecurityContextFactory<WithMockPrincipalDetails> {
 
         Mockito.when(principalDetails.getContext()).thenReturn(authContext);
         Mockito.when(authContext.getId()).thenReturn(annotation.id());
+        Mockito.when(authContext.getEmail()).thenReturn("user2@example.com");
 
         Authentication authentication = new UsernamePasswordAuthenticationToken(
                 principalDetails, null, principalDetails.getAuthorities()
