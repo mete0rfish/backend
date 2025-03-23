@@ -62,13 +62,14 @@ public class MemberController {
 
     @GetMapping("/myQna")
     public ApiResponse<List<QnaBoardBriefResponse>> getMyQna(@AuthenticationPrincipal PrincipalDetails principalDetails) {
-        return ApiResponse.onSuccess(qnaBoardBusiness.getMyQna(principalDetails.getContext()));
+        Long id = principalDetails.getContext().getId();
+        return ApiResponse.onSuccess(qnaBoardBusiness.getMyQna(id));
     }
 
     @GetMapping("/myPurchase")
     public ApiResponse<List<BlueprintDownloadResponse>> getMyPurchases(@AuthenticationPrincipal PrincipalDetails principalDetails) {
-        Long userId = principalDetails.getContext().getId();
-        List<BlueprintDownloadResponse> blueprints = memberBusiness.findPurchasedBlueprints(userId);
+        Long id = principalDetails.getContext().getId();
+        List<BlueprintDownloadResponse> blueprints = memberBusiness.findPurchasedBlueprints(id);
         return ApiResponse.onSuccess(blueprints);
     }
 }
