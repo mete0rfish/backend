@@ -7,6 +7,7 @@ import lombok.Builder;
 
 import java.time.LocalDate;
 
+@Builder
 public record MemberCreateRequest(
         String email,
         String password,
@@ -16,22 +17,12 @@ public record MemberCreateRequest(
         String phoneNum,
         boolean isNative
 ) {
-    @Builder
-    public MemberCreateRequest(String email, String password, String name, String birthDate, String development_field, String phoneNum, boolean isNative) {
-        this.email = email;
-        this.password = password;
-        this.name = name;
-        this.birthDate = birthDate;
-        this.development_field = development_field;
-        this.phoneNum = phoneNum;
-        this.isNative = isNative;
-    }
 
-    public Member toEntity(String encoded) {
+    public Member toEntity(final String encodedPassword) {
         return Member.builder()
                 .email(email)
                 .role(UserRole.ROLE_USER)
-                .password(encoded)
+                .password(encodedPassword)
                 .birthDate(LocalDate.parse(birthDate, DateTimeFormat.dateFormat))
                 .name(name)
                 .isNative(isNative)
