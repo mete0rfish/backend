@@ -3,6 +3,7 @@ package com.onetool.server.api.member.domain;
 import com.onetool.server.api.cart.Cart;
 import com.onetool.server.api.member.enums.SocialType;
 import com.onetool.server.api.member.enums.UserRole;
+import com.onetool.server.api.order.OrderBlueprint;
 import com.onetool.server.global.entity.BaseEntity;
 import com.onetool.server.api.member.dto.MemberUpdateRequest;
 import com.onetool.server.api.order.Orders;
@@ -50,33 +51,22 @@ public class Member extends BaseEntity {
     @Size(min = 1, max = 10, message = "이름은 1 ~ 10자 이여야 합니다.")
     private String name;
 
-    @Column(name = "birth_date")
     @Past
     private LocalDate birthDate;
 
-    @Column(name = "phone_num")
     @Size(min = 10, max = 11)
     private String phoneNum;
 
-    @Column(name = "user_role")
     @Enumerated(EnumType.STRING)
     private UserRole role;
 
     @ColumnDefault("'기타'")
     private String field;
 
-    @Column(name = "is_native")
     private boolean isNative;
-
-    @Column(name = "service_accept")
     private boolean serviceAccept;
-
-    @Column(name = "platform_type")
     private String platformType;
-
-    @Column(name = "social_type")
     private SocialType socialType;
-
     private String socialId;
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
@@ -92,10 +82,7 @@ public class Member extends BaseEntity {
     @OrderBy("createdAt DESC")
     private List<Orders> orders = new ArrayList<>();
 
-    @Column(name = "user_registered_at")
-    private LocalDate user_registered_at;
-
-    @Column(name = "is_deleted", nullable = false)
+    @Column(nullable = false)
     private boolean isDeleted = false;
 
     @Transactional
@@ -113,7 +100,13 @@ public class Member extends BaseEntity {
         setPassword(password);
     }
 
-    public boolean getIsDeleted() {
+    public boolean isDeleted() {
         return isDeleted;
+    }
+
+    public List<OrderBlueprint> getOrderBlueprints() {
+        return getOrders().stream()
+                .flatMap(order -> order.getOrderItems().stream())
+                .toList();
     }
 }

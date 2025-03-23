@@ -1,6 +1,7 @@
 package com.onetool.server.api.member.dto;
 
 import com.onetool.server.api.member.domain.Member;
+import com.onetool.server.api.order.Orders;
 import com.onetool.server.api.order.dto.response.OrderResponse;
 import jakarta.validation.constraints.Past;
 import lombok.Builder;
@@ -17,24 +18,25 @@ public record MemberInfoResponse(
         @Past LocalDate birthDate,
         String development_field,
         String phoneNum,
-        boolean isNative,
-        boolean service_accept,
-        LocalDate user_registered_at,
+        LocalDate createdAt,
         List<OrderResponse.OrderCompleteResponseDto> orderCompleteResponseDtos
 ) {
+
     public static MemberInfoResponse from(Member member) {
-        return new MemberInfoResponse(
-                member.getId(),
-                member.getEmail(),
-                member.getPassword(),
-                member.getName(),
-                member.getBirthDate(),
-                member.getField(),
-                member.getPhoneNum(),
-                member.isNative(),
-                member.isServiceAccept(),
-                member.getUser_registered_at(),
-                member.getOrders().stream().map(OrderResponse.OrderCompleteResponseDto::response).toList()
-        );
+        return MemberInfoResponse.builder()
+                .id(member.getId())
+                .email(member.getEmail())
+                .password(member.getPassword())
+                .name(member.getName())
+                .birthDate(member.getBirthDate())
+                .development_field(member.getField())
+                .phoneNum(member.getPhoneNum())
+                .createdAt(member.getCreatedAt().toLocalDate())
+                .orderCompleteResponseDtos(convertOrdersToResponse(member.getOrders()))
+                .build();
+    }
+
+    private static List<OrderResponse.OrderCompleteResponseDto> convertOrdersToResponse(List<Orders> orders) {
+        return orders.stream().map(OrderResponse.OrderCompleteResponseDto::response).toList();
     }
 }
