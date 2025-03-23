@@ -68,13 +68,11 @@ class QnaBoardBusinessTest {
         Member member = createMember(1L);
         List<QnaBoard> qnaBoards = createQnaBoards(List.of(1L, 2L), member);
 
-        MemberAuthContext memberAuthContext = mock(MemberAuthContext.class);
-        when(memberAuthContext.getId()).thenReturn(1L);
-        when(qnaBoardService.findAll(memberAuthContext.getId())).thenReturn(qnaBoards);
+        when(qnaBoardService.findAll(any(Long.class))).thenReturn(qnaBoards);
         doNothing().when(memberService).validateExistId(1L);
 
         // ✅ When (실행)
-        List<QnaBoardBriefResponse> resultQnaBoards = qnaBoardBusiness.getMyQna(memberAuthContext);
+        List<QnaBoardBriefResponse> resultQnaBoards = qnaBoardBusiness.getMyQna(1L);
 
         // ✅ Then (검증)
         assertThat(resultQnaBoards.size()).isEqualTo(2);
@@ -85,13 +83,11 @@ class QnaBoardBusinessTest {
     @Test
     void 특정유저가_존재하지_않으면_질문조회를_실패한다() {
         // ✅ Given (설정)
-        MemberAuthContext memberAuthContext = mock(MemberAuthContext.class);
-        when(memberAuthContext.getId()).thenReturn(1L);
         doThrow(new ApiException(MemberErrorCode.NON_EXIST_USER, "ID가 일치하는 회원이 존재하지 않습니다."))
                 .when(memberService).validateExistId(1L);
 
         // ✅ When (실행) && ✅ Then (검증)
-        assertThatThrownBy(() -> qnaBoardBusiness.getMyQna(memberAuthContext))
+        assertThatThrownBy(() -> qnaBoardBusiness.getMyQna(1L))
                 .isInstanceOf(ApiException.class)
                 .hasMessage("ID가 일치하는 회원이 존재하지 않습니다.");
     }
