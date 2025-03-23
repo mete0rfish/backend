@@ -1,4 +1,4 @@
-package com.onetool.server.api.member.dto;
+package com.onetool.server.api.member.dto.response;
 
 import com.onetool.server.api.member.domain.Member;
 import lombok.Builder;

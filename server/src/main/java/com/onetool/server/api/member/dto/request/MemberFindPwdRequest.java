@@ -1,4 +1,4 @@
-package com.onetool.server.api.member.dto;
+package com.onetool.server.api.member.dto.request;
 
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;

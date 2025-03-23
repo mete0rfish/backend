@@ -1,10 +1,7 @@
 package com.onetool.server.api.qna.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.onetool.server.api.member.domain.Member;
-import com.onetool.server.api.member.dto.MemberCreateRequest;
-import com.onetool.server.api.member.dto.MemberCreateResponse;
 import com.onetool.server.api.member.fixture.WithMockPrincipalDetails;
 import com.onetool.server.api.qna.QnaBoard;
 import com.onetool.server.api.qna.business.QnaBoardBusiness;
@@ -12,33 +9,20 @@ import com.onetool.server.api.qna.dto.request.PostQnaBoardRequest;
 import com.onetool.server.api.qna.dto.response.QnaBoardBriefResponse;
 import com.onetool.server.api.qna.dto.response.QnaBoardDetailResponse;
 import com.onetool.server.fixture.MemberFixture;
-import com.onetool.server.fixture.QnaBoardFixture;
 import com.onetool.server.global.auth.jwt.JwtUtil;
-import com.onetool.server.global.auth.login.PrincipalDetails;
-import com.onetool.server.global.exception.ApiResponse;
-import jakarta.validation.Valid;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 
 import static com.onetool.server.fixture.QnaBoardFixture.createQnaBoard;
 import static com.onetool.server.fixture.QnaBoardFixture.createQnaBoardDetailResponse;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;

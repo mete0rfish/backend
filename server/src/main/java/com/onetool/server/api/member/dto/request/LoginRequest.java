@@ -1,4 +1,4 @@
-package com.onetool.server.api.member.dto;
+package com.onetool.server.api.member.dto.request;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;

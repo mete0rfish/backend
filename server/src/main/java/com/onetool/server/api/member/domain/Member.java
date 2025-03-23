@@ -5,7 +5,7 @@ import com.onetool.server.api.member.enums.SocialType;
 import com.onetool.server.api.member.enums.UserRole;
 import com.onetool.server.api.order.OrderBlueprint;
 import com.onetool.server.global.entity.BaseEntity;
-import com.onetool.server.api.member.dto.MemberUpdateRequest;
+import com.onetool.server.api.member.dto.request.MemberUpdateRequest;
 import com.onetool.server.api.order.Orders;
 import com.onetool.server.api.qna.QnaBoard;
 import com.onetool.server.api.qna.QnaReply;

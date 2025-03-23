@@ -1,4 +1,4 @@
-package com.onetool.server.api.member.dto;
+package com.onetool.server.api.member.dto.request;
 
 import com.onetool.server.api.member.domain.DateTimeFormat;
 import com.onetool.server.api.member.domain.Member;
