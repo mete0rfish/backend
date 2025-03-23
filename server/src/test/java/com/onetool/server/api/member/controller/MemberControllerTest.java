@@ -3,6 +3,7 @@ package com.onetool.server.api.member.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.onetool.server.api.helper.MockBeanInjection;
 import com.onetool.server.api.member.domain.Member;
+import com.onetool.server.api.member.dto.command.MemberCreateCommand;
 import com.onetool.server.api.member.dto.command.MemberUpdateCommand;
 import com.onetool.server.api.member.dto.request.MemberCreateRequest;
 import com.onetool.server.api.member.dto.response.MemberCreateResponse;
@@ -55,7 +56,7 @@ class MemberControllerTest extends MockBeanInjection {
         // given
         MemberCreateRequest request = MemberFixture.createMemberCreateRequest();
         MemberCreateResponse response = MemberFixture.createMemberCreateResponse();
-        when(memberBusiness.createMember(request)).thenReturn(response);
+        when(memberBusiness.createMember(MemberCreateCommand.from(request))).thenReturn(response);
 
         // when
         ResultActions resultActions =
