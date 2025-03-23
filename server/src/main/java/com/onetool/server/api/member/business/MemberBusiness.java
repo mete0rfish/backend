@@ -2,6 +2,7 @@ package com.onetool.server.api.member.business;
 
 import com.onetool.server.api.member.domain.Member;
 import com.onetool.server.api.member.dto.command.MemberCreateCommand;
+import com.onetool.server.api.member.dto.command.MemberUpdateCommand;
 import com.onetool.server.api.member.dto.request.MemberCreateRequest;
 import com.onetool.server.api.member.dto.request.MemberFindEmailRequest;
 import com.onetool.server.api.member.dto.request.MemberUpdateRequest;
@@ -55,9 +56,9 @@ public class MemberBusiness {
     }
 
     @Transactional
-    public void updateMember(Long id, MemberUpdateRequest request) {
-        Member member = memberService.findOne(id);
-        member.update(request, encoder);
+    public void updateMember(MemberUpdateCommand command) {
+        Member member = memberService.findOne(command.id());
+        member.update(command, encoder);
         memberService.save(member);
     }
 

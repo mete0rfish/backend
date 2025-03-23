@@ -3,6 +3,7 @@ package com.onetool.server.api.member.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.onetool.server.api.helper.MockBeanInjection;
 import com.onetool.server.api.member.domain.Member;
+import com.onetool.server.api.member.dto.command.MemberUpdateCommand;
 import com.onetool.server.api.member.dto.request.MemberCreateRequest;
 import com.onetool.server.api.member.dto.response.MemberCreateResponse;
 import com.onetool.server.api.member.dto.response.MemberInfoResponse;
@@ -76,7 +77,7 @@ class MemberControllerTest extends MockBeanInjection {
         MemberUpdateRequest request = MemberFixture.createMemberUpdateRequest();
         String jsonRequest = objectMapper.writeValueAsString(request);
 
-        doNothing().when(memberBusiness).updateMember(Mockito.anyLong(), Mockito.any(MemberUpdateRequest.class));
+        doNothing().when(memberBusiness).updateMember(Mockito.any(MemberUpdateCommand.class));
 
         // When
         ResultActions result = mockMvc.perform(

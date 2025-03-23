@@ -1,6 +1,7 @@
 package com.onetool.server.api.member.domain;
 
 import com.onetool.server.api.cart.Cart;
+import com.onetool.server.api.member.dto.command.MemberUpdateCommand;
 import com.onetool.server.api.member.enums.SocialType;
 import com.onetool.server.api.member.enums.UserRole;
 import com.onetool.server.api.order.OrderBlueprint;
@@ -86,11 +87,11 @@ public class Member extends BaseEntity {
     private boolean isDeleted = false;
 
     @Transactional
-    public void update(MemberUpdateRequest request, PasswordEncoder encoder) {
-        Optional.ofNullable(request.getName()).ifPresent(this::setName);
-        Optional.ofNullable(request.getPhoneNum()).ifPresent(this::setPhoneNum);
-        Optional.ofNullable(request.getDevelopmentField()).ifPresent(this::setField);
-        Optional.ofNullable(request.getNewPassword()).ifPresent(newPassword -> {
+    public void update(MemberUpdateCommand request, PasswordEncoder encoder) {
+        Optional.ofNullable(request.name()).ifPresent(this::setName);
+        Optional.ofNullable(request.phoneNum()).ifPresent(this::setPhoneNum);
+        Optional.ofNullable(request.developmentField()).ifPresent(this::setField);
+        Optional.ofNullable(request.newPassword()).ifPresent(newPassword -> {
             log.info("new password: {}", newPassword);
             this.setPassword(encoder.encode(newPassword));
         });

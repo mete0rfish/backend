@@ -1,6 +1,7 @@
 package com.onetool.server.api.member.business;
 
 import com.onetool.server.api.member.dto.command.MemberCreateCommand;
+import com.onetool.server.api.member.dto.command.MemberUpdateCommand;
 import com.onetool.server.api.member.dto.request.MemberCreateRequest;
 import com.onetool.server.api.member.dto.request.MemberFindEmailRequest;
 import com.onetool.server.api.member.dto.request.MemberUpdateRequest;
@@ -93,7 +94,7 @@ class MemberBusinessTest {
         when(memberService.findOne(member.getId())).thenReturn(member);
 
         // when
-        memberBusiness.updateMember(member.getId(), request);
+        memberBusiness.updateMember(MemberUpdateCommand.from(member.getId(), request));
 
         // then
         verify(memberService).save(member);

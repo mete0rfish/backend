@@ -2,6 +2,7 @@ package com.onetool.server.api.member.controller;
 
 import com.onetool.server.api.member.business.MemberBusiness;
 import com.onetool.server.api.member.dto.command.MemberCreateCommand;
+import com.onetool.server.api.member.dto.command.MemberUpdateCommand;
 import com.onetool.server.api.member.dto.request.MemberCreateRequest;
 import com.onetool.server.api.member.dto.request.MemberUpdateRequest;
 import com.onetool.server.api.member.dto.response.BlueprintDownloadResponse;
@@ -41,7 +42,7 @@ public class MemberController {
             @AuthenticationPrincipal PrincipalDetails principalDetails
     ) {
         Long id = principalDetails.getContext().getId();
-        memberBusiness.updateMember(id, request);
+        memberBusiness.updateMember(MemberUpdateCommand.from(id, request));
         return ApiResponse.onSuccess("회원 정보가 수정되었습니다.");
     }
 
