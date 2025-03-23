@@ -115,7 +115,7 @@ class MemberControllerTest extends MockBeanInjection {
     @WithMockPrincipalDetails(id = 2L)
     void 회원_정보를_조회한다() throws Exception{
         // Given
-        when(memberBusiness.getMemberInfo(Mockito.anyLong())).thenReturn(MemberInfoResponse.from(member));
+        when(memberBusiness.findMemberInfo(Mockito.anyLong())).thenReturn(MemberInfoResponse.from(member));
 
         // When
         ResultActions result = mockMvc.perform(
@@ -160,7 +160,7 @@ class MemberControllerTest extends MockBeanInjection {
     @WithMockPrincipalDetails(id = 2L)
     void 회원의_구매내역을_조회한다() throws Exception {
         // Given
-        when(memberBusiness.getPurchasedBlueprints(any(Long.class)))
+        when(memberBusiness.findPurchasedBlueprints(any(Long.class)))
                 .thenReturn(MemberFixture.createBlueprintDownloadResponses());
 
         // When

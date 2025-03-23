@@ -50,7 +50,7 @@ public class MemberController {
     @GetMapping
     public ApiResponse<?> getMemberInfo(@AuthenticationPrincipal PrincipalDetails principalDetails) {
         Long memberId = principalDetails.getContext().getId();
-        MemberInfoResponse memberResponse = memberBusiness.getMemberInfo(memberId);
+        MemberInfoResponse memberResponse = memberBusiness.findMemberInfo(memberId);
         return ApiResponse.onSuccess(memberResponse);
     }
 
@@ -62,7 +62,7 @@ public class MemberController {
     @GetMapping("/myPurchase")
     public ApiResponse<List<BlueprintDownloadResponse>> getMyPurchases(@AuthenticationPrincipal PrincipalDetails principalDetails) {
         Long userId = principalDetails.getContext().getId();
-        List<BlueprintDownloadResponse> blueprints = memberBusiness.getPurchasedBlueprints(userId);
+        List<BlueprintDownloadResponse> blueprints = memberBusiness.findPurchasedBlueprints(userId);
         return ApiResponse.onSuccess(blueprints);
     }
 }

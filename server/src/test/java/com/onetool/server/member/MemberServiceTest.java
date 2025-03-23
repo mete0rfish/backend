@@ -189,7 +189,7 @@ public class MemberServiceTest {
 
         // then: 해당 회원의 isDeleted 값이 true로 변경되었는지 확인
         Member deletedMember = memberRepository.findById(memberId).orElseThrow(() -> new MemberNotFoundException(memberId.toString()));
-        assertThat(deletedMember.getIsDeleted()).isTrue();
+        assertThat(deletedMember.isDeleted()).isTrue();
     }
 
     private String loginAndReturnToken() {
