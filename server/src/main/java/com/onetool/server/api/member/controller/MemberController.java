@@ -1,6 +1,7 @@
 package com.onetool.server.api.member.controller;
 
 import com.onetool.server.api.member.business.MemberBusiness;
+import com.onetool.server.api.member.dto.command.MemberCreateCommand;
 import com.onetool.server.api.member.dto.request.MemberCreateRequest;
 import com.onetool.server.api.member.dto.request.MemberUpdateRequest;
 import com.onetool.server.api.member.dto.response.BlueprintDownloadResponse;
@@ -30,7 +31,7 @@ public class MemberController {
 
     @PostMapping("/signup")
     public ApiResponse<?> createMember(@RequestBody MemberCreateRequest request) {
-        MemberCreateResponse response = memberBusiness.createMember(request);
+        MemberCreateResponse response = memberBusiness.createMember(MemberCreateCommand.from(request));
         return ApiResponse.of(SuccessCode.CREATED, response);
     }
 

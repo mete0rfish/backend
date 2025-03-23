@@ -11,9 +11,4 @@ import lombok.extern.slf4j.Slf4j;
 public class MemberFindPwdRequest {
 
     private String email;
-
-    @Builder
-    public MemberFindPwdRequest(String email) {
-        this.email = email;
-    }
 }

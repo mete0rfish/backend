@@ -1,5 +1,6 @@
 package com.onetool.server.api.member.business;
 
+import com.onetool.server.api.member.dto.command.MemberCreateCommand;
 import com.onetool.server.api.member.dto.request.MemberCreateRequest;
 import com.onetool.server.api.member.dto.request.MemberFindEmailRequest;
 import com.onetool.server.api.member.dto.request.MemberUpdateRequest;
@@ -50,7 +51,7 @@ class MemberBusinessTest {
         when(memberService.findOne(request.name(), request.phone_num())).thenReturn(member);
 
         // when
-        String email = memberBusiness.findEmail(request);
+        String email = memberBusiness.findEmail(request.name(), request.phone_num());
 
         // then
         assertThat(email).isEqualTo(member.getEmail());
@@ -77,7 +78,7 @@ class MemberBusinessTest {
         when(memberService.save(any(Member.class))).thenReturn(member);
 
         // when
-        MemberCreateResponse response = memberBusiness.createMember(request);
+        MemberCreateResponse response = memberBusiness.createMember(MemberCreateCommand.from(request));
 
         // then
         assertThat(response.email()).isEqualTo(member.getEmail());

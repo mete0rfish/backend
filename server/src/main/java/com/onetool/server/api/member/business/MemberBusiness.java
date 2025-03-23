@@ -1,6 +1,7 @@
 package com.onetool.server.api.member.business;
 
 import com.onetool.server.api.member.domain.Member;
+import com.onetool.server.api.member.dto.command.MemberCreateCommand;
 import com.onetool.server.api.member.dto.request.MemberCreateRequest;
 import com.onetool.server.api.member.dto.request.MemberFindEmailRequest;
 import com.onetool.server.api.member.dto.request.MemberUpdateRequest;
@@ -25,8 +26,8 @@ public class MemberBusiness {
     private final MemberService memberService;
 
     @Transactional(readOnly = true)
-    public String findEmail(MemberFindEmailRequest request) {
-        Member member = memberService.findOne(request.name(), request.phone_num());
+    public String findEmail(String name, String phoneNum) {
+        Member member = memberService.findOne(name, phoneNum);
         return member.getEmail();
     }
 
@@ -45,9 +46,9 @@ public class MemberBusiness {
     }
 
     @Transactional
-    public MemberCreateResponse createMember(MemberCreateRequest request) {
-        memberService.validateDuplicateEmail(request.email());
-        Member member = memberService.save(request.toEntity(encoder.encode(request.password())));
+    public MemberCreateResponse createMember(MemberCreateCommand command) {
+        memberService.validateDuplicateEmail(command.email());
+        Member member = memberService.save(command.toEntity(encoder.encode(command.password())));
 
         log.info("createMember(): {}", member.getEmail());
         return MemberCreateResponse.of(member);

@@ -51,8 +51,8 @@ public class MemberEmailBusiness {
     }
 
     @Transactional
-    public void findLostPwd(MemberFindPwdRequest request) {
-        Member member = memberService.findOne(request.getEmail());
+    public void findLostPwd(String email) {
+        Member member = memberService.findOne(email);
         String randomPassword = createRandomPassword();
         memberService.updatePassword(member, encoder.encode(randomPassword));
         mailService.sendEmail(
