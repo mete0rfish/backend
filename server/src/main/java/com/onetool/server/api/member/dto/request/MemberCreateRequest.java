@@ -18,16 +18,4 @@ public record MemberCreateRequest(
         boolean isNative
 ) {
 
-    public Member toEntity(final String encodedPassword) {
-        return Member.builder()
-                .email(email)
-                .role(UserRole.ROLE_USER)
-                .password(encodedPassword)
-                .birthDate(LocalDate.parse(birthDate, DateTimeFormat.dateFormat))
-                .name(name)
-                .isNative(isNative)
-                .field(development_field)
-                .phoneNum(phoneNum)
-                .build();
-    }
 }
