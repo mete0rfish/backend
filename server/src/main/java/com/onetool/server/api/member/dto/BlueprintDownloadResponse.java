@@ -4,6 +4,8 @@ import com.onetool.server.api.blueprint.Blueprint;
 import com.onetool.server.api.order.OrderBlueprint;
 import lombok.Builder;
 
+import java.util.List;
+
 @Builder
 public record BlueprintDownloadResponse(
         Long blueprintId,
@@ -22,5 +24,9 @@ public record BlueprintDownloadResponse(
                 blueprint.getBlueprintName(),
                 blueprint.getCreatorName()
         );
+    }
+
+    public static List<BlueprintDownloadResponse> from(final List<OrderBlueprint> orderBlueprints) {
+        return orderBlueprints.stream().map(BlueprintDownloadResponse::from).toList();
     }
 }

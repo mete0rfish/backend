@@ -36,7 +36,7 @@ class MemberBusinessTest {
     @BeforeEach
     void setup() {
         member = MemberFixture.createMember();
-        member.setPassword(encoder.encode("1234"));
+        member.update(encoder.encode("1234"));
     }
 
     @Test
@@ -59,7 +59,7 @@ class MemberBusinessTest {
         when(memberService.findOne(member.getId())).thenReturn(member);
 
         // when
-        MemberInfoResponse response = memberBusiness.getMemberInfo(member.getId());
+        MemberInfoResponse response = memberBusiness.findMemberInfo(member.getId());
 
         // then
         assertThat(response.email()).isEqualTo(member.getEmail());

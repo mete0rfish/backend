@@ -10,7 +10,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Business
 @RequiredArgsConstructor
@@ -27,24 +26,24 @@ public class MemberBusiness {
     }
 
     @Transactional(readOnly = true)
-    public MemberInfoResponse getMemberInfo(Long userId) {
+    public MemberInfoResponse findMemberInfo(Long userId) {
         Member member = memberService.findOne(userId);
         return MemberInfoResponse.from(member);
     }
 
     @Transactional(readOnly = true)
-    public List<BlueprintDownloadResponse> getPurchasedBlueprints(final Long userId) {
+    public List<BlueprintDownloadResponse> findPurchasedBlueprints(final Long userId) {
         final Member member = memberService.findOne(userId);
-        return member.getOrders().stream()
-                .flatMap(order -> order.getOrderItems().stream())
-                .map(BlueprintDownloadResponse::from)
-                .collect(Collectors.toList());
+        return member.getOrderBlueprints()
+                .stream().map(BlueprintDownloadResponse::from)
+                .toList();
     }
 
     @Transactional
     public MemberCreateResponse createMember(MemberCreateRequest request) {
         memberService.validateDuplicateEmail(request.email());
         Member member = memberService.save(request.toEntity(encoder.encode(request.password())));
+
         log.info("createMember(): {}", member.getEmail());
         return MemberCreateResponse.of(member);
     }
