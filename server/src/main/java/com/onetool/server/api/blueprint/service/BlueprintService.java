@@ -33,31 +33,31 @@ public class BlueprintService {
         return blueprintList;
     }
 
-    @Cacheable(cacheNames = "findAllBluePrintList", key = "'all'")
+    public List<Blueprint> findCacheAll(){
+        List<Blueprint> blueprintList = blueprintRepository.findAll();
+        return blueprintList;
+    }
+
     public List<Blueprint> findAll(){
         List<Blueprint> blueprintList = blueprintRepository.findAll();
         return blueprintList;
     }
 
-    @CacheEvict(cacheNames = "findAllBluePrintList", allEntries = true)
     public Blueprint findBlueprintById(Long blueprintId) {
         return blueprintRepository.findById(blueprintId)
                 .orElseThrow(() -> new ApiException(BlueprintErrorCode.NOT_FOUND_ERROR,"blueprintId : " + blueprintId));
     }
 
-    @CacheEvict(cacheNames = "findAllBluePrintList", allEntries = true)
     public void saveBlueprint(Blueprint blueprint) {
         validateBlueprintIsNull(blueprint);
         blueprintRepository.save(blueprint);
     }
 
-    @CacheEvict(cacheNames = "findAllBluePrintList", allEntries = true)
     public void updateBlueprint(Blueprint blueprint, BlueprintResponse blueprintResponse) {
         validateBlueprintIsNull(blueprint);
         blueprint.updateBlueprint(blueprintResponse);
     }
 
-    @CacheEvict(cacheNames = "findAllBluePrintList", allEntries = true)
     public void deleteBlueprint(Blueprint blueprint) {
         validateBlueprintIsNull(blueprint);
         blueprintRepository.delete(blueprint);
