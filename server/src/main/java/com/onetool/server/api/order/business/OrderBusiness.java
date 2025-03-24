@@ -14,6 +14,8 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 
 import java.util.List;
@@ -39,12 +41,11 @@ public class OrderBusiness {
     }
 
     @Transactional
-    @Cacheable(cacheNames = "getMyPageOrderResponseList", key = "#principal.context.id")
-    public List<MyPageOrderResponse> getMyPageOrderResponseList(@AuthenticationPrincipal PrincipalDetails principal) {
+    public List<MyPageOrderResponse> getMyPageOrderResponseList(@AuthenticationPrincipal PrincipalDetails principal, Pageable pageable) {
         Member member = memberService.findOneWithCart(principal.getContext().getId());
-        List<Orders> ordersList = orderService.findAllOrdersByUserId(member.getId());
+        Page<Orders> ordersList = orderService.findAllOrdersByUserId(member.getId(), pageable);
         List<Blueprint> blueprintList = blueprintService.findAll();
-        return MyPageOrderResponse.from(ordersList);
+        return MyPageOrderResponse.from(ordersList.getContent());
     }
 
     @Transactional

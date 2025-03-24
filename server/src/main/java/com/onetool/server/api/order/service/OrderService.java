@@ -9,6 +9,8 @@ import com.onetool.server.global.new_exception.exception.ApiException;
 import com.onetool.server.global.new_exception.exception.error.OrderErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,8 +24,8 @@ public class OrderService {
     private final OrderRepository orderRepository;
 
     @Transactional
-    public List<Orders> findAllOrdersByUserId(Long memberId) {
-        return orderRepository.findByMemberId(memberId);
+    public Page<Orders> findAllOrdersByUserId(Long memberId, Pageable pageable) {
+        return orderRepository.findByMemberId(memberId, pageable);
     }
 
     @Transactional
