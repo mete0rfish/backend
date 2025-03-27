@@ -138,7 +138,7 @@ class MemberControllerTest extends MockBeanInjection {
     @WithMockPrincipalDetails(id = 2L)
     void 회원의_문의내역을_조회한다() throws Exception {
         // Given
-        when(qnaBoardBusiness.getMyQna(any(MemberAuthContext.class)))
+        when(qnaBoardBusiness.getMyQna(any(Long.class)))
                 .thenReturn(MemberFixture.createQnaBoardBriefResponses());
 
         // When
