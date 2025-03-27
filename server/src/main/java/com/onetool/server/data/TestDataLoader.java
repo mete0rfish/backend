@@ -5,9 +5,7 @@ import com.onetool.server.api.blueprint.InspectionStatus;
 import com.onetool.server.api.blueprint.repository.BlueprintRepository;
 import com.onetool.server.api.category.FirstCategory;
 import com.onetool.server.api.category.FirstCategoryRepository;
-import com.onetool.server.api.member.domain.Member;
-import com.onetool.server.api.member.enums.UserRole;
-import com.onetool.server.api.member.repository.MemberRepository;
+import com.onetool.server.api.member.repository.MemberJpaRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -17,13 +15,13 @@ import org.springframework.stereotype.Component;
 @Component
 public class TestDataLoader implements CommandLineRunner {
     private final BlueprintRepository blueprintRepository;
-    private final MemberRepository memberRepository;
+    private final MemberJpaRepository memberJpaRepository;
     private final PasswordEncoder passwordEncoder;
     private final FirstCategoryRepository firstCategoryRepository;
 
-    public TestDataLoader(BlueprintRepository blueprintRepository, MemberRepository memberRepository, PasswordEncoder passwordEncoder, FirstCategoryRepository firstCategoryRepository) {
+    public TestDataLoader(BlueprintRepository blueprintRepository, MemberJpaRepository memberJpaRepository, PasswordEncoder passwordEncoder, FirstCategoryRepository firstCategoryRepository) {
         this.blueprintRepository = blueprintRepository;
-        this.memberRepository = memberRepository;
+        this.memberJpaRepository = memberJpaRepository;
         this.passwordEncoder = passwordEncoder;
         this.firstCategoryRepository = firstCategoryRepository;
     }

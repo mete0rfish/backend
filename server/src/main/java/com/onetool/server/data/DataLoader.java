@@ -7,7 +7,7 @@ import com.onetool.server.api.category.FirstCategory;
 import com.onetool.server.api.category.FirstCategoryRepository;
 import com.onetool.server.api.member.domain.Member;
 import com.onetool.server.api.member.enums.UserRole;
-import com.onetool.server.api.member.repository.MemberRepository;
+import com.onetool.server.api.member.repository.MemberJpaRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -21,26 +21,26 @@ public class DataLoader implements CommandLineRunner {
 
     private final FirstCategoryRepository firstCategoryRepository;
     private final BlueprintRepository blueprintRepository;
-    private final MemberRepository memberRepository;
+    private final MemberJpaRepository memberJpaRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public DataLoader(FirstCategoryRepository firstCategoryRepository, BlueprintRepository blueprintRepository, MemberRepository memberRepository, PasswordEncoder passwordEncoder) {
+    public DataLoader(FirstCategoryRepository firstCategoryRepository, BlueprintRepository blueprintRepository, MemberJpaRepository memberJpaRepository, PasswordEncoder passwordEncoder) {
         this.firstCategoryRepository = firstCategoryRepository;
         this.blueprintRepository = blueprintRepository;
-        this.memberRepository = memberRepository;
+        this.memberJpaRepository = memberJpaRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
 
     @Override
     public void run(String... args) throws Exception {
-        if(memberRepository.count() == 0) {
+        if(memberJpaRepository.count() == 0) {
             createDummyData();
         }
     }
 
     private void createDummyData() {
-        Member member = memberRepository.save(
+        Member member = memberJpaRepository.save(
                 Member.builder()
                         .name("관리자1")
                         .password(passwordEncoder.encode("1234"))
@@ -49,7 +49,7 @@ public class DataLoader implements CommandLineRunner {
                         .build()
         );
 
-        Member normalMember = memberRepository.save(
+        Member normalMember = memberJpaRepository.save(
                 Member.builder()
                         .name("홍길동")
                         .password(passwordEncoder.encode("1234"))

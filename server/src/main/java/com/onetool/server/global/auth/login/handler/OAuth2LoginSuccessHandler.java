@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.onetool.server.global.auth.MemberAuthContext;
 import com.onetool.server.global.auth.jwt.JwtUtil;
 import com.onetool.server.api.member.dto.response.MemberLoginResponse;
-import com.onetool.server.api.member.repository.MemberRepository;
+import com.onetool.server.api.member.repository.MemberJpaRepository;
 import com.onetool.server.api.member.enums.UserRole;
 import com.onetool.server.global.auth.login.PrincipalDetails;
 import jakarta.servlet.ServletException;
@@ -26,7 +26,7 @@ import java.util.Objects;
 public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 
     private final JwtUtil jwtUtil;
-    private final MemberRepository memberRepository;
+    private final MemberJpaRepository memberJpaRepository;
 
     private ObjectMapper objectMapper = new ObjectMapper();
 

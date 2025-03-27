@@ -3,7 +3,7 @@ package com.onetool.server.global.auth.login.service;
 import com.onetool.server.global.auth.MemberAuthContext;
 import com.onetool.server.global.exception.InvalidTokenException;
 import com.onetool.server.api.member.domain.Member;
-import com.onetool.server.api.member.repository.MemberRepository;
+import com.onetool.server.api.member.repository.MemberJpaRepository;
 import com.onetool.server.global.auth.login.PrincipalDetails;
 import com.onetool.server.global.exception.MemberNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -25,11 +25,11 @@ import java.util.Collection;
 @Slf4j
 public class CustomUserDetailsService implements UserDetailsService {
 
-    private final MemberRepository memberRepository;
+    private final MemberJpaRepository memberJpaRepository;
 
     @Override
     public PrincipalDetails loadUserByUsername(String id) throws UsernameNotFoundException {
-        Member member = memberRepository.findMemberById(Long.parseLong(id))
+        Member member = memberJpaRepository.findMemberById(Long.parseLong(id))
                 .orElseThrow(() -> new MemberNotFoundException("해당하는 유저가 없습니다."));
 
         MemberAuthContext context = MemberAuthContext.builder()

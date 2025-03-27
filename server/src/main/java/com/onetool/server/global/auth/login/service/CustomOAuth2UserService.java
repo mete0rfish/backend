@@ -3,7 +3,7 @@ package com.onetool.server.global.auth.login.service;
 import com.onetool.server.global.auth.MemberAuthContext;
 import com.onetool.server.global.auth.login.OAuthAttributes;
 import com.onetool.server.api.member.domain.Member;
-import com.onetool.server.api.member.repository.MemberRepository;
+import com.onetool.server.api.member.repository.MemberJpaRepository;
 import com.onetool.server.api.member.enums.SocialType;
 import com.onetool.server.global.auth.login.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +22,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
 
-    private final MemberRepository memberRepository;
+    private final MemberJpaRepository memberJpaRepository;
 
     private static final String GOOGLE = "google";
 
@@ -66,7 +66,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
     }
 
     private Member getMember(OAuthAttributes attributes, SocialType socialType) {
-        Member findMember = memberRepository.findBySocialTypeAndSocialId(
+        Member findMember = memberJpaRepository.findBySocialTypeAndSocialId(
                 socialType, attributes.getOAuth2UserInfo().getId()).orElse(null);
 
         if(findMember == null) {
@@ -78,6 +78,6 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
     private Member saveMember(OAuthAttributes attributes, SocialType socialType) {
         Member createdMember = attributes.toEntity(socialType, attributes.getOAuth2UserInfo());
         log.info("saveMember() - email 길이 : " + createdMember.getEmail().length() );
-        return memberRepository.save(createdMember);
+        return memberJpaRepository.save(createdMember);
     }
 }
