@@ -101,6 +101,10 @@ public class Member extends BaseEntity {
         setPassword(password);
     }
 
+    public void update(Cart cart) {
+        setCart(cart);
+    }
+
     public boolean isDeleted() {
         return isDeleted;
     }
