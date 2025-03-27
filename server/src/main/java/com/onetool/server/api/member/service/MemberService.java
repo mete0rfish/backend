@@ -1,7 +1,7 @@
 package com.onetool.server.api.member.service;
 
-import com.onetool.server.api.member.repository.MemberRepository;
 import com.onetool.server.api.member.domain.Member;
+import com.onetool.server.api.member.repository.MemberRepository;
 import com.onetool.server.global.new_exception.exception.ApiException;
 import com.onetool.server.global.new_exception.exception.error.MemberErrorCode;
 import lombok.RequiredArgsConstructor;
