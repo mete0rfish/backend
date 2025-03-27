@@ -1,12 +1,8 @@
 package com.onetool.server.api.member.dto.command;
 
-import com.onetool.server.api.member.domain.Member;
 import com.onetool.server.api.member.dto.request.MemberUpdateRequest;
 import lombok.Builder;
-import lombok.Getter;
 
-
-@Getter
 @Builder
 public record MemberUpdateCommand(
     Long id,
