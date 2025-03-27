@@ -7,7 +7,9 @@ import jakarta.validation.constraints.Past;
 import lombok.Builder;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Builder
 public record MemberInfoResponse(
@@ -18,7 +20,7 @@ public record MemberInfoResponse(
         @Past LocalDate birthDate,
         String development_field,
         String phoneNum,
-        LocalDate createdAt,
+        LocalDateTime createdAt,
         List<OrderResponse.OrderCompleteResponseDto> orderCompleteResponseDtos
 ) {
 
@@ -31,12 +33,16 @@ public record MemberInfoResponse(
                 .birthDate(member.getBirthDate())
                 .development_field(member.getField())
                 .phoneNum(member.getPhoneNum())
-                .createdAt(member.getCreatedAt().toLocalDate())
+                .createdAt(member.getCreatedAt())
                 .orderCompleteResponseDtos(convertOrdersToResponse(member.getOrders()))
                 .build();
     }
 
     private static List<OrderResponse.OrderCompleteResponseDto> convertOrdersToResponse(List<Orders> orders) {
-        return orders.stream().map(OrderResponse.OrderCompleteResponseDto::response).toList();
+        return Optional.ofNullable(orders)
+                .orElse(List.of())
+                .stream()
+                .map(OrderResponse.OrderCompleteResponseDto::response)
+                .toList();
     }
 }
