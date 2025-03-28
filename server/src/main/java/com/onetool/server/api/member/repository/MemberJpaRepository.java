@@ -45,6 +45,4 @@ public interface MemberJpaRepository extends MemberRepository, Repository<Member
 
     @Query("SELECT m FROM Member m LEFT JOIN FETCH m.cart WHERE m.id = :id")
     Optional<Member> findMemberById(@Param("id") Long id);
-
-
 }
