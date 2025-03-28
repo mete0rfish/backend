@@ -5,59 +5,66 @@ import com.onetool.server.api.cart.Cart;
 import com.onetool.server.api.cart.CartBlueprint;
 import com.onetool.server.api.cart.repository.CartBlueprintRepository;
 import com.onetool.server.api.cart.repository.CartRepository;
-import com.onetool.server.global.exception.CartNotFoundException;
-import com.onetool.server.global.exception.base.BaseException;
 import com.onetool.server.global.new_exception.exception.ApiException;
 import com.onetool.server.global.new_exception.exception.error.CartErrorCode;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static com.onetool.server.global.exception.codes.ErrorCode.*;
-
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class CartService {
 
-    @PersistenceContext
-    private final EntityManager entityManager;
     private final CartRepository cartRepository;
     private final CartBlueprintRepository cartBlueprintRepository;
 
     public Cart findCartById(Long userId) {
         return cartRepository.findCartWithMemberByMemberId(userId)
-                .orElseThrow(() -> new ApiException(CartErrorCode.NOT_FOUND_ERROR,"유저와 관련된 Cart가 없습니다. userId : "+ userId));
-    }
-
-    public Long findTotalPrice(Long cartId) {
-        return cartRepository.findTotalPriceByCartId(cartId);
-    }
-
-    public List<CartBlueprint> findCartBlueprint(Long cartId) {
-        return cartRepository.findCartBlueprintsByCartId(cartId);
+                .orElseThrow(() -> new ApiException(CartErrorCode.NOT_FOUND_ERROR,
+                        "유저와 관련된 Cart가 없습니다. userId : "
+                                + userId
+                        )
+                );
     }
 
     public void saveCart(Cart cart, Blueprint blueprint) {
+        validateBlueprintAlreadyInCart(cart, blueprint.getId());
         CartBlueprint cartBlueprint = CartBlueprint.create(cart, blueprint);
-
         cartBlueprintRepository.save(cartBlueprint);
-        entityManager.flush(); //todo test필요
+        cart.updateTotalPrice();
     }
 
-    public void deleteCartBlueprint(CartBlueprint cartBlueprint) {
-        if (cartBlueprint == null) throw new ApiException(CartErrorCode.NULL_POINT_ERROR,"CartBlueprint가 NULL입니다");
-
+    public void deleteCartBlueprint(Cart cart, CartBlueprint cartBlueprint) {
+        if (cartBlueprint == null) {
+            throw new ApiException(CartErrorCode.NULL_POINT_ERROR, "CartBlueprint가 NULL입니다");
+        }
         cartBlueprintRepository.deleteById(cartBlueprint.getId());
-        entityManager.flush(); //todo test필요
+        cartBlueprint.deleteCartBlueprint();
+        cart.updateTotalPrice();
     }
 
-    public void validateBlueprintAlreadyInCart(Cart cart, Blueprint blueprint) {
-        if (cartBlueprintRepository.existsByCartAndBlueprint(cart, blueprint))
-            throw new ApiException(CartErrorCode.ALREADY_EXIST_BLUEPRINT_IN_CART);
+    private void validateBlueprintAlreadyInCart(Cart cart, Long blueprintId) {
+       if(cart.getCartItems()
+               .stream()
+               .anyMatch(cartBlueprint -> cartBlueprint.getBlueprint().getId().equals(blueprintId))) {
+           throw new ApiException(CartErrorCode.ALREADY_EXIST_BLUEPRINT_IN_CART);
+       }
+    }
+
+    public CartBlueprint findCartBlueprint(Cart cart, Long blueprintId) {
+        return cart.getCartItems()
+                .stream()
+                .filter(cartItem -> cartItem.getBlueprint().getId().equals(blueprintId))
+                .findFirst()
+                .orElseThrow(() -> new ApiException(CartErrorCode.NOT_FOUND_ERROR,
+                        "해당하는 Cart에 bluePrintId와 일치하는 Cart가 존재하지 않습니다. cartId : "
+                                + cart.getId()
+                                + "blueprintId : "
+                                + blueprintId
+                        )
+                );
     }
 }

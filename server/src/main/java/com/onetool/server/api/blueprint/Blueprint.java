@@ -107,7 +107,6 @@ public class Blueprint extends BaseEntity {
                      String secondCategory,
                      InspectionStatus inspectionStatus,
                      List<OrderBlueprint> orderBlueprints,
-                     List<CartBlueprint> cartBlueprints,
                      boolean isDeleted,
                      String detailImage) {
         this.id = id;
@@ -126,7 +125,6 @@ public class Blueprint extends BaseEntity {
         this.secondCategory = secondCategory;
         this.inspectionStatus = inspectionStatus;
         this.orderBlueprints = orderBlueprints;
-        this.cartBlueprints = cartBlueprints;
         this.isDeleted = isDeleted;
         this.detailImage = detailImage;
     }
