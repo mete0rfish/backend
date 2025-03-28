@@ -8,6 +8,7 @@ import com.onetool.server.global.exception.ApiResponse;
 import com.onetool.server.api.order.service.OrderService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,8 +32,10 @@ public class OrderController {
     }
 
     @GetMapping
-    public ApiResponse<List<MyPageOrderResponse>> ordersGet(@AuthenticationPrincipal PrincipalDetails principal) {
-        List<MyPageOrderResponse> myPageOrderResponseList = orderBusiness.getMyPageOrderResponseList(principal);
+    public ApiResponse<List<MyPageOrderResponse>> ordersGet(
+            @AuthenticationPrincipal PrincipalDetails principal,
+            Pageable pageable) {
+        List<MyPageOrderResponse> myPageOrderResponseList = orderBusiness.getMyPageOrderResponseList(principal, pageable);
         return ApiResponse.onSuccess(myPageOrderResponseList);
     }
 
