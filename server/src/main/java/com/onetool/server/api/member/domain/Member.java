@@ -110,8 +110,6 @@ public class Member extends BaseEntity {
     }
 
     public List<OrderBlueprint> getOrderBlueprints() {
-        return getOrders().stream()
-                .flatMap(order -> order.getOrderItems().stream())
-                .toList();
+        return Orders.getOrderItems(getOrders());
     }
 }

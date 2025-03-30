@@ -72,11 +72,16 @@ public class Orders extends BaseEntity {
         return orderItemsDownloadLinks;
     }
 
-    //연관관계 맺기~~~~~~~~~
     public void assignMember(Member member) {
         if (this.member != member) {
             this.member = member;
             member.getOrders().add(this);
         }
+    }
+
+    public static List<OrderBlueprint> getOrderItems(List<Orders> orders) {
+        return orders.stream()
+                .flatMap(order -> order.getOrderItems().stream())
+                .toList();
     }
 }
