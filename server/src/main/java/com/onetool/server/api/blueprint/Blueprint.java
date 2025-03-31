@@ -1,5 +1,6 @@
 package com.onetool.server.api.blueprint;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.onetool.server.api.blueprint.dto.request.BlueprintRequest;
 import com.onetool.server.api.blueprint.dto.response.BlueprintResponse;
 import com.onetool.server.api.cart.CartBlueprint;
@@ -75,9 +76,11 @@ public class Blueprint extends BaseEntity {
     private InspectionStatus inspectionStatus;
 
     @OneToMany(mappedBy = "blueprint")
+    @JsonIgnore
     private List<OrderBlueprint> orderBlueprints = new ArrayList<>();
 
     @OneToMany(mappedBy = "blueprint")
+    @JsonIgnore
     private List<CartBlueprint> cartBlueprints = new ArrayList<>();
 
     @Column(name = "is_deleted", nullable = false)
@@ -104,7 +107,6 @@ public class Blueprint extends BaseEntity {
                      String secondCategory,
                      InspectionStatus inspectionStatus,
                      List<OrderBlueprint> orderBlueprints,
-                     List<CartBlueprint> cartBlueprints,
                      boolean isDeleted,
                      String detailImage) {
         this.id = id;
@@ -123,7 +125,6 @@ public class Blueprint extends BaseEntity {
         this.secondCategory = secondCategory;
         this.inspectionStatus = inspectionStatus;
         this.orderBlueprints = orderBlueprints;
-        this.cartBlueprints = cartBlueprints;
         this.isDeleted = isDeleted;
         this.detailImage = detailImage;
     }

@@ -46,4 +46,11 @@ public class CartBlueprint extends BaseEntity {
         this.blueprint = blueprint;
         blueprint.getCartBlueprints().add(this);
     }
+
+    public void deleteCartBlueprint(){
+        cart.getCartItems().remove(this);
+        this.cart = null;
+        blueprint.getCartBlueprints().remove(this);
+        this.blueprint = null;
+    }
 }

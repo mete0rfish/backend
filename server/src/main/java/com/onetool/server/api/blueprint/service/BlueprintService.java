@@ -9,6 +9,8 @@ import com.onetool.server.global.exception.BlueprintNullPointException;
 import com.onetool.server.global.new_exception.exception.ApiException;
 import com.onetool.server.global.new_exception.exception.error.BlueprintErrorCode;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import jakarta.transaction.Transactional;
 
@@ -28,6 +30,16 @@ public class BlueprintService {
         if (blueprintList.size() != blueprintIds.size()) {
             throw new ApiException(BlueprintErrorCode.NO_BLUEPRINT_FOUND,"특정 id가 blueprint에 없습니다.");
         }
+        return blueprintList;
+    }
+
+    public List<Blueprint> findCacheAll(){
+        List<Blueprint> blueprintList = blueprintRepository.findAll();
+        return blueprintList;
+    }
+
+    public List<Blueprint> findAll(){
+        List<Blueprint> blueprintList = blueprintRepository.findAll();
         return blueprintList;
     }
 

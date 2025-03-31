@@ -1,11 +1,13 @@
 package com.onetool.server.api.order.dto.response;
 
+import com.onetool.server.api.blueprint.Blueprint;
 import com.onetool.server.api.order.Orders;
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Builder
 @Slf4j
@@ -37,7 +39,7 @@ public record MyPageOrderResponse(
     }
 
     private static String createOrderName(Orders orders) {
-        log.info("orderItem size: {}", orders.getOrderItems());
+        log.info("order_id : {}",orders.getId());
         StringBuilder sb = new StringBuilder();
         String firstBlueprintName = orders.getOrderItems().get(0).getBlueprint().getBlueprintName();
         int blueprintCount = orders.getOrderItems().size();
