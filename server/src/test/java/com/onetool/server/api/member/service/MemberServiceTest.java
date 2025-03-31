@@ -2,7 +2,7 @@ package com.onetool.server.api.member.service;
 
 import com.onetool.server.api.cart.Cart;
 import com.onetool.server.api.member.domain.Member;
-import com.onetool.server.api.member.fake.FakeMemberRepository;
+import com.onetool.server.api.member.fake.FakeMemberJpaRepository;
 import com.onetool.server.api.member.fixture.MemberFixture;
 import com.onetool.server.global.new_exception.exception.ApiException;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,7 +20,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 class MemberServiceTest {
 
     private MemberService memberService;
-    private FakeMemberRepository memberRepository;
+    private FakeMemberJpaRepository memberRepository;
     private PasswordEncoder encoder;
 
     private Member member;
@@ -28,12 +28,13 @@ class MemberServiceTest {
 
     @BeforeEach
     void setUp() {
-        memberRepository = new FakeMemberRepository();
+        memberRepository = new FakeMemberJpaRepository();
         memberService = new MemberService(memberRepository);
         encoder = new BCryptPasswordEncoder();
 
         member = MemberFixture.createMember();
         cart = Cart.createCart(member);
+        member.update(cart);
     }
 
     @Test

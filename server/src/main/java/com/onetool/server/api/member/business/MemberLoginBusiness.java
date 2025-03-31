@@ -1,7 +1,7 @@
 package com.onetool.server.api.member.business;
 
 import com.onetool.server.api.member.domain.Member;
-import com.onetool.server.api.member.dto.LoginRequest;
+import com.onetool.server.api.member.dto.request.LoginRequest;
 import com.onetool.server.api.member.service.MemberService;
 import com.onetool.server.global.annotation.Business;
 import com.onetool.server.global.auth.MemberAuthContext;

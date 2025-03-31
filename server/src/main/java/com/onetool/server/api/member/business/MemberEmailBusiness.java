@@ -2,7 +2,7 @@ package com.onetool.server.api.member.business;
 
 import com.onetool.server.api.mail.MailService;
 import com.onetool.server.api.member.domain.Member;
-import com.onetool.server.api.member.dto.MemberFindPwdRequest;
+import com.onetool.server.api.member.dto.request.MemberFindPwdRequest;
 import com.onetool.server.api.member.service.MemberService;
 import com.onetool.server.global.annotation.Business;
 import com.onetool.server.global.redis.service.MailRedisService;
@@ -51,8 +51,8 @@ public class MemberEmailBusiness {
     }
 
     @Transactional
-    public void findLostPwd(MemberFindPwdRequest request) {
-        Member member = memberService.findOne(request.getEmail());
+    public void findLostPwd(String email) {
+        Member member = memberService.findOne(email);
         String randomPassword = createRandomPassword();
         memberService.updatePassword(member, encoder.encode(randomPassword));
         mailService.sendEmail(

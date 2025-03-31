@@ -2,7 +2,7 @@ package com.onetool.server.member;
 
 import com.onetool.server.api.member.business.MemberBusiness;
 import com.onetool.server.api.member.domain.Member;
-import com.onetool.server.api.member.repository.MemberRepository;
+import com.onetool.server.api.member.repository.MemberJpaRepository;
 import com.onetool.server.api.member.service.MemberService;
 import com.onetool.server.global.exception.MemberNotFoundException;
 import io.restassured.RestAssured;
@@ -28,7 +28,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class MemberServiceTest {
 
     @Autowired
-    private MemberRepository memberRepository;
+    private MemberJpaRepository memberJpaRepository;
     @Autowired
     private MemberService memberService;
     @Autowired
@@ -188,8 +188,8 @@ public class MemberServiceTest {
         memberBusiness.deleteMember(memberId);
 
         // then: 해당 회원의 isDeleted 값이 true로 변경되었는지 확인
-        Member deletedMember = memberRepository.findById(memberId).orElseThrow(() -> new MemberNotFoundException(memberId.toString()));
-        assertThat(deletedMember.getIsDeleted()).isTrue();
+        Member deletedMember = memberJpaRepository.findById(memberId).orElseThrow(() -> new MemberNotFoundException(memberId.toString()));
+        assertThat(deletedMember.isDeleted()).isTrue();
     }
 
     private String loginAndReturnToken() {

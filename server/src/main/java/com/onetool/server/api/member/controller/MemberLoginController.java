@@ -1,7 +1,7 @@
 package com.onetool.server.api.member.controller;
 
 import com.onetool.server.api.member.business.MemberLoginBusiness;
-import com.onetool.server.api.member.dto.LoginRequest;
+import com.onetool.server.api.member.dto.request.LoginRequest;
 import com.onetool.server.global.auth.jwt.JwtUtil;
 import com.onetool.server.global.auth.login.PrincipalDetails;
 import com.onetool.server.global.exception.ApiResponse;

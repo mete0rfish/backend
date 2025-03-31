@@ -2,8 +2,8 @@ package com.onetool.server.api.member.controller;
 
 import com.onetool.server.api.member.business.MemberBusiness;
 import com.onetool.server.api.member.business.MemberEmailBusiness;
-import com.onetool.server.api.member.dto.MemberFindEmailRequest;
-import com.onetool.server.api.member.dto.MemberFindPwdRequest;
+import com.onetool.server.api.member.dto.request.MemberFindEmailRequest;
+import com.onetool.server.api.member.dto.request.MemberFindPwdRequest;
 import com.onetool.server.global.exception.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -21,13 +21,13 @@ public class MemberEmailController {
 
     @PostMapping("/find-email")
     public ApiResponse<?> findEmail(@RequestBody MemberFindEmailRequest request) {
-        String email = memberBusiness.findEmail(request);
+        String email = memberBusiness.findEmail(request.name(), request.phone_num());
         return ApiResponse.onSuccess(email);
     }
 
     @PostMapping("/find-password")
     public ApiResponse<?> findPwdCheck(@RequestBody MemberFindPwdRequest request) {
-        memberEmailBusiness.findLostPwd(request);
+        memberEmailBusiness.findLostPwd(request.getEmail());
         return ApiResponse.onSuccess("이메일을 발송했습니다.");
     }
 

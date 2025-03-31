@@ -4,7 +4,7 @@ import com.onetool.server.api.blueprint.Blueprint;
 import com.onetool.server.api.blueprint.InspectionStatus;
 import com.onetool.server.api.blueprint.repository.BlueprintRepository;
 import com.onetool.server.api.category.FirstCategoryRepository;
-import com.onetool.server.api.member.repository.MemberRepository;
+import com.onetool.server.api.member.repository.MemberJpaRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -33,13 +33,13 @@ public class DummyDataLoader implements CommandLineRunner {
 
     private final FirstCategoryRepository firstCategoryRepository;
     private final BlueprintRepository blueprintRepository;
-    private final MemberRepository memberRepository;
+    private final MemberJpaRepository memberJpaRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public DummyDataLoader(FirstCategoryRepository firstCategoryRepository, BlueprintRepository blueprintRepository, MemberRepository memberRepository, PasswordEncoder passwordEncoder) {
+    public DummyDataLoader(FirstCategoryRepository firstCategoryRepository, BlueprintRepository blueprintRepository, MemberJpaRepository memberJpaRepository, PasswordEncoder passwordEncoder) {
         this.firstCategoryRepository = firstCategoryRepository;
         this.blueprintRepository = blueprintRepository;
-        this.memberRepository = memberRepository;
+        this.memberJpaRepository = memberJpaRepository;
         this.passwordEncoder = passwordEncoder;
     }
 

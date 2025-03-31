@@ -28,9 +28,9 @@ public class QnaBoardBusiness {
     }
 
     @Transactional(readOnly = true)
-    public List<QnaBoardBriefResponse> getMyQna(MemberAuthContext context) {
-        memberService.validateExistId(context.getId());
-        List<QnaBoard> qnaBoards = qnaBoardService.findAll(context.getId());
+    public List<QnaBoardBriefResponse> getMyQna(Long id) {
+        memberService.validateExistId(id);
+        List<QnaBoard> qnaBoards = qnaBoardService.findAll(id);
         return QnaBoardBriefResponse.fromQnaBoardListToBriefResponseList(qnaBoards);
     }
 

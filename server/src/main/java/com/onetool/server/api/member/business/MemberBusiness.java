@@ -1,7 +1,14 @@
 package com.onetool.server.api.member.business;
 
 import com.onetool.server.api.member.domain.Member;
-import com.onetool.server.api.member.dto.*;
+import com.onetool.server.api.member.dto.command.MemberCreateCommand;
+import com.onetool.server.api.member.dto.command.MemberUpdateCommand;
+import com.onetool.server.api.member.dto.request.MemberCreateRequest;
+import com.onetool.server.api.member.dto.request.MemberFindEmailRequest;
+import com.onetool.server.api.member.dto.request.MemberUpdateRequest;
+import com.onetool.server.api.member.dto.response.BlueprintDownloadResponse;
+import com.onetool.server.api.member.dto.response.MemberCreateResponse;
+import com.onetool.server.api.member.dto.response.MemberInfoResponse;
 import com.onetool.server.api.member.service.MemberService;
 import com.onetool.server.global.annotation.Business;
 import lombok.RequiredArgsConstructor;
@@ -10,7 +17,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Business
 @RequiredArgsConstructor
@@ -21,38 +27,38 @@ public class MemberBusiness {
     private final MemberService memberService;
 
     @Transactional(readOnly = true)
-    public String findEmail(MemberFindEmailRequest request) {
-        Member member = memberService.findOne(request.name(), request.phone_num());
+    public String findEmail(String name, String phoneNum) {
+        Member member = memberService.findOne(name, phoneNum);
         return member.getEmail();
     }
 
     @Transactional(readOnly = true)
-    public MemberInfoResponse getMemberInfo(Long userId) {
+    public MemberInfoResponse findMemberInfo(Long userId) {
         Member member = memberService.findOne(userId);
         return MemberInfoResponse.from(member);
     }
 
     @Transactional(readOnly = true)
-    public List<BlueprintDownloadResponse> getPurchasedBlueprints(final Long userId) {
+    public List<BlueprintDownloadResponse> findPurchasedBlueprints(final Long userId) {
         final Member member = memberService.findOne(userId);
-        return member.getOrders().stream()
-                .flatMap(order -> order.getOrderItems().stream())
-                .map(BlueprintDownloadResponse::from)
-                .collect(Collectors.toList());
+        return member.getOrderBlueprints()
+                .stream().map(BlueprintDownloadResponse::from)
+                .toList();
     }
 
     @Transactional
-    public MemberCreateResponse createMember(MemberCreateRequest request) {
-        memberService.validateDuplicateEmail(request.email());
-        Member member = memberService.save(request.toEntity(encoder.encode(request.password())));
+    public MemberCreateResponse createMember(MemberCreateCommand command) {
+        memberService.validateDuplicateEmail(command.email());
+        Member member = memberService.save(command.toEntity(encoder.encode(command.password())));
+
         log.info("createMember(): {}", member.getEmail());
         return MemberCreateResponse.of(member);
     }
 
     @Transactional
-    public void updateMember(Long id, MemberUpdateRequest request) {
-        Member member = memberService.findOne(id);
-        member.updateWith(request, encoder);
+    public void updateMember(MemberUpdateCommand command) {
+        Member member = memberService.findOne(command.id());
+        member.update(command, encoder);
         memberService.save(member);
     }
 

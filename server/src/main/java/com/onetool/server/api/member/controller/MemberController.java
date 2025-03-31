@@ -1,7 +1,13 @@
 package com.onetool.server.api.member.controller;
 
 import com.onetool.server.api.member.business.MemberBusiness;
-import com.onetool.server.api.member.dto.*;
+import com.onetool.server.api.member.dto.command.MemberCreateCommand;
+import com.onetool.server.api.member.dto.command.MemberUpdateCommand;
+import com.onetool.server.api.member.dto.request.MemberCreateRequest;
+import com.onetool.server.api.member.dto.request.MemberUpdateRequest;
+import com.onetool.server.api.member.dto.response.BlueprintDownloadResponse;
+import com.onetool.server.api.member.dto.response.MemberCreateResponse;
+import com.onetool.server.api.member.dto.response.MemberInfoResponse;
 import com.onetool.server.api.qna.business.QnaBoardBusiness;
 import com.onetool.server.api.qna.dto.response.QnaBoardBriefResponse;
 import com.onetool.server.global.auth.login.PrincipalDetails;
@@ -26,7 +32,7 @@ public class MemberController {
 
     @PostMapping("/signup")
     public ApiResponse<?> createMember(@RequestBody MemberCreateRequest request) {
-        MemberCreateResponse response = memberBusiness.createMember(request);
+        MemberCreateResponse response = memberBusiness.createMember(MemberCreateCommand.from(request));
         return ApiResponse.of(SuccessCode.CREATED, response);
     }
 
@@ -36,7 +42,7 @@ public class MemberController {
             @AuthenticationPrincipal PrincipalDetails principalDetails
     ) {
         Long id = principalDetails.getContext().getId();
-        memberBusiness.updateMember(id, request);
+        memberBusiness.updateMember(MemberUpdateCommand.from(id, request));
         return ApiResponse.onSuccess("회원 정보가 수정되었습니다.");
     }
 
@@ -50,19 +56,20 @@ public class MemberController {
     @GetMapping
     public ApiResponse<?> getMemberInfo(@AuthenticationPrincipal PrincipalDetails principalDetails) {
         Long memberId = principalDetails.getContext().getId();
-        MemberInfoResponse memberResponse = memberBusiness.getMemberInfo(memberId);
+        MemberInfoResponse memberResponse = memberBusiness.findMemberInfo(memberId);
         return ApiResponse.onSuccess(memberResponse);
     }
 
     @GetMapping("/myQna")
     public ApiResponse<List<QnaBoardBriefResponse>> getMyQna(@AuthenticationPrincipal PrincipalDetails principalDetails) {
-        return ApiResponse.onSuccess(qnaBoardBusiness.getMyQna(principalDetails.getContext()));
+        Long id = principalDetails.getContext().getId();
+        return ApiResponse.onSuccess(qnaBoardBusiness.getMyQna(id));
     }
 
     @GetMapping("/myPurchase")
     public ApiResponse<List<BlueprintDownloadResponse>> getMyPurchases(@AuthenticationPrincipal PrincipalDetails principalDetails) {
-        Long userId = principalDetails.getContext().getId();
-        List<BlueprintDownloadResponse> blueprints = memberBusiness.getPurchasedBlueprints(userId);
+        Long id = principalDetails.getContext().getId();
+        List<BlueprintDownloadResponse> blueprints = memberBusiness.findPurchasedBlueprints(id);
         return ApiResponse.onSuccess(blueprints);
     }
 }

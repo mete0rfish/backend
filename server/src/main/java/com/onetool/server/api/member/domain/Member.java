@@ -1,19 +1,18 @@
 package com.onetool.server.api.member.domain;
 
 import com.onetool.server.api.cart.Cart;
+import com.onetool.server.api.member.dto.command.MemberUpdateCommand;
 import com.onetool.server.api.member.enums.SocialType;
 import com.onetool.server.api.member.enums.UserRole;
+import com.onetool.server.api.order.OrderBlueprint;
 import com.onetool.server.global.entity.BaseEntity;
-import com.onetool.server.api.member.dto.MemberUpdateRequest;
+import com.onetool.server.api.member.dto.request.MemberUpdateRequest;
 import com.onetool.server.api.order.Orders;
 import com.onetool.server.api.qna.QnaBoard;
 import com.onetool.server.api.qna.QnaReply;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.SQLDelete;
@@ -28,9 +27,11 @@ import java.util.Optional;
 
 @Entity
 @Getter
-@Setter
+@Setter(value = AccessLevel.PRIVATE)
 @NoArgsConstructor
 @Slf4j
+@Builder
+@AllArgsConstructor
 @SQLDelete(sql = "UPDATE Member SET is_deleted = true WHERE id = ?")
 @SQLRestriction("is_deleted = false")
 public class Member extends BaseEntity {
@@ -51,33 +52,22 @@ public class Member extends BaseEntity {
     @Size(min = 1, max = 10, message = "이름은 1 ~ 10자 이여야 합니다.")
     private String name;
 
-    @Column(name = "birth_date")
     @Past
     private LocalDate birthDate;
 
-    @Column(name = "phone_num")
     @Size(min = 10, max = 11)
     private String phoneNum;
 
-    @Column(name = "user_role")
     @Enumerated(EnumType.STRING)
     private UserRole role;
 
     @ColumnDefault("'기타'")
     private String field;
 
-    @Column(name = "is_native")
     private boolean isNative;
-
-    @Column(name = "service_accept")
     private boolean serviceAccept;
-
-    @Column(name = "platform_type")
     private String platformType;
-
-    @Column(name = "social_type")
     private SocialType socialType;
-
     private String socialId;
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
@@ -93,45 +83,33 @@ public class Member extends BaseEntity {
     @OrderBy("createdAt DESC")
     private List<Orders> orders = new ArrayList<>();
 
-    @Column(name = "user_registered_at")
-    private LocalDate user_registered_at;
-
-    @Column(name = "is_deleted", nullable = false)
+    @Column(nullable = false)
     private boolean isDeleted = false;
 
-    @Builder
-    public Member(Long id, String password, String email, String name, LocalDate birthDate, String phoneNum, UserRole role, String field, boolean isNative, boolean serviceAccept, String platformType, SocialType socialType, String socialId, List<QnaBoard> qnaBoards, List<QnaReply> qnaReplies, Cart cart, boolean isDeleted) {
-        this.id = id;
-        this.password = password;
-        this.email = email;
-        this.name = name;
-        this.birthDate = birthDate;
-        this.phoneNum = phoneNum;
-        this.role = role;
-        this.field = field;
-        this.isNative = isNative;
-        this.serviceAccept = serviceAccept;
-        this.platformType = platformType;
-        this.socialType = socialType;
-        this.socialId = socialId;
-        this.qnaBoards = qnaBoards;
-        this.qnaReplies = qnaReplies;
-        this.cart = cart != null ? cart : Cart.createCart(this);
-        this.isDeleted = isDeleted;
-    }
-
     @Transactional
-    public void updateWith(MemberUpdateRequest request, PasswordEncoder encoder) {
-        Optional.ofNullable(request.getName()).ifPresent(this::setName);
-        Optional.ofNullable(request.getPhoneNum()).ifPresent(this::setPhoneNum);
-        Optional.ofNullable(request.getDevelopmentField()).ifPresent(this::setField);
-        Optional.ofNullable(request.getNewPassword()).ifPresent(newPassword -> {
+    public void update(MemberUpdateCommand request, PasswordEncoder encoder) {
+        Optional.ofNullable(request.name()).ifPresent(this::setName);
+        Optional.ofNullable(request.phoneNum()).ifPresent(this::setPhoneNum);
+        Optional.ofNullable(request.developmentField()).ifPresent(this::setField);
+        Optional.ofNullable(request.newPassword()).ifPresent(newPassword -> {
             log.info("new password: {}", newPassword);
             this.setPassword(encoder.encode(newPassword));
         });
     }
 
-    public boolean getIsDeleted() {
+    public void update(String password) {
+        setPassword(password);
+    }
+
+    public void update(Cart cart) {
+        setCart(cart);
+    }
+
+    public boolean isDeleted() {
         return isDeleted;
+    }
+
+    public List<OrderBlueprint> getOrderBlueprints() {
+        return Orders.getOrderItems(getOrders());
     }
 }

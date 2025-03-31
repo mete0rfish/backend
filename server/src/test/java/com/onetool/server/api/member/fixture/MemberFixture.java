@@ -1,7 +1,10 @@
 package com.onetool.server.api.member.fixture;
 
 import com.onetool.server.api.member.domain.Member;
-import com.onetool.server.api.member.dto.*;
+import com.onetool.server.api.member.dto.request.MemberCreateRequest;
+import com.onetool.server.api.member.dto.request.MemberUpdateRequest;
+import com.onetool.server.api.member.dto.response.BlueprintDownloadResponse;
+import com.onetool.server.api.member.dto.response.MemberCreateResponse;
 import com.onetool.server.api.member.enums.UserRole;
 import com.onetool.server.api.qna.dto.response.QnaBoardBriefResponse;
 

@@ -2,21 +2,17 @@ package com.onetool.server.api.member.fake;
 
 import com.onetool.server.api.member.domain.Member;
 import com.onetool.server.api.member.enums.SocialType;
-import com.onetool.server.api.member.repository.MemberRepository;
+import com.onetool.server.api.member.repository.MemberJpaRepository;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
 
-public class FakeMemberRepository implements MemberRepository {
+public class FakeMemberJpaRepository implements MemberJpaRepository {
 
     private final Map<Long, Member> store = new HashMap<>();
-    private final AtomicLong sequence = new AtomicLong(1L);
 
     @Override
     public Member save(Member member) {
-        if (member.getId() == null) {
-            member.setId(sequence.getAndIncrement());
-        }
         store.put(member.getId(), member);
         return member;
     }

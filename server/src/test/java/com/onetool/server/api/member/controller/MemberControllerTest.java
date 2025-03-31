@@ -3,10 +3,12 @@ package com.onetool.server.api.member.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.onetool.server.api.helper.MockBeanInjection;
 import com.onetool.server.api.member.domain.Member;
-import com.onetool.server.api.member.dto.MemberCreateRequest;
-import com.onetool.server.api.member.dto.MemberCreateResponse;
-import com.onetool.server.api.member.dto.MemberInfoResponse;
-import com.onetool.server.api.member.dto.MemberUpdateRequest;
+import com.onetool.server.api.member.dto.command.MemberCreateCommand;
+import com.onetool.server.api.member.dto.command.MemberUpdateCommand;
+import com.onetool.server.api.member.dto.request.MemberCreateRequest;
+import com.onetool.server.api.member.dto.response.MemberCreateResponse;
+import com.onetool.server.api.member.dto.response.MemberInfoResponse;
+import com.onetool.server.api.member.dto.request.MemberUpdateRequest;
 import com.onetool.server.api.member.fixture.MemberFixture;
 import com.onetool.server.api.member.fixture.WithMockPrincipalDetails;
 import com.onetool.server.global.auth.MemberAuthContext;
@@ -54,7 +56,7 @@ class MemberControllerTest extends MockBeanInjection {
         // given
         MemberCreateRequest request = MemberFixture.createMemberCreateRequest();
         MemberCreateResponse response = MemberFixture.createMemberCreateResponse();
-        when(memberBusiness.createMember(request)).thenReturn(response);
+        when(memberBusiness.createMember(MemberCreateCommand.from(request))).thenReturn(response);
 
         // when
         ResultActions resultActions =
@@ -76,7 +78,7 @@ class MemberControllerTest extends MockBeanInjection {
         MemberUpdateRequest request = MemberFixture.createMemberUpdateRequest();
         String jsonRequest = objectMapper.writeValueAsString(request);
 
-        doNothing().when(memberBusiness).updateMember(Mockito.anyLong(), Mockito.any(MemberUpdateRequest.class));
+        doNothing().when(memberBusiness).updateMember(Mockito.any(MemberUpdateCommand.class));
 
         // When
         ResultActions result = mockMvc.perform(
@@ -115,7 +117,7 @@ class MemberControllerTest extends MockBeanInjection {
     @WithMockPrincipalDetails(id = 2L)
     void 회원_정보를_조회한다() throws Exception{
         // Given
-        when(memberBusiness.getMemberInfo(Mockito.anyLong())).thenReturn(MemberInfoResponse.from(member));
+        when(memberBusiness.findMemberInfo(Mockito.anyLong())).thenReturn(MemberInfoResponse.from(member));
 
         // When
         ResultActions result = mockMvc.perform(
@@ -136,7 +138,7 @@ class MemberControllerTest extends MockBeanInjection {
     @WithMockPrincipalDetails(id = 2L)
     void 회원의_문의내역을_조회한다() throws Exception {
         // Given
-        when(qnaBoardBusiness.getMyQna(any(MemberAuthContext.class)))
+        when(qnaBoardBusiness.getMyQna(any(Long.class)))
                 .thenReturn(MemberFixture.createQnaBoardBriefResponses());
 
         // When
@@ -160,7 +162,7 @@ class MemberControllerTest extends MockBeanInjection {
     @WithMockPrincipalDetails(id = 2L)
     void 회원의_구매내역을_조회한다() throws Exception {
         // Given
-        when(memberBusiness.getPurchasedBlueprints(any(Long.class)))
+        when(memberBusiness.findPurchasedBlueprints(any(Long.class)))
                 .thenReturn(MemberFixture.createBlueprintDownloadResponses());
 
         // When

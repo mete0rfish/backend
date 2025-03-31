@@ -1,8 +1,14 @@
 package com.onetool.server.api.member.business;
 
+import com.onetool.server.api.member.dto.command.MemberCreateCommand;
+import com.onetool.server.api.member.dto.command.MemberUpdateCommand;
+import com.onetool.server.api.member.dto.request.MemberCreateRequest;
+import com.onetool.server.api.member.dto.request.MemberFindEmailRequest;
+import com.onetool.server.api.member.dto.request.MemberUpdateRequest;
+import com.onetool.server.api.member.dto.response.MemberCreateResponse;
+import com.onetool.server.api.member.dto.response.MemberInfoResponse;
 import com.onetool.server.api.member.fixture.MemberFixture;
 import com.onetool.server.api.member.domain.Member;
-import com.onetool.server.api.member.dto.*;
 import com.onetool.server.api.member.service.MemberService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
@@ -36,7 +42,7 @@ class MemberBusinessTest {
     @BeforeEach
     void setup() {
         member = MemberFixture.createMember();
-        member.setPassword(encoder.encode("1234"));
+        member.update(encoder.encode("1234"));
     }
 
     @Test
@@ -46,7 +52,7 @@ class MemberBusinessTest {
         when(memberService.findOne(request.name(), request.phone_num())).thenReturn(member);
 
         // when
-        String email = memberBusiness.findEmail(request);
+        String email = memberBusiness.findEmail(request.name(), request.phone_num());
 
         // then
         assertThat(email).isEqualTo(member.getEmail());
@@ -59,7 +65,7 @@ class MemberBusinessTest {
         when(memberService.findOne(member.getId())).thenReturn(member);
 
         // when
-        MemberInfoResponse response = memberBusiness.getMemberInfo(member.getId());
+        MemberInfoResponse response = memberBusiness.findMemberInfo(member.getId());
 
         // then
         assertThat(response.email()).isEqualTo(member.getEmail());
@@ -73,7 +79,7 @@ class MemberBusinessTest {
         when(memberService.save(any(Member.class))).thenReturn(member);
 
         // when
-        MemberCreateResponse response = memberBusiness.createMember(request);
+        MemberCreateResponse response = memberBusiness.createMember(MemberCreateCommand.from(request));
 
         // then
         assertThat(response.email()).isEqualTo(member.getEmail());
@@ -88,7 +94,7 @@ class MemberBusinessTest {
         when(memberService.findOne(member.getId())).thenReturn(member);
 
         // when
-        memberBusiness.updateMember(member.getId(), request);
+        memberBusiness.updateMember(MemberUpdateCommand.from(member.getId(), request));
 
         // then
         verify(memberService).save(member);
