@@ -1,6 +1,7 @@
-package com.onetool.server.blueprint;
+package com.onetool.server.api.blueprint;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.onetool.server.api.blueprint.business.BlueprintBusiness;
 import com.onetool.server.api.blueprint.controller.BlueprintController;
 import com.onetool.server.api.blueprint.controller.SearchController;
 import com.onetool.server.api.blueprint.dto.response.BlueprintSortRequest;
@@ -9,6 +10,7 @@ import com.onetool.server.api.blueprint.service.BlueprintService;
 import com.onetool.server.api.blueprint.dto.request.BlueprintRequest;
 import com.onetool.server.api.blueprint.dto.response.BlueprintResponse;
 
+import com.onetool.server.api.helper.MockBeanInjection;
 import com.onetool.server.global.auth.MemberAuthContext;
 import com.onetool.server.global.auth.jwt.JwtUtil;
 import com.onetool.server.global.auth.login.PrincipalDetails;
@@ -55,21 +57,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest({BlueprintController.class, MemberController.class, SearchController.class})
 @AutoConfigureMockMvc
 @ActiveProfiles({"test"})
-public class BlueprintServiceMockTest {
+public class BlueprintServiceMockTest extends MockBeanInjection {
     @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
-    private JwtUtil jwtUtil;
 
-    @MockBean
-    private MemberService memberService;
-
-    @MockBean
-    private BlueprintService blueprintService;
-
-    @MockBean
-    private BlueprintSearchService blueprintSearchService;
 
     @Autowired
     private ObjectMapper objectMapper;
