@@ -1,22 +1,16 @@
 package com.onetool.server.api.blueprint.service;
 
 import com.onetool.server.api.blueprint.Blueprint;
-import com.onetool.server.api.blueprint.dto.request.BlueprintRequest;
-import com.onetool.server.api.blueprint.dto.response.BlueprintResponse;
+import com.onetool.server.api.blueprint.dto.request.BlueprintUpdateRequest;
 import com.onetool.server.api.blueprint.repository.BlueprintRepository;
-import com.onetool.server.global.exception.BlueprintNotFoundException;
-import com.onetool.server.global.exception.BlueprintNullPointException;
 import com.onetool.server.global.new_exception.exception.ApiException;
 import com.onetool.server.global.new_exception.exception.error.BlueprintErrorCode;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import jakarta.transaction.Transactional;
 
 import java.util.List;
 import java.util.Set;
-
 
 @Service
 @Transactional
@@ -34,13 +28,11 @@ public class BlueprintService {
     }
 
     public List<Blueprint> findCacheAll(){
-        List<Blueprint> blueprintList = blueprintRepository.findAll();
-        return blueprintList;
+        return blueprintRepository.findAll();
     }
 
     public List<Blueprint> findAll(){
-        List<Blueprint> blueprintList = blueprintRepository.findAll();
-        return blueprintList;
+        return blueprintRepository.findAll();
     }
 
     public Blueprint findBlueprintById(Long blueprintId) {
@@ -53,9 +45,9 @@ public class BlueprintService {
         blueprintRepository.save(blueprint);
     }
 
-    public void updateBlueprint(Blueprint blueprint, BlueprintResponse blueprintResponse) {
+    public void updateBlueprint(Blueprint blueprint, BlueprintUpdateRequest request) {
         validateBlueprintIsNull(blueprint);
-        blueprint.updateBlueprint(blueprintResponse);
+        blueprint.updateBlueprint(request);
     }
 
     public void deleteBlueprint(Blueprint blueprint) {
