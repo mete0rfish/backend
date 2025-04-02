@@ -3,6 +3,9 @@ package com.onetool.server.api.fixture;
 import com.onetool.server.api.blueprint.dto.request.BlueprintRequest;
 import com.onetool.server.api.blueprint.dto.request.BlueprintUpdateRequest;
 import com.onetool.server.api.blueprint.dto.response.BlueprintResponse;
+import com.onetool.server.api.blueprint.dto.response.SearchResponse;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -51,5 +54,16 @@ public class BlueprintFixture {
                 BlueprintResponse.builder().id(1L).blueprintName("골프장 1인실 평면도(1)").build(),
                 BlueprintResponse.builder().id(2L).blueprintName("골프장 레이아웃 평면도(1)").build()
         );
+    }
+
+    public static List<SearchResponse> createSearchResponseList() {
+        return List.of(
+                SearchResponse.builder().id(1L).blueprintName("골프자 1인실 평면도(1)").creatorName("원툴").categoryId(1L).secondCategory("공공").build(),
+                SearchResponse.builder().id(2L).blueprintName("골프자 레이아웃 평면도(1)").creatorName("원툴").categoryId(1L).secondCategory("공공").build()
+        );
+    }
+
+    public static Page<SearchResponse> createSearchResponsePage() {
+        return new PageImpl<>(createSearchResponseList());
     }
 }
