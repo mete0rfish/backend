@@ -2,13 +2,11 @@ package com.onetool.server.api.blueprint.business;
 
 import com.onetool.server.api.blueprint.Blueprint;
 import com.onetool.server.api.blueprint.dto.request.BlueprintRequest;
-import com.onetool.server.api.blueprint.dto.response.BlueprintResponse;
+import com.onetool.server.api.blueprint.dto.request.BlueprintUpdateRequest;
 import com.onetool.server.api.blueprint.service.BlueprintService;
 import com.onetool.server.global.annotation.Business;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.jdbc.core.BatchPreparedStatementSetter;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
 
 @Business
 @RequiredArgsConstructor
@@ -23,9 +21,9 @@ public class BlueprintBusiness {
     }
 
     @Transactional
-    public void editBlueprint(BlueprintResponse blueprintResponse) {
-        Blueprint blueprint = blueprintService.findBlueprintById(blueprintResponse.id());
-        blueprintService.updateBlueprint(blueprint, blueprintResponse);
+    public void editBlueprint(BlueprintUpdateRequest request) {
+        Blueprint blueprint = blueprintService.findBlueprintById(request.id());
+        blueprintService.updateBlueprint(blueprint, request);
     }
 
     @Transactional

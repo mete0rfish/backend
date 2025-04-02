@@ -1,14 +1,12 @@
 package com.onetool.server.api.blueprint.dto.request;
 
-import com.onetool.server.api.blueprint.Blueprint;
 import lombok.Builder;
-import lombok.EqualsAndHashCode;
 
-import java.math.BigInteger;
 import java.time.LocalDateTime;
 
 @Builder
-public record BlueprintRequest(
+public record BlueprintUpdateRequest(
+        Long id,
         String blueprintName,
         Long categoryId,
         Long standardPrice,
@@ -20,7 +18,9 @@ public record BlueprintRequest(
         LocalDateTime saleExpiredDate,
         String creatorName,
         String downloadLink,
-        String detailImage
+        String detailImage,
+        Long hits,
+        Boolean isDeleted
 ) {
 
 }
