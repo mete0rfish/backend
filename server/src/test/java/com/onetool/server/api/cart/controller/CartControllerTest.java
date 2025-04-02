@@ -42,12 +42,15 @@ public class CartControllerTest {
     private JwtUtil jwtUtil;
 
     private Member member;
+    private Cart cart;
 
     private final String cartEndpointPrefix = "/api/cart";
 
     @BeforeEach
     void setUp(){
         member = MemberFixture.createMember();
+        cart = Cart.createCart(member);
+        member.update(cart);
     }
 
     @Test
