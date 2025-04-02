@@ -50,10 +50,12 @@ public class Blueprint extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private InspectionStatus inspectionStatus = InspectionStatus.NONE;
 
+    @Builder.Default
     @OneToMany(mappedBy = "blueprint")
     @JsonIgnore
     private List<OrderBlueprint> orderBlueprints = new ArrayList<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "blueprint")
     @JsonIgnore
     private List<CartBlueprint> cartBlueprints = new ArrayList<>();
