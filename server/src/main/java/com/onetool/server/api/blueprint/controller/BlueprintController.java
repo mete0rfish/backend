@@ -1,6 +1,8 @@
 package com.onetool.server.api.blueprint.controller;
 
+import com.onetool.server.api.blueprint.Blueprint;
 import com.onetool.server.api.blueprint.business.BlueprintBusiness;
+import com.onetool.server.api.blueprint.dto.success.BlueprintUpdateSuccess;
 import com.onetool.server.api.blueprint.dto.request.BlueprintRequest;
 import com.onetool.server.api.blueprint.dto.request.BlueprintUpdateRequest;
 import com.onetool.server.global.exception.ApiResponse;
@@ -16,13 +18,13 @@ public class BlueprintController {
 
     @PostMapping("/upload")
     public ApiResponse<String> postBlueprint(BlueprintRequest request) {
-        blueprintBusiness.createBlueprint(request);
+        Blueprint blueprint = blueprintBusiness.createBlueprint(request);
         return ApiResponse.onSuccess("상품이 정상적으로 등록되었습니다.");
     }
 
     @PutMapping("/update")
     public ApiResponse<String> putBlueprint(BlueprintUpdateRequest request) {
-        blueprintBusiness.editBlueprint(request);
+        BlueprintUpdateSuccess command = blueprintBusiness.editBlueprint(request);
         return ApiResponse.onSuccess("상품이 정상적으로 수정 되었습니다.");
     }
 

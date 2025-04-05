@@ -4,6 +4,7 @@ import com.onetool.server.api.blueprint.business.BlueprintBusiness;
 import com.onetool.server.api.blueprint.business.BlueprintInspectionBusiness;
 import com.onetool.server.api.blueprint.business.BlueprintSearchBusiness;
 import com.onetool.server.api.blueprint.service.BlueprintSearchService;
+import com.onetool.server.api.blueprint.service.BlueprintService;
 import com.onetool.server.api.member.business.MemberBusiness;
 import com.onetool.server.api.member.business.MemberLoginBusiness;
 import com.onetool.server.api.member.service.MemberService;
@@ -32,4 +33,6 @@ public class MockBeanInjection {
     protected BlueprintInspectionBusiness blueprintInspectionBusiness;
     @MockBean
     protected MemberLoginBusiness memberLoginBusiness;
+    @MockBean
+    protected BlueprintService blueprintService;
 }

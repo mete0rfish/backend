@@ -1,5 +1,6 @@
 package com.onetool.server.api.fixture;
 
+import com.onetool.server.api.blueprint.Blueprint;
 import com.onetool.server.api.blueprint.dto.request.BlueprintRequest;
 import com.onetool.server.api.blueprint.dto.request.BlueprintUpdateRequest;
 import com.onetool.server.api.blueprint.dto.response.BlueprintResponse;
@@ -31,21 +32,9 @@ public class BlueprintFixture {
 
     public static BlueprintUpdateRequest createBlueprintUpdateRequest() {
         return BlueprintUpdateRequest.builder()
-                .id(3L)
+                .id(1L)
                 .blueprintName("대한민국 마을")
-                .categoryId(1L)
-                .standardPrice(50000L)
-                .blueprintImg("https://s3.bucket.image.com/")
-                .blueprintDetails("한국의 어느 마을의 청사진입니다.")
-                .extension(".exe")
-                .program("CAD")
-                .hits(100L)
-                .salePrice(40000L)
-                .saleExpiredDate(LocalDateTime.now().plusDays(10))
                 .creatorName("원툴")
-                .downloadLink("https://onetool.com/download")
-                .isDeleted(false)
-                .detailImage("detailImage URL")
                 .build();
     }
 
@@ -74,6 +63,26 @@ public class BlueprintFixture {
 
     public static Page<SearchResponse> createSearchResponsePage() {
         return new PageImpl<>(createSearchResponseList());
+    }
+
+    public static Blueprint createBlueprint() {
+        return Blueprint.builder()
+                .id(1L)
+                .blueprintName("생각나는대로 만든 건축물1")
+                .creatorName("원툴")
+                .categoryId(1L)
+                .secondCategory("공공")
+                .build();
+    }
+
+    public static Blueprint createCustomBlueprint(String blueprintName, String creatorName) {
+        return Blueprint.builder()
+                .id(1L)
+                .blueprintName(blueprintName)
+                .creatorName(creatorName)
+                .categoryId(1L)
+                .secondCategory("공공")
+                .build();
     }
 
     private static SearchResponse createSearchResponse(final long id, final String blueprintName) {

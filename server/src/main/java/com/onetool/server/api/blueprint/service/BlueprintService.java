@@ -1,6 +1,7 @@
 package com.onetool.server.api.blueprint.service;
 
 import com.onetool.server.api.blueprint.Blueprint;
+import com.onetool.server.api.blueprint.dto.success.BlueprintUpdateSuccess;
 import com.onetool.server.api.blueprint.dto.request.BlueprintUpdateRequest;
 import com.onetool.server.api.blueprint.repository.BlueprintRepository;
 import com.onetool.server.global.new_exception.exception.ApiException;
@@ -40,14 +41,18 @@ public class BlueprintService {
                 .orElseThrow(() -> new ApiException(BlueprintErrorCode.NOT_FOUND_ERROR,"blueprintId : " + blueprintId));
     }
 
-    public void saveBlueprint(Blueprint blueprint) {
+    public Blueprint saveBlueprint(Blueprint blueprint) {
         validateBlueprintIsNull(blueprint);
-        blueprintRepository.save(blueprint);
+        return blueprintRepository.save(blueprint);
     }
 
-    public void updateBlueprint(Blueprint blueprint, BlueprintUpdateRequest request) {
+    public BlueprintUpdateSuccess updateBlueprint(Blueprint blueprint, BlueprintUpdateRequest request) {
         validateBlueprintIsNull(blueprint);
         blueprint.updateBlueprint(request);
+        return BlueprintUpdateSuccess.builder()
+                .isSuccess(true)
+                .blueprintId(blueprint.getId())
+                .build();
     }
 
     public void deleteBlueprint(Blueprint blueprint) {
