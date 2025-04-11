@@ -1,6 +1,7 @@
 package com.onetool.server.api.fixture;
 
 import com.onetool.server.api.blueprint.Blueprint;
+import com.onetool.server.api.blueprint.InspectionStatus;
 import com.onetool.server.api.blueprint.dto.request.BlueprintRequest;
 import com.onetool.server.api.blueprint.dto.request.BlueprintUpdateRequest;
 import com.onetool.server.api.blueprint.dto.response.BlueprintResponse;
@@ -9,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 public class BlueprintFixture {
@@ -47,6 +49,15 @@ public class BlueprintFixture {
         );
     }
 
+    public static Page<Blueprint> createBlueprintPage() {
+        List<Blueprint> blueprints = new ArrayList<>();
+        blueprints.add(createCustomBlueprint("테스트도면1", "원툴", InspectionStatus.NONE));
+        blueprints.add(createCustomBlueprint("테스트도면2", "원툴", InspectionStatus.NONE));
+        blueprints.add(createCustomBlueprint("테스트도면3", "원툴", InspectionStatus.NONE));
+
+        return new PageImpl<>(blueprints);
+    }
+
     public static BlueprintResponse createBlueprintResponse(final long id, final String blueprintName) {
         return BlueprintResponse.builder()
                 .id(id)
@@ -72,16 +83,18 @@ public class BlueprintFixture {
                 .creatorName("원툴")
                 .categoryId(1L)
                 .secondCategory("공공")
+                .inspectionStatus(InspectionStatus.NONE)
                 .build();
     }
 
-    public static Blueprint createCustomBlueprint(String blueprintName, String creatorName) {
+    private static Blueprint createCustomBlueprint(String blueprintName, String creatorName, InspectionStatus status) {
         return Blueprint.builder()
                 .id(1L)
                 .blueprintName(blueprintName)
                 .creatorName(creatorName)
                 .categoryId(1L)
                 .secondCategory("공공")
+                .inspectionStatus(status)
                 .build();
     }
 

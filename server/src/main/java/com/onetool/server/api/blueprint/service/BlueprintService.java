@@ -23,7 +23,7 @@ public class BlueprintService {
     public List<Blueprint> findAllBlueprintByIds(Set<Long> blueprintIds) {
         List<Blueprint> blueprintList = blueprintRepository.findAllById(blueprintIds);
         if (blueprintList.size() != blueprintIds.size()) {
-            throw new ApiException(BlueprintErrorCode.NO_BLUEPRINT_FOUND,"특정 id가 blueprint에 없습니다.");
+            throw new ApiException(BlueprintErrorCode.NO_BLUEPRINT_FOUND, "특정 id가 blueprint에 없습니다.");
         }
         return blueprintList;
     }
