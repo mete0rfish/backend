@@ -78,7 +78,6 @@ public class Blueprint extends BaseEntity {
         Optional.ofNullable(request.saleExpiredDate()).ifPresent(expiredDate -> this.saleExpiredDate = expiredDate);
         Optional.ofNullable(request.creatorName()).ifPresent(creator -> this.creatorName = creator);
         Optional.ofNullable(request.downloadLink()).ifPresent(link -> this.downloadLink = link);
-        Optional.of(request.isDeleted()).ifPresent(deleted -> this.isDeleted = deleted);
         Optional.ofNullable(request.detailImage()).ifPresent(detailImg -> this.detailImage = detailImg);
     }
 

@@ -40,6 +40,14 @@ public class BlueprintFixture {
                 .build();
     }
 
+    public static BlueprintUpdateRequest createWrongIdBlueprintUpdateRequest() {
+        return BlueprintUpdateRequest.builder()
+                .id(1000L)
+                .blueprintName("대한민국 마을")
+                .creatorName("원툴")
+                .build();
+    }
+
     public static List<BlueprintResponse> createBlueprintResponseList() {
         return List.of(
                 createBlueprintResponse(1L, "골프장 1인실 평면도(1)"),
