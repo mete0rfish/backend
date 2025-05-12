@@ -33,6 +33,7 @@ jobs:
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.HOST }}
+          port: 2025
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.PRIVATE_KEY }}
           source: "server/build/libs/*.jar"
