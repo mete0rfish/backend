@@ -35,7 +35,7 @@ jobs:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.PRIVATE_KEY }}
-          source: "build/libs/*.jar"
+          source: "server/build/libs/*.jar"
           target: "/home/${{ secrets.USERNAME }}/app"
 
       - name: Run JAR on server
