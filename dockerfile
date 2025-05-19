@@ -3,6 +3,9 @@ FROM gradle:8.4.0-jdk17 AS builder
 
 WORKDIR /app
 COPY . .
+
+RUN apt-get update && apt-get install -y git
+RUN git submodule update --init --recursive
 RUN cd server && chmod +x gradlew && ./gradlew clean build -x test
 
 # 2단계: 실행만 담당하는 경량 OpenJDK 컨테이너
