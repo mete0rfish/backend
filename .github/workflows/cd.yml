@@ -52,6 +52,6 @@ jobs:
           script: |
             docker stop $(docker ps -q) && docker rm $(docker ps -qa)
             docker pull ${{ secrets.DOCKER_REPO }}/onetool-prod-server:v1
-            pwd
-            docker-compose -f docker-compose.yml up -d
+            ls
+            docker-compose -f ~/docker-compose.yml up -d
             docker image prune --force
