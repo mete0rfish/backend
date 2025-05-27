@@ -1,8 +1,13 @@
 package com.onetool.server.api.qna;
 
+import com.onetool.server.api.qna.dto.request.PostQnaReplyRequest;
 import com.onetool.server.global.entity.BaseEntity;
 import com.onetool.server.api.member.domain.Member;
-import com.onetool.server.api.qna.dto.request.QnaReplyRequest;
+import com.onetool.server.global.exception.UnAvailableModifyeException;
+import com.onetool.server.global.exception.base.BaseException;
+import com.onetool.server.global.exception.codes.ErrorCode;
+import com.onetool.server.global.new_exception.exception.ApiException;
+import com.onetool.server.global.new_exception.exception.error.QnaErrorCode;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -10,6 +15,8 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import static com.onetool.server.global.exception.codes.ErrorCode.UNAVAILABLE_TO_MODIFY;
 
 @Entity
 @Table(name = "qna_reply")
@@ -40,31 +47,40 @@ public class QnaReply extends BaseEntity {
         this.content = content;
     }
 
-    public static QnaReply createReply(QnaReplyRequest.PostQnaReply request){
+    public  QnaReply createReply(PostQnaReplyRequest request){
         return QnaReply.builder()
                 .content(request.content())
                 .build();
     }
 
-    public void addReplyToBoard(QnaBoard qnaBoard){
+    public void updateReply(String content){
+        this.content = content;
+    }
+
+    public void validateMemberCanModifyAndDelete(Member member){
+        if(!this.getMember().getEmail().equals(member.getEmail())){
+            throw new ApiException(QnaErrorCode.UNAVAILABLE_TO_MODIFY,"해당 멤버는 수정/삭제 권한이 없습니다.");
+        }
+    }
+
+    //---------------연관관계 매핑---------------
+
+    public void assignBoard(QnaBoard qnaBoard){
         this.qnaBoard = qnaBoard;
         qnaBoard.getQnaReplies().add(this);
     }
 
-    public void addReplyToWriter(Member member){
+    public void assignMember(Member member){
         this.member = member;
         this.writer = member.getName();
         member.getQnaReplies().add(this);
     }
 
-    public void deleteReply(){
+    public void unassignMemberAndQnaBoard(){
         member.getQnaReplies().remove(this);
         qnaBoard.getQnaReplies().remove(this);
         this.member = null;
         this.qnaBoard = null;
     }
 
-    public void updateReply(String content){
-        this.content = content;
-    }
 }

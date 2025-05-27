@@ -2,33 +2,35 @@ package com.onetool.server.api.member.repository;
 
 import com.onetool.server.api.member.domain.Member;
 import com.onetool.server.api.member.enums.SocialType;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 
+import java.util.List;
 import java.util.Optional;
 
-public interface MemberRepository extends JpaRepository<Member, Long> {
-    @Query("SELECT m FROM Member m WHERE m.email = :email")
-    Optional<Member> findByEmail(@Param("email") String email);
+public interface MemberRepository {
 
-    @Query(value = "SELECT count(*) FROM Member m")
+    Member save(Member member);
+
+    void delete(Member member);
+
+    Optional<Member> findById(Long id);
+
+    List<Member> findAll();
+
+    boolean existsById(Long id);
+
+    int count();
+
+    Optional<Member> findByEmail(String email);
+
     Long countAllMember();
 
     Optional<Member> findBySocialTypeAndSocialId(SocialType socialType, String id);
 
-    @Query("SELECT m FROM Member m LEFT JOIN FETCH m.cart WHERE m.id = :id")
-    Optional<Member> findByIdWithCart(@Param("id") Long id);
+    Optional<Member> findByIdWithCart(Long id);
 
-    @Query("SELECT m FROM Member m WHERE m.name = :name AND m.phoneNum = :phoneNum")
-    Optional<Member> findByNameAndPhoneNum(@Param("name") String name, @Param("phoneNum") String phoneNum);
+    Optional<Member> findByNameAndPhoneNum(String name, String phoneNum);
 
-    @Query("SELECT CASE WHEN COUNT(m) > 0 THEN true ELSE false END FROM Member m WHERE m.email = :email")
-    boolean existsByEmail(@Param("email") String email);
+    boolean existsByEmail(String email);
 
-    @Query("SELECT m FROM Member m JOIN FETCH m.qnaBoards WHERE m.id = :memberId")
-    Optional<Member> findMemberWithQnaBoards(@Param("memberId") Long memberId);
-
-    @Query(value = "SELECT * FROM member m WHERE m.id = :id AND m.is_deleted = :isDeleted", nativeQuery = true)
-    Optional<Member> findByIdAndIsDeleted(@Param("id") Long id, @Param("isDeleted") boolean isDeleted);
+    Optional<Member> findMemberById(Long id);
 }

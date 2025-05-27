@@ -1,6 +1,6 @@
 package com.onetool.server.api.cart.controller;
 
-import com.onetool.server.api.cart.dto.CartSessionResponse;
+import com.onetool.server.api.cart.dto.response.CartSessionResponse;
 import com.onetool.server.api.cart.service.CartSessionService;
 import com.onetool.server.global.exception.ApiResponse;
 import com.onetool.server.global.exception.codes.ErrorCode;

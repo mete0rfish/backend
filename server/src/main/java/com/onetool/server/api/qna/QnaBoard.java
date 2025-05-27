@@ -2,7 +2,9 @@ package com.onetool.server.api.qna;
 
 import com.onetool.server.global.entity.BaseEntity;
 import com.onetool.server.api.member.domain.Member;
-import com.onetool.server.api.qna.dto.request.QnaBoardRequest;
+import com.onetool.server.global.exception.UnAvailableModifyeException;
+import com.onetool.server.global.new_exception.exception.ApiException;
+import com.onetool.server.global.new_exception.exception.error.QnaErrorCode;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -10,6 +12,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,29 +47,35 @@ public class QnaBoard extends BaseEntity {
     private Member member;
 
     @Builder
-    private QnaBoard(String title, String content) {
+    public QnaBoard(String title, String content) {
         this.title = title;
         this.content = content;
         this.views = 0L;
     }
 
-    public static QnaBoard createQnaBoard(QnaBoardRequest.PostQnaBoard request){
-        return new QnaBoard(request.title(),
-                request.content());
-
+    public void update(String title, String content) {
+        this.title = title;
+        this.content = content;
     }
 
-    public void updateQnaBoard(QnaBoardRequest.PostQnaBoard request){
-        this.title = request.title();
-        this.content = request.content();
+    //todo 예외처리 클래스 새로 생성할 예정 .......
+    public boolean isMyQnaBoard(Member member) {
+        return this.member.getEmail().equals(member.getEmail());
     }
 
-    public void post(Member member){
+    public void validateMemberCanRemoveOrUpdate(Member member) {
+        if(!this.member.getEmail().equals(member.getEmail())){
+            throw new ApiException(QnaErrorCode.UNAVAILABLE_TO_MODIFY,"해당 유저는 삭제 및 수정 권한이 없습니다.");
+        }
+    }
+
+    //연관관계 맺고 끊는 함수들
+    public void assignMember(Member member){
         this.member = member;
         member.getQnaBoards().add(this);
     }
 
-    public void delete(Member member){
+    public void unassignMember(Member member){
         member.getQnaBoards().remove(this);
         this.member = null;
     }

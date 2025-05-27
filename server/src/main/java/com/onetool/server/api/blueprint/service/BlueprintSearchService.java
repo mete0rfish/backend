@@ -2,120 +2,76 @@ package com.onetool.server.api.blueprint.service;
 
 import com.onetool.server.api.blueprint.Blueprint;
 import com.onetool.server.api.blueprint.InspectionStatus;
-import com.onetool.server.api.blueprint.dto.BlueprintResponse;
-import com.onetool.server.api.blueprint.dto.BlueprintSortRequest;
-import com.onetool.server.api.blueprint.dto.SearchResponse;
-import com.onetool.server.api.blueprint.enums.SortType;
 import com.onetool.server.api.blueprint.repository.BlueprintRepository;
-import com.onetool.server.api.category.FirstCategoryType;
-import com.onetool.server.global.exception.BlueprintNotApprovedException;
+import com.onetool.server.global.new_exception.exception.ApiException;
+import com.onetool.server.global.new_exception.exception.error.BlueprintErrorCode;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.*;
-import com.onetool.server.global.exception.BlueprintNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
 @Transactional(readOnly = true)
+@RequiredArgsConstructor
 public class BlueprintSearchService {
+
     private final BlueprintRepository blueprintRepository;
 
-    public BlueprintSearchService(BlueprintRepository blueprintRepository) {
-        this.blueprintRepository = blueprintRepository;
+    @Transactional(readOnly = true)
+    public Blueprint findOne(Long id) {
+        return blueprintRepository.findById(id)
+                .orElseThrow(() -> new ApiException(BlueprintErrorCode.NOT_FOUND_ERROR,"blueprintId : "+id));
     }
 
-    public BlueprintResponse findApprovedBlueprintById(Long id) {
-        Blueprint blueprint = blueprintRepository.findById(id)
-                .orElseThrow(() -> new BlueprintNotFoundException(id.toString()));
-
-        if (blueprint.getInspectionStatus() != InspectionStatus.PASSED) {
-            throw new BlueprintNotApprovedException(id.toString());
+    public List<Blueprint> fetchAllWithOrderBlueprints(Page<Blueprint> blueprintPage) {
+        if (blueprintPage == null) {
+            throw new ApiException(BlueprintErrorCode.NULL_POINT_ERROR,"Blueprint가 NULL입니다.");
         }
 
-        return BlueprintResponse.from(blueprint);
+        return blueprintRepository.findWithOrderBlueprints(blueprintPage.getContent());
     }
 
-    public List<BlueprintResponse> sortBlueprints(BlueprintSortRequest request, Pageable pageable) {
-        Long categoryId = getCategoryId(request.categoryName());
-        Sort sort = SortType.getSortBySortType(SortType.valueOf(request.sortBy().toUpperCase()), request.sortOrder());
-        Pageable sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort);
-
-        if (categoryId == null) {
-            return sortBlueprintsWithoutCategory(sortedPageable);
+    public List<Blueprint> fetchAllWithCartBlueprints(List<Blueprint> blueprints) {
+        if (blueprints == null) {
+            throw new ApiException(BlueprintErrorCode.NULL_POINT_ERROR,"blueprints가 NULL입니다.");
         }
 
-        return sortBlueprintsWithCategory(categoryId, sortedPageable);
+        return blueprintRepository.findWithCartBlueprints(blueprints);
     }
 
-    private List<BlueprintResponse> sortBlueprintsWithoutCategory(Pageable sortedPageable) {
-        Page<Blueprint> blueprintPage = blueprintRepository.findByInspectionStatus(InspectionStatus.PASSED, sortedPageable);
-        return blueprintPage.stream()
-                .map(BlueprintResponse::from)
-                .collect(Collectors.toList());
-    }
-
-    private List<BlueprintResponse> sortBlueprintsWithCategory(Long categoryId, Pageable sortedPageable) {
-        FirstCategoryType category = FirstCategoryType.findByCategoryId(categoryId);
-        Page<Blueprint> blueprintPage = blueprintRepository.findAllByFirstCategory(
-                category.getType(), InspectionStatus.PASSED, sortedPageable);
-        return blueprintPage.stream()
-                .map(BlueprintResponse::from)
-                .collect(Collectors.toList());
-    }
-
-    public Page<SearchResponse> searchNameAndCreatorWithKeyword(String keyword, Pageable pageable) {
-        Page<Blueprint> page = blueprintRepository.findAllNameAndCreatorContaining(keyword, InspectionStatus.PASSED, pageable);
-        List<Blueprint> withOrderBlueprints = blueprintRepository.findWithOrderBlueprints(page.getContent());
-        List<Blueprint> withCartBlueprints = blueprintRepository.findWithCartBlueprints(withOrderBlueprints);
-
-        List<SearchResponse> list = convertToSearchResponseList(withCartBlueprints);
-        return new PageImpl<>(list, pageable, page.getTotalElements());
-    }
-
-    public Page<SearchResponse> findAllByCategory(FirstCategoryType firstCategory, String secondCategory, Pageable pageable) {
-        if (secondCategory == null) {
-            return findAllByFirstCategory(firstCategory, pageable);
+    public Page<Blueprint> findAllByPassed(Pageable pageable) {
+        if (pageable == null) {
+            throw new ApiException(BlueprintErrorCode.NULL_POINT_ERROR,"pageable이 NULL입니다.");
         }
-        return findAllBySecondCategory(firstCategory, secondCategory, pageable);
+
+        return blueprintRepository.findByInspectionStatus(InspectionStatus.PASSED, pageable);
     }
 
-    public Page<SearchResponse> findAll(Pageable pageable) {
-        Page<Blueprint> result = blueprintRepository.findByInspectionStatus(InspectionStatus.PASSED, pageable);
-        List<SearchResponse> list = convertToSearchResponseList(result.getContent());
-        return new PageImpl<>(list, pageable, result.getTotalElements());
-    }
-
-    private Page<SearchResponse> findAllByFirstCategory(FirstCategoryType category, Pageable pageable) {
-        Page<Blueprint> result = blueprintRepository.findAllByFirstCategory(category.getType(), InspectionStatus.PASSED, pageable);
-        List<SearchResponse> list = result.getContent().stream()
-                .map(SearchResponse::from)
-                .collect(Collectors.toList());
-        return new PageImpl<>(list, pageable, result.getTotalElements());
-    }
-
-    private Page<SearchResponse> findAllBySecondCategory(FirstCategoryType firstCategory, String secondCategory, Pageable pageable) {
-        Page<Blueprint> result = blueprintRepository.findAllBySecondCategory(
-                firstCategory.getType(), secondCategory, InspectionStatus.PASSED, pageable);
-        List<SearchResponse> list = result.getContent().stream()
-                .map(SearchResponse::from)
-                .collect(Collectors.toList());
-        return new PageImpl<>(list, pageable, result.getTotalElements());
-    }
-
-    private List<SearchResponse> convertToSearchResponseList(List<Blueprint> blueprints) {
-        return blueprints.stream()
-                .map(SearchResponse::from)
-                .collect(Collectors.toList());
-    }
-
-    private Long getCategoryId(String categoryName) {
-        if (categoryName == null) {
-            return null;
+    public Page<Blueprint> findAllByPassed(Long firstCategoryId, Pageable pageable) {
+        if (firstCategoryId == null || pageable == null) {
+            throw new ApiException(BlueprintErrorCode.NULL_POINT_ERROR,"요청한 객체가 NULL입니다.");
         }
-        return FirstCategoryType.findByType(categoryName).getCategoryId();
+
+        return blueprintRepository.findAllByFirstCategory(firstCategoryId, InspectionStatus.PASSED, pageable);
+    }
+
+    public Page<Blueprint> findAllByPassed(Long firstCategoryId, String secondCategory, Pageable pageable) {
+        if (firstCategoryId == null || secondCategory == null || pageable == null) {
+            throw new ApiException(BlueprintErrorCode.NULL_POINT_ERROR,"요청한 객체가 NULL입니다.");
+        }
+
+        return blueprintRepository.findAllBySecondCategory(firstCategoryId, secondCategory, InspectionStatus.PASSED, pageable);
+    }
+
+    public Page<Blueprint> findAllByPassed(String keyword, Pageable pageable) {
+        if (keyword == null || pageable == null) {
+            throw new ApiException(BlueprintErrorCode.NULL_POINT_ERROR,"요청한 객체가 NULL입니다.");
+        }
+
+        return blueprintRepository.findAllNameAndCreatorContaining(keyword, InspectionStatus.PASSED, pageable);
     }
 }

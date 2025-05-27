@@ -1,18 +1,18 @@
 package com.onetool.server.api.order.controller;
 
-import com.onetool.server.api.order.Orders;
+import com.onetool.server.api.order.business.OrderBusiness;
 import com.onetool.server.api.order.dto.request.OrderRequest;
+import com.onetool.server.api.order.dto.response.MyPageOrderResponse;
 import com.onetool.server.global.auth.login.PrincipalDetails;
 import com.onetool.server.global.exception.ApiResponse;
-import com.onetool.server.api.order.service.OrderServiceImpl;
+import com.onetool.server.api.order.service.OrderService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
-import static com.onetool.server.api.order.dto.response.OrderResponse.*;
 
 
 @RestController
@@ -20,27 +20,30 @@ import static com.onetool.server.api.order.dto.response.OrderResponse.*;
 @RequestMapping("/orders")
 public class OrderController {
 
-    private final OrderServiceImpl orderService;
+    private final OrderBusiness orderBusiness;
 
     @PostMapping
-    public ApiResponse<Long> createOrders(
+    public ApiResponse<Long> ordersPost(
             @AuthenticationPrincipal PrincipalDetails principal,
             @Valid @RequestBody OrderRequest request
     ) {
-        Long orderId = orderService.makeOrder(principal.getContext().getEmail(), request);
+        Long orderId = orderBusiness.createOrder(principal, request);
         return ApiResponse.onSuccess(orderId);
     }
 
     @GetMapping
-    public ApiResponse<List<MyPageOrderResponseDto>> getOrders(@AuthenticationPrincipal PrincipalDetails principal) {
-        return ApiResponse.onSuccess(orderService.getMyPageOrder(principal.getContext().getEmail()));
+    public ApiResponse<List<MyPageOrderResponse>> ordersGet(
+            @AuthenticationPrincipal PrincipalDetails principal,
+            Pageable pageable) {
+        List<MyPageOrderResponse> myPageOrderResponseList = orderBusiness.getMyPageOrderResponseList(principal, pageable);
+        return ApiResponse.onSuccess(myPageOrderResponseList);
     }
 
     @DeleteMapping
-    public ApiResponse<Long> deleteOrders(
+    public ApiResponse<Long> ordersDelete(
             @RequestBody Long orderId
     ) {
-        orderService.deleteOrder(orderId);
+        orderBusiness.removeOrders(orderId);
         return ApiResponse.onSuccess(orderId);
     }
 }

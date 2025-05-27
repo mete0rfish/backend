@@ -1,8 +1,9 @@
 package com.onetool.server.api.member.controller;
 
-import com.onetool.server.api.member.dto.MemberFindEmailRequest;
-import com.onetool.server.api.member.dto.MemberFindPwdRequest;
-import com.onetool.server.api.member.service.MemberService;
+import com.onetool.server.api.member.business.MemberBusiness;
+import com.onetool.server.api.member.business.MemberEmailBusiness;
+import com.onetool.server.api.member.dto.request.MemberFindEmailRequest;
+import com.onetool.server.api.member.dto.request.MemberFindPwdRequest;
 import com.onetool.server.global.exception.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -15,35 +16,34 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/users/email")
 public class MemberEmailController {
 
-    private final MemberService memberService;
+    private final MemberBusiness memberBusiness;
+    private final MemberEmailBusiness memberEmailBusiness;
 
     @PostMapping("/find-email")
     public ApiResponse<?> findEmail(@RequestBody MemberFindEmailRequest request) {
-        String email = memberService.findEmail(request);
+        String email = memberBusiness.findEmail(request.name(), request.phone_num());
         return ApiResponse.onSuccess(email);
     }
 
     @PostMapping("/find-password")
     public ApiResponse<?> findPwdCheck(@RequestBody MemberFindPwdRequest request) {
-        boolean successFlag = memberService.findLostPwd(request);
-        if (successFlag) {
-            return ApiResponse.onSuccess("이메일을 발송했습니다.");
-        } else {
-            return ApiResponse.onFailure("403", "이메일 발송 과정에서 오류가 발생했습니다.", null);
-        }
+        memberEmailBusiness.findLostPwd(request.getEmail());
+        return ApiResponse.onSuccess("이메일을 발송했습니다.");
     }
 
     @PostMapping("/verification-requests")
     public ApiResponse<?> sendMessage(@RequestParam("email") String email) {
         log.info("request email: {}", email);
-        memberService.sendCodeToEmail(email);
+        memberEmailBusiness.sendCodeToEmail(email);
         return ApiResponse.onSuccess("이메일이 발송되었습니다.");
     }
 
     @GetMapping("/verifications")
-    public ApiResponse<?> verificationEmail(@RequestParam("email") @Valid String email,
-                                            @RequestParam("code") String authCode) {
-        boolean response = memberService.verifiedCode(email, authCode);
+    public ApiResponse<?> verificationEmail(
+            @RequestParam("email") @Valid String email,
+            @RequestParam("code") String authCode
+    ) {
+        boolean response = memberEmailBusiness.verifiedCode(email, authCode);
         return (response) ? ApiResponse.onSuccess("이메일이 인증되었습니다.")
                 : ApiResponse.onFailure("404", "코드가 일치하지 않습니다.", null);
     }

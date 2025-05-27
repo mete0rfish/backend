@@ -1,62 +1,68 @@
 package com.onetool.server.api.blueprint.service;
 
 import com.onetool.server.api.blueprint.Blueprint;
-import com.onetool.server.api.blueprint.dto.BlueprintRequest;
-import com.onetool.server.api.blueprint.dto.BlueprintResponse;
+import com.onetool.server.api.blueprint.dto.success.BlueprintUpdateSuccess;
+import com.onetool.server.api.blueprint.dto.request.BlueprintUpdateRequest;
 import com.onetool.server.api.blueprint.repository.BlueprintRepository;
-import com.onetool.server.global.exception.BlueprintNotFoundException;
+import com.onetool.server.global.new_exception.exception.ApiException;
+import com.onetool.server.global.new_exception.exception.error.BlueprintErrorCode;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import jakarta.transaction.Transactional;
 
+import java.util.List;
+import java.util.Set;
 
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class BlueprintService {
+
     private final BlueprintRepository blueprintRepository;
 
-    public BlueprintService(BlueprintRepository blueprintRepository) {
-        this.blueprintRepository = blueprintRepository;
+    public List<Blueprint> findAllBlueprintByIds(Set<Long> blueprintIds) {
+        List<Blueprint> blueprintList = blueprintRepository.findAllById(blueprintIds);
+        if (blueprintList.size() != blueprintIds.size()) {
+            throw new ApiException(BlueprintErrorCode.NO_BLUEPRINT_FOUND, "특정 id가 blueprint에 없습니다.");
+        }
+        return blueprintList;
     }
 
-    public void createBlueprint(final BlueprintRequest blueprintRequest) {
-        Blueprint blueprint = convertToBlueprint(blueprintRequest);
-        blueprintRepository.save(blueprint);
+    public List<Blueprint> findCacheAll(){
+        return blueprintRepository.findAll();
     }
 
-    public void updateBlueprint(BlueprintResponse blueprintResponse) {
-        Blueprint existingBlueprint = blueprintRepository.findById(blueprintResponse.id())
-                .orElseThrow(() -> new BlueprintNotFoundException(blueprintResponse.id().toString()));
-
-        Blueprint updatedBlueprint = updateExistingBlueprint(existingBlueprint, blueprintResponse);
-        blueprintRepository.save(updatedBlueprint);
+    public List<Blueprint> findAll(){
+        return blueprintRepository.findAll();
     }
 
-    public void deleteBlueprint(Long id) {
-        blueprintRepository.findById(id)
-                .orElseThrow(() -> new BlueprintNotFoundException(id.toString()));
-
-        blueprintRepository.deleteById(id);
+    public Blueprint findBlueprintById(Long blueprintId) {
+        return blueprintRepository.findById(blueprintId)
+                .orElseThrow(() -> new ApiException(BlueprintErrorCode.NOT_FOUND_ERROR,"blueprintId : " + blueprintId));
     }
 
-    private Blueprint convertToBlueprint(final BlueprintRequest blueprintRequest) {
-        return Blueprint.fromRequest(blueprintRequest);
+    public Blueprint saveBlueprint(Blueprint blueprint) {
+        validateBlueprintIsNull(blueprint);
+        return blueprintRepository.save(blueprint);
     }
 
-    private Blueprint updateExistingBlueprint(Blueprint existingBlueprint, BlueprintResponse blueprintResponse) {
-        return Blueprint.builder()
-                .id(existingBlueprint.getId())
-                .blueprintName(blueprintResponse.blueprintName())
-                .categoryId(blueprintResponse.categoryId())
-                .standardPrice(blueprintResponse.standardPrice())
-                .blueprintImg(blueprintResponse.blueprintImg())
-                .blueprintDetails(blueprintResponse.blueprintDetails())
-                .extension(blueprintResponse.extension())
-                .program(blueprintResponse.program())
-                .hits(blueprintResponse.hits())
-                .salePrice(blueprintResponse.salePrice())
-                .saleExpiredDate(blueprintResponse.saleExpiredDate())
-                .creatorName(blueprintResponse.creatorName())
-                .downloadLink(blueprintResponse.downloadLink())
+    public BlueprintUpdateSuccess updateBlueprint(Blueprint blueprint, BlueprintUpdateRequest request) {
+        validateBlueprintIsNull(blueprint);
+        blueprint.updateBlueprint(request);
+        return BlueprintUpdateSuccess.builder()
+                .isSuccess(true)
+                .blueprintId(blueprint.getId())
                 .build();
+    }
+
+    public void deleteBlueprint(Blueprint blueprint) {
+        validateBlueprintIsNull(blueprint);
+        blueprintRepository.delete(blueprint);
+    }
+
+    private void validateBlueprintIsNull(Blueprint blueprint) {
+        if (blueprint == null) {
+            throw new ApiException(BlueprintErrorCode.NULL_POINT_ERROR,"blueprint가 NULL입니다.");
+        }
     }
 }

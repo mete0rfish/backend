@@ -2,7 +2,7 @@ package com.onetool.server.api.counting;
 
 import com.onetool.server.api.blueprint.repository.BlueprintRepository;
 import com.onetool.server.api.counting.dto.ServiceCountingResponse;
-import com.onetool.server.api.member.repository.MemberRepository;
+import com.onetool.server.api.member.repository.MemberJpaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -10,11 +10,11 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class ServiceCountingService {
 
-    private final MemberRepository memberRepository;
+    private final MemberJpaRepository memberJpaRepository;
     private final BlueprintRepository blueprintRepository;
 
     public ServiceCountingResponse getServiceStatus() {
-        Long memberCount = memberRepository.countAllMember();
+        Long memberCount = memberJpaRepository.countAllMember();
         Long blueprintCount = blueprintRepository.countAllBlueprint();
 
         return ServiceCountingResponse.builder()

@@ -1,11 +1,7 @@
 package com.onetool.server.api.order.dto.response;
 
-import com.onetool.server.api.blueprint.Blueprint;
-import com.onetool.server.api.blueprint.dto.BlueprintResponse;
-import com.onetool.server.api.member.domain.Member;
-import com.onetool.server.api.member.dto.MemberSimpleInfoDto;
+import com.onetool.server.api.blueprint.dto.response.BlueprintResponse;
 import com.onetool.server.api.order.Orders;
-import com.onetool.server.api.order.dto.request.OrderRequest;
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 
@@ -22,11 +18,11 @@ public class OrderResponse {
             Long totalPrice,
             String status,
             List<String> downloadUrl
-    ){
-        public static List<MyPageOrderResponseDto> from(List<Orders> ordersList){
+    ) {
+        public static List<MyPageOrderResponseDto> from(List<Orders> ordersList) {
             List<MyPageOrderResponseDto> dtos = new ArrayList<>();
-            if(isOrderEmpty(ordersList)) {
-               return dtos;
+            if (isOrderEmpty(ordersList)) {
+                return dtos;
             }
 
             ordersList.forEach(orders -> {
@@ -50,7 +46,7 @@ public class OrderResponse {
             int blueprintCount = orders.getOrderItems().size();
             sb.append(firstBlueprintName);
 
-            if(blueprintCount > 1) {
+            if (blueprintCount > 1) {
                 sb.append("외 ");
                 sb.append(blueprintCount - 1);
                 sb.append("개");
@@ -69,8 +65,8 @@ public class OrderResponse {
     public record OrderCompleteResponseDto(
             Long totalPrice,
             List<BlueprintResponse> blueprints
-    ){
-        public static OrderCompleteResponseDto response(Orders orders){
+    ) {
+        public static OrderCompleteResponseDto response(Orders orders) {
             return OrderCompleteResponseDto.builder()
                     .totalPrice(orders.getTotalPrice())
                     .blueprints(orders.getOrderItems()
