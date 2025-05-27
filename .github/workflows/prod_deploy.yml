@@ -32,14 +32,6 @@ jobs:
           driver: docker-container
           buildkitd-flags: --debug
 
-      - name: Gradle Dependency Cache
-        uses: actions/cache/restore@v4
-        with:
-          path: ~/.gradle/caches
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-
-
       - name: Build Spring Project
         run: |
           cd ./server/
