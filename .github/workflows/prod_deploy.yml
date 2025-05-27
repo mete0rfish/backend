@@ -6,12 +6,8 @@ on:
       - main
 
 jobs:
-  deploy:
-    runs-on: self-hosted
-
-    defaults:
-      run:
-        shell: bash
+  build-deploy:
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout Codes
