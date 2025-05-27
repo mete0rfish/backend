@@ -13,7 +13,7 @@ jobs:
       - name: Checkout Codes
         uses: actions/checkout@v4
         with:
-          submodules: recursive  # 서브모듈 포함 체크아웃
+          submodules: recursive
           token: ${{ secrets.PAT_TOKEN }}
 
       - name: Setup Java17
@@ -23,7 +23,7 @@ jobs:
           distribution: 'temurin'
 
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v3
+        uses: gradle/actions/setup-gradle@v4
 
       - name: Setup and Config Docker Buildx
         uses: docker/setup-buildx-action@v2
@@ -52,5 +52,5 @@ jobs:
           script: |
             docker stop $(docker ps -q) && docker rm $(docker ps -qa)
             docker pull ${{ secrets.DOCKER_REPO }}/onetool-prod-server:v1
-            docker-compose -f compose.yml up -d
+            docker-compose -f docker-compose.yml up -d
             docker image prune --force
