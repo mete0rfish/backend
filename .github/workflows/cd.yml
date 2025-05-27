@@ -52,5 +52,6 @@ jobs:
           script: |
             docker stop $(docker ps -q) && docker rm $(docker ps -qa)
             docker pull ${{ secrets.DOCKER_REPO }}/onetool-prod-server:v1
+            cd ~
             sudo docker compose up -d --build
             docker image prune --force
