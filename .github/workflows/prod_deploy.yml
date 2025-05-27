@@ -58,9 +58,9 @@ jobs:
       - name: Execute Container With Docker Image
         uses: appleboy/ssh-action@master
         with:
-          host: ${{ secrets.EC2_PROD_HOST }}
-          username: ${{ secrets.EC2_SSH_USER }}
-          key: ${{ secrets.PROD_PRIVATE_KEY }}
+          host: ${{ secrets.GCP_PROD_HOST }}
+          username: ${{ secrets.GCP_SSH_USER }}
+          key: ${{ secrets.GCP_PRIVATE_KEY }}
           script: |
             docker stop $(docker ps -q) && docker rm $(docker ps -qa)
             docker pull ${{ secrets.DOCKER_REPO }}/onetool-prod-server:v1
