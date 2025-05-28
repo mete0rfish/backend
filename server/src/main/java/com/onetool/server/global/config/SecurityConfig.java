@@ -101,7 +101,7 @@ public class SecurityConfig {
     public UrlBasedCorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.addAllowedOrigin("^https?:\\/\\/linklinklink~~.com$");
-        configuration.addAllowedOrigin("http://www.onetool.co.kr");
+        configuration.addAllowedOrigin("https://frontend-beta-two-45.vercel.app");
         configuration.addAllowedOrigin("http://localhost:8080");
         configuration.addAllowedOrigin("http://onetool.co.kr");
         configuration.addAllowedOrigin("http://localhost:3000");
