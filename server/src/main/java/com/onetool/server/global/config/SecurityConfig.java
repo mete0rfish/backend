@@ -104,6 +104,8 @@ public class SecurityConfig {
         configuration.addAllowedOrigin("http://www.onetool.co.kr");
         configuration.addAllowedOrigin("http://localhost:8080");
         configuration.addAllowedOrigin("http://onetool.co.kr");
+        configuration.addAllowedOrigin("http://api.onetool.co.kr");
+        configuration.addAllowedOrigin("https://api.onetool.co.kr");
         configuration.addAllowedOrigin("http://localhost:3000");
         configuration.addAllowedOrigin("https://accounts.google.com");
         configuration.addAllowedOrigin("https://api.tosspayments.com");
