@@ -44,7 +44,6 @@ public class SecurityConfig {
 
     private static final String[] AUTH_WHITELIST = {
             "/users/**", "/login/**", "/blueprint/**", "/actuator/health", "/silent-refresh", "/payments/**"
-            ,"/swagger-ui/**","/v3/api-docs/**","/swagger-ui.html"
     };
 
     @Bean
@@ -101,7 +100,7 @@ public class SecurityConfig {
     public UrlBasedCorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.addAllowedOrigin("^https?:\\/\\/linklinklink~~.com$");
-        configuration.addAllowedOrigin("https://frontend-beta-two-45.vercel.app");
+        configuration.addAllowedOrigin("http://www.onetool.co.kr");
         configuration.addAllowedOrigin("http://localhost:8080");
         configuration.addAllowedOrigin("http://onetool.co.kr");
         configuration.addAllowedOrigin("http://localhost:3000");
