@@ -35,10 +35,6 @@ jobs:
           driver: docker-container
           buildkitd-flags: --debug
 
-      - name: Set image tag from commit SHA
-        run: |
-          echo "IMAGE_TAG=${GITHUB_SHA::7}" >> $GITHUB_ENV
-
       - name: Build Spring Project
         run: |
           cd ./server/
@@ -48,7 +44,7 @@ jobs:
       - name: Create Docker Image and Push Image
         run: |
           docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
-          docker build --no-cache --platform linux/amd64 -t meteorfish/onetool-prod-server:${{ env.IMAGE_TAG }} --push .
+          docker build --no-cache --platform linux/amd64 -t meteorfish/onetool-prod-server:${{ github.sha } --push .
 
       - name: Execute Container With Docker Image
         uses: appleboy/ssh-action@master
@@ -59,7 +55,7 @@ jobs:
           script: |
             IMAGE_TAG=${{ github.sha::7 }}
             docker stop $(docker ps -q) && docker rm $(docker ps -qa)
-            docker pull ${{ secrets.DOCKER_REPO }}/onetool-prod-server:$IMAGE_TAG
+            docker pull ${{ secrets.DOCKER_REPO }}/onetool-prod-server:${{ github.sha }
             ls
             docker-compose -f ~/docker-compose.yml up -d
             docker image prune --force
