@@ -1,9 +1,9 @@
-# 나만의 건축사수, 3D 모델 플랫폼 원툴
+# 🏗️ 나만의 건축사수, 3D 모델 플랫폼 원툴
 
 ![image](https://github.com/user-attachments/assets/2c54c286-7417-4123-add6-fffb97cbd1f0)
 
 
-## 소개
+## 📌 소개
 
 저희 팀 원툴은 3D 도면 모델을 주로 사용하는 건축업계 종사자들을 위한 도면 서비스를 제공합니다.
 
@@ -20,7 +20,7 @@
 
 <!-- 기대 효과, 동기 -->
 
-## 개요
+## 🔖 개요
 
 - 프로젝트 이름: 원툴 Onetool
 - 개발 기간: 2024.03 ~ 2024.12
@@ -36,7 +36,25 @@
 
 <!-- ## (실제 기능 움짤) -->
 
-## 활용 기술 / 기술적 의사 결정
+## 🛠️ 기술
+
+### 사용된 기술
+<img src="https://img.shields.io/badge/java-007396?style=for-the-badge&logo=OpenJDK&logoColor=white">
+<img src="https://img.shields.io/badge/springboot-6DB33F?style=for-the-badge&logo=springboot&logoColor=white">
+<img src="https://img.shields.io/badge/Spring Security-6DB33F?style=for-the-badge&logo=Spring Security&logoColor=white">
+<img src="https://img.shields.io/badge/JUnit5-25A162?style=for-the-badge&logo=JUnit5&logoColor=white">
+<img src="https://img.shields.io/badge/Hibernate-59666C?style=for-the-badge&logo=Hibernate&logoColor=white">
+<img src="https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=MySQL&logoColor=white">
+<img src="https://img.shields.io/badge/Redis-DC382D?style=for-the-badge&logo=Redis&logoColor=white"> 
+<img src="https://img.shields.io/badge/nginx-%23009639.svg?style=for-the-badge&logo=nginx&logoColor=white">
+<img src="https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white">
+<img src="https://img.shields.io/badge/GitHub Actions-2088FF?style=for-the-badge&logo=GitHub Actions&logoColor=white">
+<img src="https://img.shields.io/badge/Amazon%20EC2-FF9900?style=for-the-badge&logo=Amazon%20EC2&logoColor=white">
+<img src="https://img.shields.io/badge/Prometheus-E6522C?style=for-the-badge&logo=Prometheus&logoColor=white">
+<img src="https://img.shields.io/badge/grafana-%23F46800.svg?style=for-the-badge&logo=grafana&logoColor=white">
+
+
+### 기술적 의사 결정
 
 | **요구 사항** | **선택지** | **기술 선택 이유** |
 | ----- | ------ | ----------- |
@@ -46,7 +64,7 @@
 
 <!-- DB, 부하테스트, 모니터링, CICD, 검색기능개선(동적쿼리, 인덱스 등등) -->
 
-## 아키텍처
+## 🖼️ 아키텍처
 
 ### 인프라 아키텍처
 
@@ -57,7 +75,7 @@
 ![image](https://github.com/user-attachments/assets/1ffa3146-0f79-43b5-9278-6b8e69b80cec)
 
 
-## ERD, 유저 시나리오
+## 🗂️ ERD, 유저 시나리오
 
 ### ERD
 
@@ -67,22 +85,27 @@
 
 [🔗Notion: 유저 시나리오](https://garrulous-bearskin-817.notion.site/66ed82a478514cd5ae13836b30e2909e?pvs=4)
 
-## 트러블 슈팅 및 개발 기록
+## ☑️ 트러블 슈팅 및 개발 기록
 <!-- 도면 구매, 도면 검색, 도면 업로드 -->
+**[🛠️ 트러블 슈팅 목록](https://acoustic-rest-b1b.notion.site/5942ba02109f4cb29281de29b12d9775?v=25e8e1693b8a4bef85f4d83d91342768&source=copy_link)**
 
+## 🔥 성능 개선
+1. Fake 기법을 통해 테스트 속도 개선 ([🔗PR#209](https://github.com/likelion-onetool/backend/pull/209))
+    - 빈 컨텍스트 사용 대신 Fake를 이용하여 컨텍스트 멤버 생성 기능의 테스트 속도를 990ms에서 460ms로 `46%` 향상
+    - 테스트의 대부분을 차지하는 단위 테스트의 수행 속도를 평균 `36%` 개선
+2. 커버링 인덱스로 검색 쿼리 속도 향상([🔗PR#182](https://github.com/likelion-onetool/backend/pull/182))
+   - 커버링 인덱스를 이용해 검색 기능의 수행 시간이 637ms에서 473ms로 약 `34%` 향상
+   - Count 쿼리의 인덱스 사용 시, 미비한 차이로 인한 불필요한 인덱스 사용 방지
+3. N+1 문제 해결로 실행 쿼리 감소 ([🔗PR#115](https://github.com/likelion-onetool/backend/pull/115))
+   - 다대일 관계의 적은 중복 문제 해결을 위해 inner join을 사용하여 키워드 검색 쿼리를 6개 → 4개 감소
 
-## 성능 개선
+## 👥 컨트리뷰터
 
-
-
-## 팀원
-
-|역할|github|이름|담당|
-|---|---|---|---|
-| 팀장 |  | 정재민 ||
-| 팀원 | [<img src="https://avatars.githubusercontent.com/u/105264785?v=4" height=100 width=100>](https://github.com/tnqkr3494) | 강인권 | |
-| 팀원 | [<img src="https://avatars.githubusercontent.com/u/123933574?v=4" height=100 width=100>](https://github.com/LEEDONGH00N) | 이동훈 ||
-| 팀원 | [<img src="https://avatars.githubusercontent.com/u/63222221?v=4" height=100 width=100> ](https://github.com/mete0rfish)| 윤성원 | API 개발 <br/> DB 설계 및 구축 <br/> 인프라 및 CI/CD 설계 및 구축 <br/> 코드 리펙터링 |
-| 팀원 | [<img src="https://avatars.githubusercontent.com/u/92675692?v=4" height=100 width=100> ](https://github.com/day024) | 정다영 ||
-| 팀원 | [<img src="https://avatars.githubusercontent.com/u/164465431?v=4" height=100 width=100> ](https://github.com/PlusUltraCode) | 이동호 | 코드 리펙터링 |
+| 역할    |github|이름|
+|-------|---|---|
+| Front | [<img src="https://avatars.githubusercontent.com/u/105264785?v=4" height=100 width=100>](https://github.com/tnqkr3494) | 강인권 |
+| Back  | [<img src="https://avatars.githubusercontent.com/u/123933574?v=4" height=100 width=100>](https://github.com/LEEDONGH00N) | 이동훈 |
+| Back  | [<img src="https://avatars.githubusercontent.com/u/63222221?v=4" height=100 width=100> ](https://github.com/mete0rfish)| 윤성원 |
+| Back  | [<img src="https://avatars.githubusercontent.com/u/92675692?v=4" height=100 width=100> ](https://github.com/day024) | 정다영 |
+| Back  | [<img src="https://avatars.githubusercontent.com/u/164465431?v=4" height=100 width=100> ](https://github.com/PlusUltraCode) | 이동호 |
 
