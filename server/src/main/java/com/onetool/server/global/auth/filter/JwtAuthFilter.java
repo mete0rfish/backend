@@ -37,8 +37,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
         String uri = request.getRequestURI();
 
-        log.info("[JwtAuthFilter] 요청 URI: {}", uri);
-
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             String token = authorizationHeader.substring(7);
             log.info("토큰: " + token);
