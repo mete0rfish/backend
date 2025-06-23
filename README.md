@@ -20,6 +20,8 @@
 
 <!-- 기대 효과, 동기 -->
 
+<br/>
+
 ## 🔖 개요
 
 - 프로젝트 이름: 원툴 Onetool
@@ -36,22 +38,16 @@
 
 <!-- ## (실제 기능 움짤) -->
 
+<br/>
+
 ## 🛠️ 기술
 
 ### 사용된 기술
-<img src="https://img.shields.io/badge/java-007396?style=for-the-badge&logo=OpenJDK&logoColor=white">
-<img src="https://img.shields.io/badge/springboot-6DB33F?style=for-the-badge&logo=springboot&logoColor=white">
-<img src="https://img.shields.io/badge/Spring Security-6DB33F?style=for-the-badge&logo=Spring Security&logoColor=white">
-<img src="https://img.shields.io/badge/JUnit5-25A162?style=for-the-badge&logo=JUnit5&logoColor=white">
-<img src="https://img.shields.io/badge/Hibernate-59666C?style=for-the-badge&logo=Hibernate&logoColor=white">
-<img src="https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=MySQL&logoColor=white">
-<img src="https://img.shields.io/badge/Redis-DC382D?style=for-the-badge&logo=Redis&logoColor=white"> 
-<img src="https://img.shields.io/badge/nginx-%23009639.svg?style=for-the-badge&logo=nginx&logoColor=white">
-<img src="https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white">
-<img src="https://img.shields.io/badge/GitHub Actions-2088FF?style=for-the-badge&logo=GitHub Actions&logoColor=white">
-<img src="https://img.shields.io/badge/Amazon%20EC2-FF9900?style=for-the-badge&logo=Amazon%20EC2&logoColor=white">
-<img src="https://img.shields.io/badge/Prometheus-E6522C?style=for-the-badge&logo=Prometheus&logoColor=white">
-<img src="https://img.shields.io/badge/grafana-%23F46800.svg?style=for-the-badge&logo=grafana&logoColor=white">
+<img src="https://img.shields.io/badge/java-007396?style=for-the-badge&logo=OpenJDK&logoColor=white"> <img src="https://img.shields.io/badge/spring-6DB33F?style=for-the-badge&logo=springboot&logoColor=white"> <img src="https://img.shields.io/badge/Spring%20Security-6DB33F?style=for-the-badge&logo=springsecurity&logoColor=white"> <img src="https://img.shields.io/badge/JUnit5-25A162?style=for-the-badge&logo=JUnit5&logoColor=white"> 
+
+<img src="https://img.shields.io/badge/Hibernate-59666C?style=for-the-badge&logo=Hibernate&logoColor=white"> <img src="https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=MySQL&logoColor=white"> <img src="https://img.shields.io/badge/Redis-DC382D?style=for-the-badge&logo=Redis&logoColor=white">  <img src="https://img.shields.io/badge/nginx-%23009639.svg?style=for-the-badge&logo=nginx&logoColor=white">
+
+<img src="https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white"> <img src="https://img.shields.io/badge/GitHub%20Actions-2088FF?style=for-the-badge&logo=githubactions&logoColor=fff&logoColor=white"> <img src="https://img.shields.io/badge/Amazon%20EC2-FF9900?style=for-the-badge&logo=Amazon%20EC2&logoColor=white"> <img src="https://img.shields.io/badge/Prometheus-E6522C?style=for-the-badge&logo=Prometheus&logoColor=white"> <img src="https://img.shields.io/badge/grafana-%23F46800.svg?style=for-the-badge&logo=grafana&logoColor=white">
 
 
 ### 기술적 의사 결정
@@ -62,7 +58,11 @@
 | **🖥️모니터링** | 1. Jmeter <br/> 2. Prometheus <br/> 3. AWS CloudWatch | - 설치 용이성과 비용적 장점을 가진 Prometheus 사용 <br/> - Expert 설치를 통한 풀링 방식으로 메트릭 수집이 용이 |
 | **🛠️CI/CD** | 1. Github Actions <br/> 2. Jenkins | - 별도의 서버 구축이 필요없는 Github Actions 사용 <br/> - YAML 기반 간편하고 쉬운 스크립트 작성 |
 
+**[🛠️ 기술적 의사 결정 문서](https://acoustic-rest-b1b.notion.site/20964b4a4ab480abb4c7c2b6b1f2d75c?source=copy_link)**
+
 <!-- DB, 부하테스트, 모니터링, CICD, 검색기능개선(동적쿼리, 인덱스 등등) -->
+
+<br/>
 
 ## 🖼️ 아키텍처
 
@@ -74,6 +74,7 @@
 
 ![image](https://github.com/user-attachments/assets/1ffa3146-0f79-43b5-9278-6b8e69b80cec)
 
+<br/>
 
 ## 🗂️ ERD, 유저 시나리오
 
@@ -85,9 +86,13 @@
 
 [🔗Notion: 유저 시나리오](https://garrulous-bearskin-817.notion.site/66ed82a478514cd5ae13836b30e2909e?pvs=4)
 
+<br/>
+
 ## ☑️ 트러블 슈팅 및 개발 기록
 <!-- 도면 구매, 도면 검색, 도면 업로드 -->
 **[🛠️ 트러블 슈팅 목록](https://acoustic-rest-b1b.notion.site/5942ba02109f4cb29281de29b12d9775?v=25e8e1693b8a4bef85f4d83d91342768&source=copy_link)**
+
+<br/>
 
 ## 🔥 성능 개선
 1. Fake 기법을 통해 테스트 속도 개선 ([🔗PR#209](https://github.com/likelion-onetool/backend/pull/209))
@@ -98,6 +103,8 @@
    - Count 쿼리의 인덱스 사용 시, 미비한 차이로 인한 불필요한 인덱스 사용 방지
 3. N+1 문제 해결로 실행 쿼리 감소 ([🔗PR#115](https://github.com/likelion-onetool/backend/pull/115))
    - 다대일 관계의 적은 중복 문제 해결을 위해 inner join을 사용하여 키워드 검색 쿼리를 6개 → 4개 감소
+
+<br/>
 
 ## 👥 컨트리뷰터
 
