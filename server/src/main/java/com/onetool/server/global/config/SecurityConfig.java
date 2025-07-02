@@ -10,9 +10,6 @@ import com.onetool.server.global.auth.login.handler.OAuth2LoginSuccessHandler;
 import com.onetool.server.global.auth.login.service.CustomOAuth2UserService;
 import com.onetool.server.global.auth.login.service.CustomUserDetailsService;
 import lombok.AllArgsConstructor;
-import org.apache.catalina.filters.CorsFilter;
-import org.springframework.boot.web.servlet.ServletContextInitializer;
-import org.springframework.boot.web.servlet.server.CookieSameSiteSupplier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -44,7 +41,7 @@ public class SecurityConfig {
 
     private static final String[] AUTH_WHITELIST = {
             "/users/**", "/login/**", "/blueprint/**", "/actuator/**", "/silent-refresh", "/payments/**"
-            ,"/swagger-ui/**","/v3/api-docs/**","/swagger-ui.html"
+            ,"/swagger-ui/**","/v3/api-docs/**","/swagger-ui.html", "/chat/**", "/chatting/**"
     };
 
     @Bean
