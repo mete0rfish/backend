@@ -1,12 +1,16 @@
 package com.onetool.server.api.chat.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.onetool.server.api.chat.domain.ChatMessage;
 import com.onetool.server.api.chat.domain.ChatRoom;
+import com.onetool.server.api.chat.repository.ChatRepository;
 import groovy.util.logging.Slf4j;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Slf4j
@@ -15,6 +19,7 @@ import java.util.*;
 public class ChatService {
 
     private Map<String, ChatRoom> chatRooms;
+    private final ChatRepository chatRepository;
 
     @PostConstruct
     private void init() {
@@ -37,5 +42,17 @@ public class ChatService {
                 .build();
         chatRooms.put(randomId, chatRoom);
         return chatRoom;
+    }
+
+    @Transactional
+    public Long saveTextMessage(ChatMessage chatMessage) {
+        ChatMessage savedChatMessage = chatRepository.save(chatMessage);
+        return savedChatMessage.getId();
+    }
+
+    @Transactional
+    public void deleteExpiredChatMessages() {
+        LocalDateTime cutoff = LocalDateTime.now().minusDays(3);
+        chatRepository.deleteExpiredChatMessagesBefore(cutoff);
     }
 }

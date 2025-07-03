@@ -41,11 +41,15 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
         } else {
             sendToEachSocket(sessions,message);
         }
+
+        Long chatId = chatService.saveTextMessage(chatMessage);
+        log.info("저장 완료 chat Id : {}",chatId);
     }
 
     private  void sendToEachSocket(Set<WebSocketSession> sessions, TextMessage message){
         sessions.parallelStream().forEach(roomSession -> {
             try {
+
                 roomSession.sendMessage(message);
             } catch (IOException e) {
                 throw new RuntimeException(e);
