@@ -46,6 +46,11 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
         log.info("저장 완료 chat Id : {}",chatId);
     }
 
+    @Override
+    public void afterConnectionEstablished(WebSocketSession session) throws Exception {
+        session.sendMessage(new TextMessage("RoomId: " + ChatRoom.roomId));
+    }
+
     private  void sendToEachSocket(Set<WebSocketSession> sessions, TextMessage message){
         sessions.parallelStream().forEach(roomSession -> {
             try {

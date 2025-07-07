@@ -5,6 +5,7 @@ import com.onetool.server.api.blueprint.InspectionStatus;
 import com.onetool.server.api.blueprint.repository.BlueprintRepository;
 import com.onetool.server.api.category.FirstCategory;
 import com.onetool.server.api.category.FirstCategoryRepository;
+import com.onetool.server.api.chat.service.ChatService;
 import com.onetool.server.api.member.domain.Member;
 import com.onetool.server.api.member.enums.UserRole;
 import com.onetool.server.api.member.repository.MemberJpaRepository;
@@ -23,12 +24,14 @@ public class DataLoader implements CommandLineRunner {
     private final BlueprintRepository blueprintRepository;
     private final MemberJpaRepository memberJpaRepository;
     private final PasswordEncoder passwordEncoder;
+    private final ChatService chatService;
 
-    public DataLoader(FirstCategoryRepository firstCategoryRepository, BlueprintRepository blueprintRepository, MemberJpaRepository memberJpaRepository, PasswordEncoder passwordEncoder) {
+    public DataLoader(FirstCategoryRepository firstCategoryRepository, BlueprintRepository blueprintRepository, MemberJpaRepository memberJpaRepository, PasswordEncoder passwordEncoder, ChatService chatService) {
         this.firstCategoryRepository = firstCategoryRepository;
         this.blueprintRepository = blueprintRepository;
         this.memberJpaRepository = memberJpaRepository;
         this.passwordEncoder = passwordEncoder;
+        this.chatService = chatService;
     }
 
 
@@ -37,6 +40,11 @@ public class DataLoader implements CommandLineRunner {
         if(memberJpaRepository.count() == 0) {
             createDummyData();
         }
+        createChatRoom();
+    }
+
+    private void createChatRoom() {
+        chatService.createRoom("Public Chat");
     }
 
     private void createDummyData() {
