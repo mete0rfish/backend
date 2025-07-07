@@ -110,6 +110,7 @@ public class SecurityConfig {
         configuration.addAllowedOrigin("https://accounts.google.com");
         configuration.addAllowedOrigin("https://api.tosspayments.com");
         configuration.addAllowedOrigin("https://frontend-beta-two-45.vercel.app");
+        configuration.addAllowedOrigin("http://frontend-beta-two-45.vercel.app");
         configuration.addAllowedMethod("*");
         configuration.addAllowedHeader("*");
         configuration.setAllowCredentials(true);
