@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 
 public interface ChatRepository extends JpaRepository<ChatMessage, Long> {
@@ -16,4 +17,7 @@ public interface ChatRepository extends JpaRepository<ChatMessage, Long> {
     @Transactional
     @Query(value = "DELETE FROM chat_message WHERE created_at < :cutoff", nativeQuery = true)
     void deleteExpiredChatMessagesBefore(@Param("cutoff") LocalDateTime cutoff);
+
+    @Query("SELECT c FROM ChatMessage c WHERE c.roomId = :roomId ORDER BY c.createdAt DESC")
+    List<ChatMessage> findLatestMessages(@Param("roomId") String roomId);
 }

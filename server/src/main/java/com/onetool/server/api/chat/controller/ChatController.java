@@ -1,6 +1,8 @@
 package com.onetool.server.api.chat.controller;
 
+import com.onetool.server.api.chat.domain.ChatMessage;
 import com.onetool.server.api.chat.domain.ChatRoom;
+import com.onetool.server.api.chat.dto.ChatMessageResponse;
 import com.onetool.server.api.chat.service.ChatService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -10,23 +12,29 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
+@RequestMapping("/chat")
 public class ChatController {
 
     private final ChatService chatService;
 
-    @RequestMapping("/chat/chatList")
-    public List<ChatRoom> chatList(){
+    @GetMapping("/chatroom")
+    public ChatRoom getChatRoom(@RequestParam String roomId) {
+        return chatService.findRoomById(roomId);
+    }
+
+    @GetMapping("/chatroom/list")
+    public List<ChatRoom> getChatRoomList(){
         return chatService.findAllRoom();
     }
 
-    @PostMapping("/chat/createRoom")
-    public ChatRoom createRoom(@RequestParam String name) {
+    @PostMapping("/chatroom")
+    public ChatRoom createChatRoom(@RequestParam String name) {
         return chatService.createRoom(name);
     }
 
-    @GetMapping("/chat/chatRoom")
-    public ChatRoom chatRoom(@RequestParam String roomId) {
-        return chatService.findRoomById(roomId);
+    @GetMapping("/chat/list")
+    public List<ChatMessageResponse> getChatMessages(@RequestParam String roomId) {
+        return chatService.findChatMessages(roomId);
     }
 
     @Scheduled(cron = "0 32 9 * * *")

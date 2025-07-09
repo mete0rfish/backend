@@ -4,6 +4,7 @@ package com.onetool.server.api.chat.handler;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.onetool.server.api.chat.domain.ChatMessage;
 import com.onetool.server.api.chat.domain.ChatRoom;
+import com.onetool.server.api.chat.domain.MessageType;
 import com.onetool.server.api.chat.service.ChatService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,11 +31,11 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
         ChatRoom room = chatService.findRoomById(chatMessage.getRoomId());
         Set<WebSocketSession> sessions = room.getSessions();
 
-        if (chatMessage.getType().equals(ChatMessage.MessageType.ENTER)) {
+        if (chatMessage.getType().equals(MessageType.ENTER)) {
             sessions.add(session);
             chatMessage.setMessage(chatMessage.getSender() + "님이 입장했습니다.");
             sendToEachSocket(sessions,new TextMessage(objectMapper.writeValueAsString(chatMessage)));
-        } else if (chatMessage.getType().equals(ChatMessage.MessageType.QUIT)) {
+        } else if (chatMessage.getType().equals(MessageType.QUIT)) {
             sessions.remove(session);
             chatMessage.setMessage(chatMessage.getSender() + "님이 퇴장했습니다..");
             sendToEachSocket(sessions,new TextMessage(objectMapper.writeValueAsString(chatMessage)));

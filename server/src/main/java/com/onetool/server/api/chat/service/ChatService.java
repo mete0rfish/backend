@@ -3,6 +3,7 @@ package com.onetool.server.api.chat.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.onetool.server.api.chat.domain.ChatMessage;
 import com.onetool.server.api.chat.domain.ChatRoom;
+import com.onetool.server.api.chat.dto.ChatMessageResponse;
 import com.onetool.server.api.chat.repository.ChatRepository;
 import groovy.util.logging.Slf4j;
 import jakarta.annotation.PostConstruct;
@@ -54,5 +55,12 @@ public class ChatService {
     public void deleteExpiredChatMessages() {
         LocalDateTime cutoff = LocalDateTime.now().minusDays(3);
         chatRepository.deleteExpiredChatMessagesBefore(cutoff);
+    }
+
+    @Transactional(readOnly = true)
+    public List<ChatMessageResponse> findChatMessages(final String roomId) {
+        return chatRepository.findLatestMessages(roomId)
+                .stream().map(ChatMessageResponse::from)
+                .toList();
     }
 }
