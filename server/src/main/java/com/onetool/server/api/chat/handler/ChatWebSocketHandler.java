@@ -9,6 +9,7 @@ import com.onetool.server.api.chat.service.ChatService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
@@ -26,6 +27,7 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
 
     @Override
     protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
+        log.info("handleTextMessage");
         String payload = message.getPayload();
         ChatMessage chatMessage = objectMapper.readValue(payload, ChatMessage.class);
         ChatRoom room = chatService.findRoomById(chatMessage.getRoomId());
@@ -52,12 +54,19 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
         session.sendMessage(new TextMessage("RoomId: " + ChatRoom.roomId));
     }
 
-    private  void sendToEachSocket(Set<WebSocketSession> sessions, TextMessage message){
+    @Override
+    public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
+        ChatRoom room = chatService.findRoomById(ChatRoom.roomId);
+        Set<WebSocketSession> sessions = room.getSessions();
+        sessions.remove(session);
+    }
+
+    private void sendToEachSocket(Set<WebSocketSession> sessions, TextMessage message){
         sessions.parallelStream().forEach(roomSession -> {
             try {
-
                 roomSession.sendMessage(message);
             } catch (IOException e) {
+                log.error(e.getMessage());
                 throw new RuntimeException(e);
             }
         });
