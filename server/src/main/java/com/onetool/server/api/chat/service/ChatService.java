@@ -1,6 +1,5 @@
 package com.onetool.server.api.chat.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.onetool.server.api.chat.domain.ChatMessage;
 import com.onetool.server.api.chat.domain.ChatRoom;
 import com.onetool.server.api.chat.dto.ChatMessageResponse;
