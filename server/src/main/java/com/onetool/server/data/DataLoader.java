@@ -8,11 +8,12 @@ import com.onetool.server.api.category.FirstCategoryRepository;
 import com.onetool.server.api.chat.domain.ChatMessage;
 import com.onetool.server.api.chat.domain.ChatRoom;
 import com.onetool.server.api.chat.domain.MessageType;
-import com.onetool.server.api.chat.repository.ChatRepository;
+import com.onetool.server.api.chat.repository.jpa.ChatJpaRepository;
 import com.onetool.server.api.chat.service.ChatService;
 import com.onetool.server.api.member.domain.Member;
 import com.onetool.server.api.member.enums.UserRole;
 import com.onetool.server.api.member.repository.MemberJpaRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -22,6 +23,7 @@ import java.math.BigInteger;
 
 @Profile({"dev", "default", "local"})
 @Component
+@Slf4j
 public class DataLoader implements CommandLineRunner {
 
     private final FirstCategoryRepository firstCategoryRepository;
@@ -29,9 +31,9 @@ public class DataLoader implements CommandLineRunner {
     private final MemberJpaRepository memberJpaRepository;
     private final PasswordEncoder passwordEncoder;
     private final ChatService chatService;
-    private final ChatRepository chatRepository;
+    private final ChatJpaRepository chatRepository;
 
-    public DataLoader(FirstCategoryRepository firstCategoryRepository, BlueprintRepository blueprintRepository, MemberJpaRepository memberJpaRepository, PasswordEncoder passwordEncoder, ChatService chatService, ChatRepository chatRepository) {
+    public DataLoader(FirstCategoryRepository firstCategoryRepository, BlueprintRepository blueprintRepository, MemberJpaRepository memberJpaRepository, PasswordEncoder passwordEncoder, ChatService chatService, ChatJpaRepository chatRepository) {
         this.firstCategoryRepository = firstCategoryRepository;
         this.blueprintRepository = blueprintRepository;
         this.memberJpaRepository = memberJpaRepository;
@@ -62,7 +64,9 @@ public class DataLoader implements CommandLineRunner {
     }
 
     private void createChatRoom() {
-        chatService.createRoom("Public Chat");
+
+        ChatRoom publicChat = chatService.createRoom("Public Chat");
+        log.info("roomId : {}",ChatRoom.roomId);
     }
 
     private void createDummyData() {

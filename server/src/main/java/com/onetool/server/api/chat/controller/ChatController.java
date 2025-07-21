@@ -37,6 +37,8 @@ public class ChatController {
         return chatService.findChatMessages(roomId);
     }
 
+
+
     @Scheduled(cron = "0 32 9 * * *")
     public void deleteExpiredChatMessagesScheduled() {
         chatService.deleteExpiredChatMessages();

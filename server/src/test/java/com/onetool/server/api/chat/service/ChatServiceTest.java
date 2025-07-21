@@ -3,19 +3,16 @@ package com.onetool.server.api.chat.service;
 import com.onetool.server.api.chat.domain.ChatMessage;
 import com.onetool.server.api.chat.domain.MessageType;
 import com.onetool.server.api.chat.dto.ChatMessageResponse;
-import com.onetool.server.api.chat.repository.ChatRepository;
+import com.onetool.server.api.chat.repository.jpa.ChatJpaRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.web.WebAppConfiguration;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 @ActiveProfiles("test")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -26,7 +23,7 @@ class ChatServiceTest {
     private static final String SENDER = "ㅇㅇㅇㅇㅇㅇㅇㅇ";
 
     @Autowired
-    private  ChatRepository chatRepository;
+    private ChatJpaRepository chatRepository;
     @Autowired
     private  ChatService chatService;
 

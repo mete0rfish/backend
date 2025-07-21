@@ -12,11 +12,15 @@ import lombok.*;
 @AllArgsConstructor
 public class ChatMessage extends BaseEntity {
 
+    // ✅ PostgreSQL(MySQL 포함)용 ID (Primary Key)
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+
     @Enumerated(EnumType.STRING)
     private MessageType type;
+
     private String roomId;
     private String sender;
     private String message;
