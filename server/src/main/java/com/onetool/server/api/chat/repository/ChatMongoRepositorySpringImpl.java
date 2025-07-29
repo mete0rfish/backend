@@ -6,13 +6,13 @@ import com.onetool.server.api.chat.repository.mongo.ChatMongoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Primary;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
-@Primary
 @RequiredArgsConstructor
 public class ChatMongoRepositorySpringImpl implements ChatRepository {
 
@@ -46,9 +46,9 @@ public class ChatMongoRepositorySpringImpl implements ChatRepository {
     }
 
     @Override
-    public List<ChatMessage> findLatestMessages(String roomId) {
-        List<ChatMessageMongo> mongoMessages = delegate.findByRoomIdOrderByCreatedAtDesc(roomId);
-        
+    public List<ChatMessage> findLatestMessages(Pageable pageable, String roomId) {
+        List<ChatMessageMongo> mongoMessages = delegate.findByRoomIdOrderByCreatedAtDesc(pageable, roomId);
+
         // ChatMessageMongo 리스트를 ChatMessage 리스트로 변환
         return mongoMessages.stream()
                 .map(mongoMessage -> ChatMessage.builder()
