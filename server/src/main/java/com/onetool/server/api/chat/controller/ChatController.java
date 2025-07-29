@@ -5,6 +5,7 @@ import com.onetool.server.api.chat.domain.ChatRoom;
 import com.onetool.server.api.chat.dto.ChatMessageResponse;
 import com.onetool.server.api.chat.service.ChatService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,8 +34,8 @@ public class ChatController {
     }
 
     @GetMapping("/chat/list")
-    public List<ChatMessageResponse> getChatMessages(@RequestParam String roomId) {
-        return chatService.findChatMessages(roomId);
+    public List<ChatMessageResponse> getChatMessages(Pageable pageable, @RequestParam String roomId) {
+        return chatService.findChatMessages(pageable, roomId);
     }
 
 

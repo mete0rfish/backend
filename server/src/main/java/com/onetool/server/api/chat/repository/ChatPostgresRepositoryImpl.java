@@ -5,13 +5,17 @@ import com.onetool.server.api.chat.repository.jpa.ChatPostgresJpaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicIntegerArray;
 
+@Primary
 @Repository("chatPostgresRepositoryImpl")
-@Profile("postgres")
 @RequiredArgsConstructor
 public class ChatPostgresRepositoryImpl implements ChatRepository {
 
@@ -28,7 +32,7 @@ public class ChatPostgresRepositoryImpl implements ChatRepository {
     }
 
     @Override
-    public List<ChatMessage> findLatestMessages(String roomId) {
+    public List<ChatMessage> findLatestMessages(Pageable pageable, String roomId) {
         return delegate.findByRoomIdOrderByCreatedAtDesc(roomId);
     }
 } 

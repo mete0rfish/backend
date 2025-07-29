@@ -7,6 +7,7 @@ import com.onetool.server.api.chat.repository.ChatRepository;
 import groovy.util.logging.Slf4j;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -57,8 +58,8 @@ public class ChatService {
     }
 
     @Transactional(readOnly = true)
-    public List<ChatMessageResponse> findChatMessages(final String roomId) {
-        return chatRepository.findLatestMessages(roomId)
+    public List<ChatMessageResponse> findChatMessages(final Pageable pageable, final String roomId) {
+        return chatRepository.findLatestMessages(pageable, roomId)
                 .stream().map(ChatMessageResponse::from)
                 .toList();
     }

@@ -7,13 +7,14 @@ import org.springframework.web.socket.WebSocketSession;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Getter
 public class ChatRoom {
 
     public static String roomId;
     private String name;
-    private Set<WebSocketSession> sessions = new HashSet<>();
+    private Set<WebSocketSession> sessions = ConcurrentHashMap.newKeySet();
 
     @Builder
     public ChatRoom(String roomId, String name) {
