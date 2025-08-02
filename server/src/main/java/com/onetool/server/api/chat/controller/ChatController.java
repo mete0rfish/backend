@@ -35,10 +35,9 @@ public class ChatController {
 
     @GetMapping("/chat/list")
     public List<ChatMessageResponse> getChatMessages(Pageable pageable, @RequestParam String roomId) {
+        // TODO BlockingQueue 조회
         return chatService.findChatMessages(pageable, roomId);
     }
-
-
 
     @Scheduled(cron = "0 32 9 * * *")
     public void deleteExpiredChatMessagesScheduled() {

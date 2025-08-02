@@ -16,8 +16,7 @@ public class ChatMessage extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-
+    private boolean persisted;
     @Enumerated(EnumType.STRING)
     private MessageType type;
 
