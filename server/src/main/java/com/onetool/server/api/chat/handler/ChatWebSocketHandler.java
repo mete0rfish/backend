@@ -31,29 +31,29 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
     private final ObjectMapper objectMapper;
     private final ChatService chatService;
     private final ChatMessageQueue chatMessageQueue;
-    private final ScheduledExecutorService scheduler;
+//    private final ScheduledExecutorService scheduler;
 
     public ChatWebSocketHandler(ObjectMapper objectMapper, ChatService chatService, ChatMessageQueue chatMessageQueue) {
         this.objectMapper = objectMapper;
         this.chatService = chatService;
         this.chatMessageQueue = chatMessageQueue;
 
-        this.scheduler = Executors.newSingleThreadScheduledExecutor();
-        // 주기적으로 메시지 저장 작업 실행
-        this.scheduler.scheduleAtFixedRate(
-                this::processMessageQueue,
-                0,
-                5,
-                TimeUnit.SECONDS
-        );
+//        this.scheduler = Executors.newSingleThreadScheduledExecutor();
+//        // 주기적으로 메시지 저장 작업 실행
+//        this.scheduler.scheduleAtFixedRate(
+//                this::processMessageQueue,
+//                0,
+//                5,
+//                TimeUnit.SECONDS
+//        );
     }
 
-    @PreDestroy
-    public void cleanup() {
-        scheduler.shutdown();
-        // 종료 전 남은 메시지 처리
-        processMessageQueue();
-    }
+//    @PreDestroy
+//    public void cleanup() {
+//        scheduler.shutdown();
+//        // 종료 전 남은 메시지 처리
+//        processMessageQueue();
+//    }
 
     @Override
     protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
@@ -78,11 +78,12 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
         chatMessageQueue.addMessage(chatMessage);
         // 메시지가 충분히 쌓였다면 저장 프로세스 실행
         if (chatMessageQueue.hasEnoughMessages()) {
+            log.info("MessageQueue Size: {}", chatMessageQueue.getQueueSize());
             processMessageQueue();
         }
 
-        Long chatId = chatService.saveTextMessage(chatMessage);
-        log.info("저장 완료 chat Id : {}",chatId);
+//        Long chatId = chatService.saveTextMessage(chatMessage);
+//        log.info("저장 완료 chat Id : {}",chatId);
     }
 
     @Override
@@ -121,10 +122,8 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
                     .collect(Collectors.toList());
 
             // DB에 저장
-            for (ChatMessage message : messagesToPersist) {
-                Long chatId = chatService.saveTextMessage(message);
-                log.info("메시지 저장 완료 chat Id : {}", chatId);
-            }
+            Integer messageSize = chatService.saveAllTextMessage(messagesToPersist);
+            log.info("Messages in Queue are saved. size: {}", messageSize);
 
             // 저장된 메시지 표시 및 큐에서 제거
             chatMessageQueue.markMessagesAsPersisted(messagesToPersist);

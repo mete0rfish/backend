@@ -52,6 +52,12 @@ public class ChatService {
     }
 
     @Transactional
+    public int saveAllTextMessage(List<ChatMessage> chatMessages) {
+        List<ChatMessage> chatMessageList = chatRepository.saveAll(chatMessages);
+        return chatMessageList.size();
+    }
+
+    @Transactional
     public void deleteExpiredChatMessages() {
         LocalDateTime cutoff = LocalDateTime.now().minusDays(3);
         chatRepository.deleteExpiredChatMessagesBefore(cutoff);
