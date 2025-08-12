@@ -6,6 +6,7 @@ import com.onetool.server.api.chat.domain.ChatMessage;
 import com.onetool.server.api.chat.domain.ChatMessageQueue;
 import com.onetool.server.api.chat.domain.ChatRoom;
 import com.onetool.server.api.chat.domain.MessageType;
+import com.onetool.server.api.chat.service.ChatProcessService;
 import com.onetool.server.api.chat.service.ChatService;
 import jakarta.annotation.PreDestroy;
 import lombok.RequiredArgsConstructor;
@@ -24,36 +25,15 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
+@RequiredArgsConstructor
 @Slf4j
 @Component
 public class ChatWebSocketHandler extends TextWebSocketHandler {
 
     private final ObjectMapper objectMapper;
     private final ChatService chatService;
+    private final ChatProcessService chatProcessService;
     private final ChatMessageQueue chatMessageQueue;
-//    private final ScheduledExecutorService scheduler;
-
-    public ChatWebSocketHandler(ObjectMapper objectMapper, ChatService chatService, ChatMessageQueue chatMessageQueue) {
-        this.objectMapper = objectMapper;
-        this.chatService = chatService;
-        this.chatMessageQueue = chatMessageQueue;
-
-//        this.scheduler = Executors.newSingleThreadScheduledExecutor();
-//        // 주기적으로 메시지 저장 작업 실행
-//        this.scheduler.scheduleAtFixedRate(
-//                this::processMessageQueue,
-//                0,
-//                5,
-//                TimeUnit.SECONDS
-//        );
-    }
-
-//    @PreDestroy
-//    public void cleanup() {
-//        scheduler.shutdown();
-//        // 종료 전 남은 메시지 처리
-//        processMessageQueue();
-//    }
 
     @Override
     protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
@@ -76,14 +56,10 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
         }
 
         chatMessageQueue.addMessage(chatMessage);
-        // 메시지가 충분히 쌓였다면 저장 프로세스 실행
         if (chatMessageQueue.hasEnoughMessages()) {
             log.info("MessageQueue Size: {}", chatMessageQueue.getQueueSize());
-            processMessageQueue();
+            chatProcessService.processMessageQueue();
         }
-
-//        Long chatId = chatService.saveTextMessage(chatMessage);
-//        log.info("저장 완료 chat Id : {}",chatId);
     }
 
     @Override
@@ -108,29 +84,4 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
             }
         });
     }
-
-    private void processMessageQueue() {
-        List<ChatMessage> unpersistedMessages = chatMessageQueue.getUnpersistedMessages();
-        if (unpersistedMessages.isEmpty()) {
-            return;
-        }
-
-        try {
-            // 배치 사이즈만큼만 처리
-            List<ChatMessage> messagesToPersist = unpersistedMessages.stream()
-                    .limit(ChatMessageQueue.getBatchSize())
-                    .collect(Collectors.toList());
-
-            // DB에 저장
-            Integer messageSize = chatService.saveAllTextMessage(messagesToPersist);
-            log.info("Messages in Queue are saved. size: {}", messageSize);
-
-            // 저장된 메시지 표시 및 큐에서 제거
-            chatMessageQueue.markMessagesAsPersisted(messagesToPersist);
-
-        } catch (Exception e) {
-            log.error("배치 메시지 저장 중 오류 발생", e);
-        }
-    }
-
 }
