@@ -36,14 +36,14 @@ public class QnaBoardController {
         return ApiResponse.onSuccess("문의사항 등록이 완료됐습니다.");
     }
 
-    @GetMapping("/{qnaId}")
+    @GetMapping("/qna/{qnaId}")
     public ApiResponse<QnaBoardDetailResponse> qnaDetails(
             @AuthenticationPrincipal PrincipalDetails principalDetails,
             @PathVariable(name = "qnaId") Long qnaId) {
         return ApiResponse.onSuccess(qnaBoardBusiness.getQnaBoardDetail(principalDetails.getContext().getEmail(), qnaId));
     }
 
-    @PostMapping("/{qnaId}/delete")
+    @PostMapping("/qna/{qnaId}/delete")
     public ApiResponse<String> qnaDelete(
             @AuthenticationPrincipal PrincipalDetails principalDetails,
             @PathVariable(name = "qnaId") Long qnaId) {
@@ -53,7 +53,7 @@ public class QnaBoardController {
 
     //TODO : 게시글 수정 방법 : 게시글 상세 페이지 -> 게시글 수정 클릭 -> 수정 페이지 -> 수정 완료
 
-    @GetMapping("/{qnaId}/update")
+    @GetMapping("/qna/{qnaId}/update")
     public ApiResponse<String> qnaUpdate(
             @AuthenticationPrincipal PrincipalDetails principalDetails,
             @PathVariable(name = "qnaId") Long qnaId,

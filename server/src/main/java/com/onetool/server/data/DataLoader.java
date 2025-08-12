@@ -5,9 +5,15 @@ import com.onetool.server.api.blueprint.InspectionStatus;
 import com.onetool.server.api.blueprint.repository.BlueprintRepository;
 import com.onetool.server.api.category.FirstCategory;
 import com.onetool.server.api.category.FirstCategoryRepository;
+import com.onetool.server.api.chat.domain.ChatMessage;
+import com.onetool.server.api.chat.domain.ChatRoom;
+import com.onetool.server.api.chat.domain.MessageType;
+import com.onetool.server.api.chat.repository.jpa.ChatJpaRepository;
+import com.onetool.server.api.chat.service.ChatService;
 import com.onetool.server.api.member.domain.Member;
 import com.onetool.server.api.member.enums.UserRole;
 import com.onetool.server.api.member.repository.MemberJpaRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -17,26 +23,50 @@ import java.math.BigInteger;
 
 @Profile({"dev", "default", "local"})
 @Component
+@Slf4j
 public class DataLoader implements CommandLineRunner {
 
     private final FirstCategoryRepository firstCategoryRepository;
     private final BlueprintRepository blueprintRepository;
     private final MemberJpaRepository memberJpaRepository;
     private final PasswordEncoder passwordEncoder;
+    private final ChatService chatService;
+    private final ChatJpaRepository chatRepository;
 
-    public DataLoader(FirstCategoryRepository firstCategoryRepository, BlueprintRepository blueprintRepository, MemberJpaRepository memberJpaRepository, PasswordEncoder passwordEncoder) {
+    public DataLoader(FirstCategoryRepository firstCategoryRepository, BlueprintRepository blueprintRepository, MemberJpaRepository memberJpaRepository, PasswordEncoder passwordEncoder, ChatService chatService, ChatJpaRepository chatRepository) {
         this.firstCategoryRepository = firstCategoryRepository;
         this.blueprintRepository = blueprintRepository;
         this.memberJpaRepository = memberJpaRepository;
         this.passwordEncoder = passwordEncoder;
+        this.chatService = chatService;
+        this.chatRepository = chatRepository;
     }
-
 
     @Override
     public void run(String... args) throws Exception {
         if(memberJpaRepository.count() == 0) {
             createDummyData();
         }
+        createChatRoom();
+        createMessage("성원 님이 들어왔습니다.", "sungwon", MessageType.ENTER);
+        createMessage("안녕하세요~", "sungwon", MessageType.TALK);
+        createMessage("성원 님이 들어왔습니다.", "sungwon", MessageType.QUIT);
+    }
+
+    private void createMessage(String message, String sender, MessageType type) {
+        ChatMessage chatMessage = ChatMessage.builder()
+                .message(message)
+                .sender(sender)
+                .type(type)
+                .roomId(ChatRoom.roomId)
+                .build();
+        chatRepository.save(chatMessage);
+    }
+
+    private void createChatRoom() {
+
+        ChatRoom publicChat = chatService.createRoom("Public Chat");
+        log.info("roomId : {}",ChatRoom.roomId);
     }
 
     private void createDummyData() {

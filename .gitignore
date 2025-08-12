@@ -48,7 +48,7 @@ gradle-app.setting
 .classpath
 
 ./.idea/
-.gitignore
+#.gitignore
 
 application-api.properties
 application-dev-api.properties
@@ -56,3 +56,4 @@ application-local-api.properties
 !/.idea/dataSources.xml
 /.idea/
 backend_submodule/
+
