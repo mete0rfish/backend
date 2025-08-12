@@ -41,6 +41,12 @@ public class ChatMongoRepositorySpringImpl implements ChatRepository {
     }
 
     @Override
+    public List<ChatMessage> saveAll(List<ChatMessage> chatMessages) {
+        // TODO saveAll 메서드 구현
+        return List.of();
+    }
+
+    @Override
     public void deleteExpiredChatMessagesBefore(LocalDateTime cutoff) {
         delegate.deleteByCreatedAtBefore(cutoff);
     }

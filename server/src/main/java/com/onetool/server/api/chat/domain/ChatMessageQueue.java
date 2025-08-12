@@ -1,10 +1,13 @@
 package com.onetool.server.api.chat.domain;
 
+import org.springframework.stereotype.Component;
+
 import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.stream.Collectors;
 
+@Component
 public class ChatMessageQueue {
     private final Queue<ChatMessage> messageQueue = new ConcurrentLinkedQueue<>();
     private static final int BATCH_SIZE = 10;
