@@ -70,7 +70,6 @@ dependencies {
     implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect'
 
     // Swagger
-    // https://mvnrepository.com/artifact/io.springfox/springfox-swagger-ui
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.4'
 
     testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc:2.0.6.RELEASE'
@@ -80,8 +79,6 @@ dependencies {
 
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
 
-    // ✅ Spring Data MongoDB
-    implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
     runtimeOnly 'org.postgresql:postgresql'
 }
 
