@@ -69,4 +69,5 @@ public class ChatService {
                 .stream().map(ChatMessageResponse::from)
                 .toList();
     }
+
 }
