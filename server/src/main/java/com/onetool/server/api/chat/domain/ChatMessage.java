@@ -10,11 +10,18 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@SequenceGenerator(
+        name = "CHAT_MESSAGE_SEQ_GENERATOR",
+        sequenceName = "CHAT_MESSAGE_SEQ",
+        initialValue = 1, allocationSize = 100
+)
 public class ChatMessage extends BaseEntity {
 
-    // ✅ PostgreSQL(MySQL 포함)용 ID (Primary Key)
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,
+            generator = "CHAT_MESSAGE_SEQ_GENERATOR"
+    )
     private Long id;
     private boolean persisted;
     @Enumerated(EnumType.STRING)
