@@ -19,7 +19,7 @@ public class ChatProcessService {
     private final ChatService chatService;
 
     @Async
-    public synchronized void processMessageQueue() {
+    public void processMessageQueue() {
         List<ChatMessage> unpersistedMessages = chatMessageQueue.getUnpersistedMessages();
         if (unpersistedMessages.isEmpty()) {
             return;
