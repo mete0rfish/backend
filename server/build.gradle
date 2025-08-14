@@ -80,8 +80,6 @@ dependencies {
 
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
 
-    // ✅ Spring Data MongoDB
-    implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
     runtimeOnly 'org.postgresql:postgresql'
 }
 
