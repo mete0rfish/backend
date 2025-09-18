@@ -13,6 +13,8 @@ public interface ChatRepository {
 
     ChatMessage save(ChatMessage chatMessage);
 
+    List<ChatMessage> saveAll(List<ChatMessage> chatMessages);
+
     void deleteExpiredChatMessagesBefore(LocalDateTime cutoff);
 
     List<ChatMessage> findLatestMessages(Pageable pageable, String roomId);

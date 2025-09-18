@@ -26,6 +26,11 @@ public class ChatPostgresRepositoryImpl implements ChatRepository {
     }
 
     @Override
+    public List<ChatMessage> saveAll(List<ChatMessage> chatMessages) {
+        return delegate.saveAll(chatMessages);
+    }
+
+    @Override
     public void deleteExpiredChatMessagesBefore(LocalDateTime cutoff) {
         delegate.deleteByCreatedAtBefore(cutoff);
     }
