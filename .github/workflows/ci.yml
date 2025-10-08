@@ -52,16 +52,3 @@ jobs:
         run: |
           docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
           docker build --no-cache --platform linux/amd64 -t meteorfish/onetool-prod-server:v1.2 --push .
-
-      - name: Execute Container With Docker Image
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.GCP_PROD_HOST }}
-          username: ${{ secrets.GCP_SSH_USER }}
-          password: ${{ secrets.GCP_PRIVATE_KEY }}
-          script: |
-            docker stop $(docker ps -q) && docker rm $(docker ps -qa)
-            docker pull ${{ secrets.DOCKER_REPO }}/onetool-prod-server:v1.2
-            ls
-            docker-compose -f ~/docker-compose.yml up -d
-            docker image prune --force
