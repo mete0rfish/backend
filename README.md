@@ -108,11 +108,8 @@
 
 ## 👥 컨트리뷰터
 
-| 역할    |github|이름|
-|-------|---|---|
-| Front | [<img src="https://avatars.githubusercontent.com/u/105264785?v=4" height=100 width=100>](https://github.com/tnqkr3494) | 강인권 |
-| Back  | [<img src="https://avatars.githubusercontent.com/u/123933574?v=4" height=100 width=100>](https://github.com/LEEDONGH00N) | 이동훈 |
-| Back  | [<img src="https://avatars.githubusercontent.com/u/63222221?v=4" height=100 width=100> ](https://github.com/mete0rfish)| 윤성원 |
-| Back  | [<img src="https://avatars.githubusercontent.com/u/92675692?v=4" height=100 width=100> ](https://github.com/day024) | 정다영 |
-| Back  | [<img src="https://avatars.githubusercontent.com/u/164465431?v=4" height=100 width=100> ](https://github.com/PlusUltraCode) | 이동호 |
+| Front | Back | Back | Back | Back |
+|:-----:|:----:|:----:|:----:|:----:|
+| [<img src="https://avatars.githubusercontent.com/u/105264785?v=4" height=100 width=100>](https://github.com/tnqkr3494) | [<img src="https://avatars.githubusercontent.com/u/123933574?v=4" height=100 width=100>](https://github.com/LEEDONGH00N) | [<img src="https://avatars.githubusercontent.com/u/63222221?v=4" height=100 width=100> ](https://github.com/mete0rfish) | [<img src="https://avatars.githubusercontent.com/u/92675692?v=4" height=100 width=100> ](https://github.com/day024) | [<img src="https://avatars.githubusercontent.com/u/164465431?v=4" height=100 width=100> ](https://github.com/PlusUltraCode) |
+| 강인권 | 이동훈 | 윤성원 | 정다영 | 이동호 |
 
