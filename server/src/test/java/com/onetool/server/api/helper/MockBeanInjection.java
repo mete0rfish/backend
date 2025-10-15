@@ -5,10 +5,12 @@ import com.onetool.server.api.blueprint.business.BlueprintInspectionBusiness;
 import com.onetool.server.api.blueprint.business.BlueprintSearchBusiness;
 import com.onetool.server.api.blueprint.service.BlueprintSearchService;
 import com.onetool.server.api.blueprint.service.BlueprintService;
+import com.onetool.server.api.cart.business.CartBusiness;
 import com.onetool.server.api.member.business.MemberBusiness;
 import com.onetool.server.api.member.business.MemberLoginBusiness;
 import com.onetool.server.api.member.service.MemberService;
 import com.onetool.server.api.qna.business.QnaBoardBusiness;
+import com.onetool.server.api.qna.business.QnaReplyBusiness;
 import com.onetool.server.global.auth.jwt.JwtUtil;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
@@ -24,6 +26,8 @@ public class MockBeanInjection {
     @MockBean
     protected QnaBoardBusiness qnaBoardBusiness;
     @MockBean
+    private QnaReplyBusiness qnaReplyBusiness;
+    @MockBean
     protected BlueprintSearchService blueprintSearchService;
     @MockBean
     protected BlueprintBusiness blueprintBusiness;
@@ -35,4 +39,6 @@ public class MockBeanInjection {
     protected MemberLoginBusiness memberLoginBusiness;
     @MockBean
     protected BlueprintService blueprintService;
+    @MockBean
+    protected CartBusiness cartBusiness;
 }
