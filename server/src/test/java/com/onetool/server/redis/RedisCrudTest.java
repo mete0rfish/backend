@@ -1,13 +1,22 @@
 package com.onetool.server.redis;
 
+import com.onetool.server.ServerApplication;
+import com.onetool.server.global.config.RedisTestContainerBase;
+import com.onetool.server.global.config.WebSocketConfig;
 import com.onetool.server.global.redis.service.MailRedisService;
 import groovy.util.logging.Slf4j;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.test.context.ActiveProfiles;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.time.Duration;
 
@@ -16,15 +25,26 @@ import static org.awaitility.Awaitility.await;
 
 @Slf4j
 @SpringBootTest
-public class RedisCrudTest {
+        (classes = {ServerApplication.class, WebSocketConfig.class, RedisTestContainerBase.class}, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@Testcontainers
+@ActiveProfiles("test")
+public class RedisCrudTest extends RedisTestContainerBase {
+
+    private Logger logger = LoggerFactory.getLogger(RedisCrudTest.class);
+
     final String KEY = "key";
     final String VALUE = "value";
     final Duration DURATION = Duration.ofMillis(5000);
-    @Autowired
+
     private MailRedisService mailRedisService;
 
+    @Autowired
+    @Qualifier("testMailRedisTemplate")
+    private RedisTemplate<String, Object> mailRedisTemplate;
+
     @BeforeEach
-    void shutDown() {
+    public void setUp() {
+        mailRedisService = new MailRedisService(mailRedisTemplate);
         mailRedisService.setValues(KEY, VALUE, DURATION);
     }
 

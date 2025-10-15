@@ -1,6 +1,7 @@
 package com.onetool.server.api.qna.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.onetool.server.api.helper.MockBeanInjection;
 import com.onetool.server.api.member.domain.Member;
 import com.onetool.server.api.member.fixture.WithMockPrincipalDetails;
 import com.onetool.server.api.qna.QnaBoard;
@@ -31,16 +32,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(controllers = QnaBoardController.class)
 @AutoConfigureMockMvc
-class QnaBoardControllerTest {
+class QnaBoardControllerTest extends MockBeanInjection {
 
     @Autowired
     private MockMvc mockMvc;
     @Autowired
     private ObjectMapper objectMapper;
-    @MockBean
-    private JwtUtil jwtUtil; //사용되는 이유 안쓰면 오류
-    @MockBean
-    private QnaBoardBusiness qnaBoardBusiness;
 
     @Test
     @WithMockPrincipalDetails(id = 2L)
@@ -98,7 +95,7 @@ class QnaBoardControllerTest {
 
         // ✅ When (실행)
         ResultActions resultActions = mockMvc.perform(
-                get("/{qnaId}", qnaId)
+                get("/qna/{qnaId}", qnaId)
                         .contentType(MediaType.APPLICATION_JSON)
         );
 
@@ -116,7 +113,7 @@ class QnaBoardControllerTest {
 
         // ✅ When (실행)
         ResultActions resultActions = mockMvc.perform(
-                post("/{qnaId}/delete", qnaId)
+                post("/qna/{qnaId}/delete", qnaId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .with(csrf())
         );
@@ -136,7 +133,7 @@ class QnaBoardControllerTest {
 
         // ✅ When (실행)
         ResultActions resultActions = mockMvc.perform(
-                get("/{qnaId}/update", qnaId)
+                get("/qna/{qnaId}/update", qnaId)
                         .content(objectMapper.writeValueAsString(request))
                         .contentType(MediaType.APPLICATION_JSON)
                         .with(csrf())

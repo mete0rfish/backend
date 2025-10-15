@@ -80,6 +80,11 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
 
     runtimeOnly 'org.postgresql:postgresql'
+
+    // TestContainers
+    testImplementation "org.testcontainers:testcontainers"
+    testImplementation "org.testcontainers:junit-jupiter"
+    testImplementation "org.testcontainers:postgresql"
 }
 
 tasks.named('test') {

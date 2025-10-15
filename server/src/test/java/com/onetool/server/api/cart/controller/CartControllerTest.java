@@ -5,6 +5,7 @@ import com.onetool.server.api.cart.Cart;
 import com.onetool.server.api.cart.business.CartBusiness;
 import com.onetool.server.api.cart.dto.response.CartItemsResponse;
 import com.onetool.server.api.cart.fixture.CartFixture;
+import com.onetool.server.api.helper.MockBeanInjection;
 import com.onetool.server.api.member.domain.Member;
 import com.onetool.server.api.member.fixture.MemberFixture;
 import com.onetool.server.api.member.fixture.WithMockPrincipalDetails;
@@ -29,16 +30,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SuppressWarnings("NonAsciiCharacters")
 @AutoConfigureMockMvc
 @WebMvcTest(controllers = CartController.class)
-public class CartControllerTest {
+public class CartControllerTest extends MockBeanInjection {
 
     @Autowired
     private MockMvc mockMvc;
-
-    @MockBean
-    private CartBusiness cartBusiness;
-
-    @MockBean
-    private JwtUtil jwtUtil;
 
     private Member member;
     private Cart cart;
