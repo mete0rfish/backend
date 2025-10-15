@@ -1,8 +1,7 @@
 package com.onetool.server.redis;
 
 import com.onetool.server.ServerApplication;
-import com.onetool.server.api.helper.MockBeanInjection;
-import com.onetool.server.global.config.AbstractContainerBaseTest;
+import com.onetool.server.global.config.RedisTestContainerBase;
 import com.onetool.server.global.config.WebSocketConfig;
 import com.onetool.server.global.redis.service.MailRedisService;
 import groovy.util.logging.Slf4j;
@@ -14,20 +13,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.context.annotation.Bean;
-import org.springframework.data.redis.connection.RedisConnectionFactory;
-import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.test.context.ActiveProfiles;
-import org.testcontainers.containers.GenericContainer;
-import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
-import org.testcontainers.utility.DockerImageName;
 
 import java.time.Duration;
 
@@ -35,10 +24,11 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.awaitility.Awaitility.await;
 
 @Slf4j
-@SpringBootTest(classes = {ServerApplication.class, RedisCrudTest.TestRedisConfig.class, WebSocketConfig.class}, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest
+        (classes = {ServerApplication.class, WebSocketConfig.class, RedisTestContainerBase.class}, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Testcontainers
 @ActiveProfiles("test")
-public class RedisCrudTest extends AbstractContainerBaseTest {
+public class RedisCrudTest extends RedisTestContainerBase {
 
     private Logger logger = LoggerFactory.getLogger(RedisCrudTest.class);
 
@@ -52,31 +42,9 @@ public class RedisCrudTest extends AbstractContainerBaseTest {
     @Qualifier("testMailRedisTemplate")
     private RedisTemplate<String, Object> testMailRedisTemplate;
 
-    @Container
-    public static GenericContainer<?> redis = new GenericContainer<>(DockerImageName.parse("redis:6-alpine"))
-            .withExposedPorts(6379);
-
-    @TestConfiguration
-    static class TestRedisConfig {
-        @Bean("testRedisConnectionFactory")
-        public RedisConnectionFactory testRedisConnectionFactory() {
-            return new LettuceConnectionFactory(redis.getHost(), redis.getFirstMappedPort());
-        }
-
-        @Bean("testMailRedisTemplate")
-        public RedisTemplate<String, Object> redisTemplate(@Qualifier("testRedisConnectionFactory") RedisConnectionFactory testRedisConnectionFactory) {
-            RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
-            redisTemplate.setKeySerializer(new StringRedisSerializer());
-            redisTemplate.setValueSerializer(new StringRedisSerializer());
-            redisTemplate.setConnectionFactory(testRedisConnectionFactory);
-            return redisTemplate;
-        }
-    }
-
     @BeforeEach
-    void setUp() {
-        logger.info("testRedis - host: {}, port: {}", redis.getHost(), redis.getFirstMappedPort());
-        this.mailRedisService = new MailRedisService(testMailRedisTemplate);
+    public void setUp() {
+        mailRedisService = new MailRedisService(testMailRedisTemplate);
         mailRedisService.setValues(KEY, VALUE, DURATION);
     }
 
