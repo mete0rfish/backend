@@ -1,12 +1,14 @@
 package com.onetool.server.api.blueprint.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.onetool.server.api.blueprint.Blueprint;
 import com.onetool.server.api.blueprint.dto.request.BlueprintRequest;
 import com.onetool.server.api.blueprint.dto.request.BlueprintUpdateRequest;
 import com.onetool.server.api.fixture.BlueprintFixture;
 import com.onetool.server.api.helper.MockBeanInjection;
 import com.onetool.server.global.handler.ExceptionAdvice;
 import org.junit.jupiter.api.*;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -39,7 +41,8 @@ public class BlueprintControllerTest extends MockBeanInjection {
     public void 새로운_blueprint를_생성한다() throws Exception {
         // given
         BlueprintRequest request = BlueprintFixture.createBlueprintRequest();
-        doNothing().when(blueprintBusiness).createBlueprint(any(BlueprintRequest.class));
+        Blueprint blueprint = Blueprint.fromRequest(request);
+        when(blueprintBusiness.createBlueprint(any(BlueprintRequest.class))).thenReturn(blueprint);
 
         // when
         ResultActions resultActions =
