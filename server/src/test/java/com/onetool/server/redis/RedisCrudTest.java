@@ -40,11 +40,11 @@ public class RedisCrudTest extends RedisTestContainerBase {
 
     @Autowired
     @Qualifier("testMailRedisTemplate")
-    private RedisTemplate<String, Object> testMailRedisTemplate;
+    private RedisTemplate<String, Object> mailRedisTemplate;
 
     @BeforeEach
     public void setUp() {
-        mailRedisService = new MailRedisService(testMailRedisTemplate);
+        mailRedisService = new MailRedisService(mailRedisTemplate);
         mailRedisService.setValues(KEY, VALUE, DURATION);
     }
 
