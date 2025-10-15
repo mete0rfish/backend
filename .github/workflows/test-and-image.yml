@@ -11,6 +11,7 @@ on:
 
 jobs:
   build:
+    if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.pull_request.merged == true)
     runs-on: ubuntu-latest
 
     steps:
@@ -42,7 +43,7 @@ jobs:
         run: |
           cd ./server/
           chmod +x ./gradlew
-          ./gradlew clean build -x test
+          ./gradlew clean build
 
       - name: Print JAR Timestamp
         run: |
