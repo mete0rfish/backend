@@ -2,6 +2,7 @@ package com.onetool.server.api.qna.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.onetool.server.api.helper.MockBeanInjection;
 import com.onetool.server.api.member.fixture.WithMockPrincipalDetails;
 import com.onetool.server.api.qna.business.QnaReplyBusiness;
 import com.onetool.server.api.qna.controller.QnaReplyController;
@@ -31,19 +32,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(controllers = QnaReplyController.class)
 @AutoConfigureMockMvc
-class QnaReplyControllerTest {
+class QnaReplyControllerTest extends MockBeanInjection {
 
     @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
-    private JwtUtil jwtUtil;
-
     @Autowired
     private ObjectMapper objectMapper;
-
-    @MockBean
-    private QnaReplyBusiness qnaReplyBusiness;
 
     @Test
     @WithMockPrincipalDetails(id = 2L)
