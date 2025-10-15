@@ -1,5 +1,6 @@
 package com.onetool.server.api.blueprint.controller;
 
+import com.onetool.server.api.blueprint.business.BlueprintInspectionBusiness;
 import com.onetool.server.api.fixture.BlueprintFixture;
 import com.onetool.server.api.helper.MockBeanInjection;
 import com.onetool.server.api.member.fixture.WithMockPrincipalDetails;
@@ -9,6 +10,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -20,16 +22,15 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
-import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
-@SuppressWarnings("NonAsciiCharacters")
+@SuppressWarnings({"NonAsciiCharacters"})
 @Import(ExceptionAdvice.class)
 @WebMvcTest({BlueprintInspectionController.class})
 @AutoConfigureMockMvc(addFilters = false)
@@ -69,7 +70,7 @@ public class BlueprintInspectionControllerTest extends MockBeanInjection {
     void 승인되지_않은_도면을_승인처리_한다() throws Exception {
         // given
         final long id = 1L;
-        doNothing().when(blueprintInspectionBusiness).editBlueprintWithApprove(id);
+        doReturn(null).when(blueprintInspectionBusiness).editBlueprintWithApprove(id);
 
         // when
         ResultActions resultActions =
@@ -89,7 +90,7 @@ public class BlueprintInspectionControllerTest extends MockBeanInjection {
     void 승인되지_않은_도면을_반려처리_한다() throws Exception {
         // given
         final long id = 1L;
-        doNothing().when(blueprintInspectionBusiness).removeBlueprint(id);
+        doReturn(null).when(blueprintInspectionBusiness).removeBlueprint(any(Long.class));
 
         // when
         ResultActions resultActions =
