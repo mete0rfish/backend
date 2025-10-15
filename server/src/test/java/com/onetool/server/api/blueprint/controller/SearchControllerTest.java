@@ -56,8 +56,8 @@ public class SearchControllerTest extends MockBeanInjection {
         resultActions
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.result.content[0].blueprintName").value("골프자 1인실 평면도(1)"))
-                .andExpect(jsonPath("$.result.content[1].blueprintName").value("골프자 레이아웃 평면도(1)"));
+                .andExpect(jsonPath("$.result.content[0].blueprintName").value("골프장 1인실 평면도(1)"))
+                .andExpect(jsonPath("$.result.content[1].blueprintName").value("골프장 레이아웃 평면도(1)"));
     }
 
     @Test
