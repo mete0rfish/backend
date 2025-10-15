@@ -1,5 +1,6 @@
 package com.onetool.server.api.chat.service;
 
+import com.onetool.server.api.blueprint.Blueprint;
 import com.onetool.server.api.chat.domain.ChatMessage;
 import com.onetool.server.api.chat.domain.MessageType;
 import com.onetool.server.api.chat.dto.ChatMessageResponse;
@@ -8,6 +9,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.List;
@@ -35,9 +38,10 @@ class ChatServiceTest {
     @Test
     void findChatMessages() {
         // given
+        Pageable pageable = PageRequest.of(0, 3);
 
         // when
-        List<ChatMessageResponse> response = chatService.findChatMessages(ROOM_ID);
+        List<ChatMessageResponse> response = chatService.findChatMessages(pageable, ROOM_ID);
 
         // then
         assertThat(response.size()).isEqualTo(3);
