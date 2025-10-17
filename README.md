@@ -16,10 +16,29 @@
   </h4>
 </div>
 
-# ✨ About Project
+# 🧭 Table of contents
+* [✨ About Project](#-about-project)
+    * [📌 Purpose](#-purpose)
+    * [🔖 Summary](#-summary)
+* [🛠️ Tech Stacks](#%EF%B8%8F-tech-stacks)
+    * [🤔 Why](#-why)
+* [🖼️ Architecture & Pattern](#-architecture--pattern)
+    * [🗺️ Infrastructure](#-infrastructure)
+    * [🧩 Layered Pattern](#-layered-pattern)
+* [🗂️ ERD & User Scenario](#-erd--user-scenario)
+    * [🌫️ ERD](#-erd)
+    * [🎬 User Scenario](#-user-scenario)
+* [☑️ Trouble Shooting](#-trouble-shooting)
+* [🔥 Performance Enhancement](#-performance-enhancement)
+* [👥 Contributors](#-contributors)
+
+
+<br/>
+
+## ✨ About Project
 <img width="800" height="800" alt="image" src="https://github.com/user-attachments/assets/2c54c286-7417-4123-add6-fffb97cbd1f0" />
 
-## 📌 Purpose
+### 📌 Purpose
 
 저희 팀 원툴은 3D 도면 모델을 주로 사용하는 건축업계 종사자들을 위한 도면 서비스를 제공합니다.
 
@@ -38,7 +57,7 @@
 
 <br/>
 
-## 🔖 Summary
+### 🔖 Summary
 
 - 프로젝트 이름: 원툴 Onetool
 - 개발 기간: 2024.03 ~ 2024.12
@@ -70,7 +89,7 @@
 
 <img src="https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white"> <img src="https://img.shields.io/badge/GitHub%20Actions-2088FF?style=for-the-badge&logo=githubactions&logoColor=fff&logoColor=white"> <img src="https://img.shields.io/badge/Amazon%20EC2-FF9900?style=for-the-badge&logo=Amazon%20EC2&logoColor=white"> <img src="https://img.shields.io/badge/Prometheus-E6522C?style=for-the-badge&logo=Prometheus&logoColor=white"> <img src="https://img.shields.io/badge/grafana-%23F46800.svg?style=for-the-badge&logo=grafana&logoColor=white"> <img src="https://img.shields.io/badge/nginx-%23009639.svg?style=for-the-badge&logo=nginx&logoColor=white">
 
-### Why?
+### 🤔 Why?
 
 | **요구 사항** | **선택지** | **기술 선택 이유** |
 | ----- | ------ | ----------- |
@@ -86,9 +105,9 @@
 
 ## 🖼️ Architecture & Pattern
 
-### Infrastructure
+### 🗺️ Infrastructure
 
-<img width="400" height="400" alt="image" src="https://github.com/user-attachments/assets/d7695b56-334a-4164-8452-50f9217d41fc" />
+<img width="800" height="800" alt="image" src="https://github.com/user-attachments/assets/d7695b56-334a-4164-8452-50f9217d41fc" />
 
 - **Q. 개발 서버와 운영 서버를 나눈 이유가 무엇인가요?**
   - 저희는 판매 기능을 제공합니다.
@@ -98,7 +117,7 @@
   - 하지만, 비용 문제가 발생했고 품질이 중요하지 않은 개발 서버까지 ALB를 도입할 필요성이 없었습니다.
   - 따라서, 비용이 발생하지 않는 Nginx를 개발 서버에 도입했습니다.
 
-### Layered Pattern
+### 🧩 Layered Pattern
 
 ![image](https://github.com/user-attachments/assets/1ffa3146-0f79-43b5-9278-6b8e69b80cec)
 
@@ -111,15 +130,14 @@
 
 <br/>
 
-## 🗂️ ERD, 유저 시나리오
+## 🗂️ ERD & User Scenario
 
-### ERD
+### 🌫️ ERD
+<img src="https://github.com/user-attachments/assets/1436a9f7-42ad-4601-8e1d-9bf97551fbdc" height=700 width=700 />
 
-![OneTool](https://github.com/user-attachments/assets/1436a9f7-42ad-4601-8e1d-9bf97551fbdc)
+### 🎬 User Scenario
 
-### 유저 시나리오
-
-[🔗Notion: 유저 시나리오](https://garrulous-bearskin-817.notion.site/66ed82a478514cd5ae13836b30e2909e?pvs=4)
+[👉 Notion: 유저 시나리오 보러가기 👈](https://garrulous-bearskin-817.notion.site/66ed82a478514cd5ae13836b30e2909e?pvs=4)
 
 <br/>
 
@@ -148,15 +166,25 @@
 
 <br/>
 
-## 🔥 성능 개선
-1. Fake 기법을 통해 테스트 속도 개선 ([🔗PR#209](https://github.com/likelion-onetool/backend/pull/209))
-    - 빈 컨텍스트 사용 대신 Fake를 이용하여 컨텍스트 멤버 생성 기능의 테스트 속도를 990ms에서 460ms로 `46%` 향상
+## 🔥 Performance Enhancement
+1. **커버링 인덱스로 검색 쿼리 속도 향상** ([🔗PR#182](https://github.com/likelion-onetool/backend/pull/182))
+    - `커버링 인덱스`를 이용해 검색 기능의 수행 시간이 637ms → 473ms로 약 `34%` 향상
+    - Count 쿼리의 인덱스 사용 시, 미비한 차이로 인한 불필요한 인덱스 사용 방지
+
+2. **WebSocket 기반 다대다 채팅 시스템 구현** ([🔗PR#234](https://github.com/likelion-onetool/backend/pull/234))
+    - 부하테스트를 통한 읽기, 쓰기 처리량 기반 데이터베이스 선정(MySQL, MongoDB, PostgreSQL 비교)
+    - 내부 메시지 큐 시스템의 동시 쓰기로 인한 에러를, `@Async`를 통해 해결하여 TPS가 6.7/s → 11.9/s로 약 `77%` 향상
+
+3. **대용량 데이터의 키워드 기반 검색 최적화** ([🔗아티클](https://parvegoongame.tistory.com/197))
+    - MySQL의 `Full-Text Index`를 도입하여 문장 토큰화 기반 인덱싱 도입
+    - 100만 건 데이터 기준 검색 수행 시간을 16,981ms → 0.224ms 약 `99.9%` 성능
+
+4. **Fake 기법을 통해 테스트 속도 개선** ([🔗PR#209](https://github.com/likelion-onetool/backend/pull/209))
+    - 빈 컨텍스트 사용 대신 `Fake`를 이용하여 컨텍스트 멤버 생성 기능의 테스트 속도를 990ms에서 460ms로 `46%` 향상
     - 테스트의 대부분을 차지하는 단위 테스트의 수행 속도를 평균 `36%` 개선
-2. 커버링 인덱스로 검색 쿼리 속도 향상([🔗PR#182](https://github.com/likelion-onetool/backend/pull/182))
-   - 커버링 인덱스를 이용해 검색 기능의 수행 시간이 637ms에서 473ms로 약 `34%` 향상
-   - Count 쿼리의 인덱스 사용 시, 미비한 차이로 인한 불필요한 인덱스 사용 방지
-3. N+1 문제 해결로 실행 쿼리 감소 ([🔗PR#115](https://github.com/likelion-onetool/backend/pull/115))
-   - 다대일 관계의 적은 중복 문제 해결을 위해 inner join을 사용하여 키워드 검색 쿼리를 6개 → 4개 감소
+
+5. **N+1 문제 해결로 실행 쿼리 감소** ([🔗PR#115](https://github.com/likelion-onetool/backend/pull/115))
+     - 다대일 관계의 적은 중복 문제 해결을 위해 `inner join`을 사용하여 키워드 검색 쿼리를 6개 → 4개 감소
 
 <br/>
 
